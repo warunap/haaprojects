@@ -17,7 +17,7 @@ import com.comwave.staffware.sso.Step;
  * @author Eric Yang
  * @version 1.0
  */
-public class TestProCore extends BaseSSOCoreTest {
+public class TestSimulateNextStep extends BaseSSOCoreTest {
 
 	private ProcCore procCore;
 
