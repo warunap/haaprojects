@@ -26,7 +26,9 @@ public class BaseEMSTestUnit {
 
 	String password = "";
 
-	String topicName = "test_queue";
+	String topicName = "test_topic";
+
+	String queueName = "test_queue";
 
 	protected TopicConnection topicConnection;
 
@@ -35,7 +37,7 @@ public class BaseEMSTestUnit {
 		return factory.createTopicConnection(userName, password);
 	}
 
-	protected TopicSession getSession(TopicConnection connection) throws JMSException {
+	protected TopicSession getTopicSession(TopicConnection connection) throws JMSException {
 		return connection.createTopicSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
 	}
 

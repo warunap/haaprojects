@@ -28,7 +28,7 @@ public class TestTopicSubscriber extends BaseEMSTestUnit {
 			setTopicName("helloboy");
 			System.out.println("start");
 			TopicConnection topicConnect = getTopicConnect();
-			TopicSession session = getSession(topicConnect);
+			TopicSession session = getTopicSession(topicConnect);
 			Topic topic = session.createTopic(topicName);
 
 			TopicPublisher publisher = session.createPublisher(topic);

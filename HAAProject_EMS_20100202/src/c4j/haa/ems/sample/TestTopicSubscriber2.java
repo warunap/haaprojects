@@ -29,7 +29,7 @@ public class TestTopicSubscriber2 extends BaseEMSTestUnit {
 			setServerUrl("tcp://192.168.5.60:7222");
 			System.out.println("start");
 			TopicConnection topicConnect = getTopicConnect();
-			TopicSession session = getSession(topicConnect);
+			TopicSession session = getTopicSession(topicConnect);
 			Topic topic = session.createTopic(topicName);
 
 			TopicPublisher publisher = session.createPublisher(topic);
