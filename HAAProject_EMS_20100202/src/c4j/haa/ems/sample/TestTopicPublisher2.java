@@ -9,50 +9,31 @@
  */
 package c4j.haa.ems.sample;
 
-import javax.jms.Message;
-import javax.jms.TextMessage;
 import javax.jms.Topic;
 import javax.jms.TopicConnection;
 import javax.jms.TopicPublisher;
 import javax.jms.TopicSession;
-import javax.jms.TopicSubscriber;
 
 /**
  * @author Eric Yang
  * @version 1.0
  */
-public class TestTopicSubscriber extends BaseEMSTestUnit {
+public class TestTopicPublisher2 extends BaseEMSTestUnit {
 
 	public void test() {
 		try {
 			setTopicName("helloboy");
-			System.out.println("start");
+			setServerUrl("tcp://192.168.5.60:7222");
 			TopicConnection topicConnect = getTopicConnect();
 			TopicSession session = getSession(topicConnect);
 			Topic topic = session.createTopic(topicName);
 
 			TopicPublisher publisher = session.createPublisher(topic);
 
-			TextMessage message = session.createTextMessage();
-			message.setText("hello");
+			javax.jms.TextMessage message = session.createTextMessage();
+			message.setText("hello eric");
 			publisher.publish(message);
-
-			TopicSubscriber subscriber = session.createSubscriber(topic);
-
-			topicConnect.start();
-
-			/* read topic messages */
-			while (true) {
-				Message m = subscriber.receive();
-				if (m == null)
-					break;
-
-				System.err.println("Received message: " + m);
-
-			}
-
 			topicConnect.close();
-
 			System.out.println("over");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -60,6 +41,6 @@ public class TestTopicSubscriber extends BaseEMSTestUnit {
 	}
 
 	public static void main(String[] args) {
-		new TestTopicSubscriber().test();
+		new TestTopicPublisher2().test();
 	}
 }

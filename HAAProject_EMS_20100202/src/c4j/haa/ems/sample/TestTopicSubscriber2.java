@@ -21,11 +21,12 @@ import javax.jms.TopicSubscriber;
  * @author Eric Yang
  * @version 1.0
  */
-public class TestTopicSubscriber extends BaseEMSTestUnit {
+public class TestTopicSubscriber2 extends BaseEMSTestUnit {
 
 	public void test() {
 		try {
 			setTopicName("helloboy");
+			setServerUrl("tcp://192.168.5.60:7222");
 			System.out.println("start");
 			TopicConnection topicConnect = getTopicConnect();
 			TopicSession session = getSession(topicConnect);
@@ -60,6 +61,6 @@ public class TestTopicSubscriber extends BaseEMSTestUnit {
 	}
 
 	public static void main(String[] args) {
-		new TestTopicSubscriber().test();
+		new TestTopicSubscriber2().test();
 	}
 }

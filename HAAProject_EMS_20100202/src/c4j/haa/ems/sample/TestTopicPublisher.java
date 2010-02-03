@@ -22,7 +22,7 @@ public class TestTopicPublisher extends BaseEMSTestUnit {
 
 	public void test() {
 		try {
-			setServerUrl("tcp://192.168.5.59:7222");
+			setTopicName("helloboy");
 			TopicConnection topicConnect = getTopicConnect();
 			TopicSession session = getSession(topicConnect);
 			Topic topic = session.createTopic(topicName);
@@ -30,7 +30,7 @@ public class TestTopicPublisher extends BaseEMSTestUnit {
 			TopicPublisher publisher = session.createPublisher(topic);
 
 			javax.jms.TextMessage message = session.createTextMessage();
-			message.setText("hello boy");
+			message.setText("hello eric");
 			publisher.publish(message);
 			topicConnect.close();
 			System.out.println("over");
