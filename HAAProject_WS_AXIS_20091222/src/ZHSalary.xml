@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/"><Body>
+<CorticonRequest xmlns="urn:Corticon" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" decisionServiceName="InsertServiceNameHere">
+  <WorkDocuments>
+    <员工 id="员工_id_1">
+      <工号>3</工号>
+      <工资 xsi:nil="1" />
+      <公司_1 id="公司_id_1">
+        <平均工资>5000.000000</平均工资>
+        <员工数>100</员工数>
+      </公司_1>
+    </员工>
+  </WorkDocuments>
+</CorticonRequest>
+</Body>
+</Envelope>
+

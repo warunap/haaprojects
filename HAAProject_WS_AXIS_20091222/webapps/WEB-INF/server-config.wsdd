@@ -4,7 +4,17 @@
 	<service name="hello" provider="java:RPC">
 		<parameter name="className" value="c4j.haa.ws.HelloService" />
 		<parameter name="allowedMethods" value="getHello" />
+		<!-- Application,Session,Scope -->
+		<parameter name="scope" value="Application" />
 	</service>
+
+	<service name="zhello" provider="java:RPC">
+		<parameter name="className" value="c4j.haa.ws.ZHelloService" />
+		<parameter name="allowedMethods" value="hello,问好" />
+		<!-- Application,Session,Scope -->
+		<parameter name="scope" value="Application" />
+	</service>
+
 	<transport name="http">
 		<requestFlow>
 			<handler type="URLMapper" />
