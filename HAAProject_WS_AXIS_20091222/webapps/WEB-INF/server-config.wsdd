@@ -15,6 +15,32 @@
 		<parameter name="scope" value="Application" />
 	</service>
 
+	<!-- Services from StockQuoteService WSDL service -->
+
+	<service name="StockQuoteService" provider="java:RPC" style="wrapped" use="literal">
+		<parameter name="wsdlTargetNamespace" value="http://stock.com/schemas/services/stock/wsdl" />
+		<parameter name="wsdlServiceElement" value="StockQuoteService" />
+		<parameter name="schemaQualified" value="http://stock.com/schemas/services/stock" />
+		<parameter name="wsdlServicePort" value="StockQuoteService" />
+		<parameter name="className" value="c4j.haa.ws.StockQuoteService" />
+		<parameter name="wsdlPortType" value="StockQuotePortType" />
+		<parameter name="typeMappingVersion" value="1.2" />
+		<operation name="getStockQuote" qname="operNS:getStockQuote" xmlns:operNS="http://stock.com/schemas/services/stock"
+			returnQName="retNS:Stock" xmlns:retNS="http://stock.com/schemas/services/stock" returnType="rtns:Stock"
+			xmlns:rtns="http://stock.com/schemas/services/stock" soapAction="getStockQuote">
+			<parameter qname="pns:ticker" xmlns:pns="http://stock.com/schemas/services/stock" type="tns:string"
+				xmlns:tns="http://www.w3.org/2001/XMLSchema" />
+		</operation>
+		<parameter name="allowedMethods" value="getStockQuote" />
+
+		<typeMapping xmlns:ns="http://stock.com/schemas/services/stock" qname="ns:Quote" type="java:com.stock.schemas.services.stock.Quote"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://stock.com/schemas/services/stock" qname="ns:Stock" type="java:com.stock.schemas.services.stock.Stock"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+	</service>
+
 	<transport name="http">
 		<requestFlow>
 			<handler type="URLMapper" />

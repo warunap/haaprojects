@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions targetNamespace="http://stock.com/schemas/services/stock/wsdl" xmlns="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:tns="http://stock.com/schemas/services/stock/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:p="http://www.w3.org/2001/XMLSchema"
+	xmlns:types="http://stock.com/schemas/services/stock">
+	<wsdl:types>
+		<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+			targetNamespace="http://stock.com/schemas/services/stock" xmlns="http://stock.com/schemas/services/stock">
+			<xsd:element name="Stock">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="ticker" nillable="true" type="xsd:string" />
+						<xsd:element maxOccurs="unbounded" minOccurs="0" name="quotes" nillable="true" type="types:Quote" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:complexType name="Quote">
+				<xsd:sequence>
+					<xsd:element name="quotePrice" type="xsd:int" />
+					<xsd:element name="dtQuote" type="xsd:date" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+
+			<!--  Webservice messages -->
+			<xsd:element name="getStockQuote">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="ticker" nillable="true" type="xsd:string" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="getStockQuoteResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element ref="types:Stock" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:schema>
+	</wsdl:types>
+
+	<!--MESSAGES. For each operation request and response message should be configured -->
+
+	<message name="getStockQuoteReq">
+		<part name="parameters" element="types:getStockQuote" />
+	</message>
+
+	<message name="getStockQuoteResp">
+		<part name="parameters" element="types:getStockQuoteResponse" />
+	</message>
+
+
+	<!--     PORTType. Each operation  should be configured  -->
+	<portType name="StockQuotePortType">
+
+		<operation name="getStockQuote">
+			<input message="tns:getStockQuoteReq" />
+			<output message="tns:getStockQuoteResp" />
+		</operation>
+	</portType>
+
+	<!--  BINDING. Each operation  should be configured  -->
+	<binding name="StockQuoteSOAPBinding" type="tns:StockQuotePortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="getStockQuote">
+			<soap:operation style="document" soapAction="getStockQuote" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+
+	</binding>
+
+	<service name="StockQuoteService">
+		<port name="StockQuoteService" binding="tns:StockQuoteSOAPBinding">
+			<soap:address location="http://localhost:9080/axis/services/StockQuoteSOAPBinding" />
+		</port>
+	</service>
+
+</definitions>

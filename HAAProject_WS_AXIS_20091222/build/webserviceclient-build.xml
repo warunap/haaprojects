@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project name="ws" default="wsdl2java" basedir=".">
+
+	<path id="axis.classpath">
+		<fileset dir="..\webapps\WEB-INF\lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	<taskdef resource="axis-tasks.properties" classpathref="axis.classpath" />
+
+	<target name="build.make" />
+
+	<target name="wsdl2java" depends="build.make">
+		<axis-wsdl2java output="client" verbose="true" serverside="true" url="../webapps/wsdl/example/StockQuote.wsdl" noimports="true"></axis-wsdl2java>
+	</target>
+
+</project>
