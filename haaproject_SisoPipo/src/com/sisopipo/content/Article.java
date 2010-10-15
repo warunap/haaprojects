@@ -20,17 +20,33 @@ import java.util.List;
  */
 public class Article implements Serializable {
 
+	/** Article subject */
 	private String subject;
 
+	/** Article editor */
 	private String editor;
 
-	private String category;
+	/** Tags splitted by comma */
+	private String tags;
 
+	/** Article content */
 	private String content;
 
+	/** Publish date */
 	private Date date;
 
+	private String action;
+
+	/** Article attachments,include images,flash */
 	private List<File> attachments;
+
+	public boolean toRemove() {
+		return "delete".equalsIgnoreCase(action) || "remove".equalsIgnoreCase(action);
+	}
+
+	public boolean toAdd() {
+		return !toRemove();
+	}
 
 	public String getSubject() {
 		return subject;
@@ -40,12 +56,12 @@ public class Article implements Serializable {
 		this.subject = title;
 	}
 
-	public String getCategory() {
-		return category;
+	public String getTags() {
+		return tags;
 	}
 
-	public void setCategory(String category) {
-		this.category = category;
+	public void setTags(String category) {
+		this.tags = category;
 	}
 
 	public String getContent() {
@@ -78,5 +94,13 @@ public class Article implements Serializable {
 
 	public void setEditor(String editor) {
 		this.editor = editor;
+	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
 	}
 }

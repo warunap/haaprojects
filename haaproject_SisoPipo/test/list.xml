@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<list>
+	<item>
+		<subject>Hello 163</subject>
+		<editor>gelnyang@gg.com</editor>
+		<tags>test</tags>
+		<date>2010/10/16 00:50:00</date>
+	</item>
+	<item>
+		<subject>test remove subject</subject>
+		<editor>gelnyang@163.com</editor>
+		<tags>English</tags>
+		<date>2010/10/16 01:36:50</date>
+	</item>
+	<item>
+		<subject>Hello 163 不知道为什么这么晚</subject>
+		<editor>gelnyang@gmail.com</editor>
+		<tags>English</tags>
+		<date>2010/10/16 01:36:50</date>
+	</item>
+	<item>
+		<subject>深夜测试邮件</subject>
+		<editor>gelnyang@yeah.net</editor>
+		<tags>测试</tags>
+		<date>2010/10/16 01:44:29</date>
+	</item>
+</list>

@@ -17,5 +17,6 @@ import com.sisopipo.content.Article;
  */
 public interface ArticlePublisher {
 
-	public void pulisher(Article article) throws Exception;
+	public void pulish(Article article, boolean isAdministrator) throws Exception;
+
 }

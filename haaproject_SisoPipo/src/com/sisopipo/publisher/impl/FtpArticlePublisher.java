@@ -12,6 +12,7 @@ package com.sisopipo.publisher.impl;
 import java.io.File;
 import java.io.IOException;
 import org.apache.commons.net.ftp.FTPClient;
+import c4j.file.FileUtil;
 import c4j.net.FTPWorker;
 import c4j.net.FtpUtil;
 
@@ -43,7 +44,13 @@ public class FtpArticlePublisher extends DirectoryArticlePublisher {
 		FTPWorker ftpclient = getFtpClient();
 		ftpclient.changeWorkingDirectory(targetDir);
 		ftpclient.putFileToServer(tempFile.getAbsolutePath(), tempFile.getName());
-		tempFile.delete();
+		FileUtil.deleteFile(tempFile);
+	}
+
+	protected void removeFile(String filePath) throws IOException {
+		boolean result = ftpclient.deleteFile(filePath);
+		if (!result)
+			logger.error("Failed to delete file " + filePath);
 	}
 
 	protected File getFile(String listFilePath) throws IOException {
