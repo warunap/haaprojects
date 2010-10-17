@@ -9,6 +9,7 @@
  */
 package com.sisopipo.content;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -21,8 +22,9 @@ import org.dom4j.Element;
 import org.dom4j.Text;
 import org.dom4j.dom.DOMElement;
 import org.dom4j.dom.DOMText;
-import com.sisopipo.exception.OperatonException;
 import c4j.xml.XmlUtil;
+import com.sisopipo.ArticleContext;
+import com.sisopipo.exception.OperatonException;
 
 /**
  * @author Geln Yang
@@ -48,10 +50,20 @@ public class ArticleUtil {
 		return XmlUtil.parse(content);
 	}
 
-	public static Document addItem(Document document, Article article) throws DocumentException {
+	public static Document addItem(Document document, Article article) throws DocumentException, OperatonException {
+		Element root = document.getRootElement();
+
+		String rootNameSpaceURI = root.getNamespace().getURI();
+		Map<String, String> xmlns = new HashMap<String, String>();
+		xmlns.put("ns", rootNameSpaceURI);
+		String xpath = "//ns:list/ns:item/ns:subject[text()='" + article.getSubject() + "']";
+		List<Element> nodes = XmlUtil.parseNodes(xpath, root, xmlns);
+
+		if (nodes != null && nodes.size() > 0)
+			throw new OperatonException("Already exists article:" + article.getSubject());
+
 		Element itemElement = createArticleItem(article);
 
-		Element root = document.getRootElement();
 		root.add(itemElement);
 
 		return document;
@@ -63,6 +75,7 @@ public class ArticleUtil {
 		itemElement.add(createKeyValueElement("editor", article.getEditor()));
 		itemElement.add(createKeyValueElement("tags", article.getTags()));
 		itemElement.add(createKeyValueElement("date", new SimpleDateFormat(DEFAULT_DATE_FORMAT).format(article.getDate())));
+		itemElement.add(createKeyValueElement("path", article.getPath()));
 		return itemElement;
 	}
 
@@ -74,45 +87,61 @@ public class ArticleUtil {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void removeItem(Document document, Article article, boolean enforce) throws OperatonException {
-		Element root = document.getRootElement();
-		String rootNameSpaceString = root.getNamespace().getURI();
-		Map<String, String> xmlns = new HashMap<String, String>();
-		xmlns.put("ns", rootNameSpaceString);
-		String xpath = "//ns:list/ns:item/ns:subject";
-		List<Element> nodes = XmlUtil.parseNodes(xpath, root, xmlns);
+	public static String removeItem(Document document, Article article) throws Exception {
+		Element targetElement = getArticleFromDocument(document, article.getSubject());
 
-		Element targetElement = null;
-		if (nodes != null) {
-			for (Element element : nodes) {
-				String text = element.getText();
-				if (article.getSubject().equals(text)) {
-					targetElement = element.getParent();
-					break;
-				}
-			}
-		}
 		if (targetElement != null) {
-			if (!enforce) {
-				String editor = "";
-				List content = targetElement.content();
-				for (Object e : content) {
-					if (e instanceof Element) {
-						Element item = (Element) e;
-						if ("editor".equals(item.getName())) {
-							editor = item.getTextTrim();
-							break;
-						}
-					}
-				}
+			Article storedArticle = parse(targetElement);
+			if (!ArticleContext.getAdministrator().equals(article.getEditor())) {
+				String editor = storedArticle.getEditor();
 				if (!editor.equalsIgnoreCase(article.getEditor())) {
 					throw new OperatonException("Article[" + article.getSubject() + "] published by " + editor + " can't be removed by " + article.getEditor());
 				}
 			}
-			root.remove(targetElement);
+			document.getRootElement().remove(targetElement);
+			return storedArticle.getPath();
 		} else {
 			logger.warn("No article[" + article.getSubject() + "]!");
+			return null;
 		}
+	}
+
+	private static Element getArticleFromDocument(Document document, String subject) throws ParseException {
+		Element root = document.getRootElement();
+		String rootNameSpaceURI = root.getNamespace().getURI();
+		Map<String, String> xmlns = new HashMap<String, String>();
+		xmlns.put("ns", rootNameSpaceURI);
+		String xpath = "//ns:list/ns:item/ns:subject[text()='" + subject + "']";
+		List<Element> nodes = XmlUtil.parseNodes(xpath, root, xmlns);
+
+		Element targetElement = null;
+		if (nodes != null && nodes.size() > 0) {
+			return nodes.get(0).getParent();
+		}
+
+		return null;
+	}
+
+	public static Article parse(Element artileElementItem) throws ParseException {
+		Article article = new Article();
+		List content = artileElementItem.content();
+		for (Object e : content) {
+			if (e instanceof Element) {
+				Element item = (Element) e;
+				if ("editor".equals(item.getName())) {
+					article.setEditor(item.getTextTrim());
+				} else if ("subject".equals(item.getName())) {
+					article.setTags(item.getTextTrim());
+				} else if ("tags".equals(item.getName())) {
+					article.setTags(item.getTextTrim());
+				} else if ("date".equals(item.getName())) {
+					article.setDate(new SimpleDateFormat(DEFAULT_DATE_FORMAT).parse(item.getTextTrim()));
+				} else if ("path".equals(item.getName())) {
+					article.setPath(item.getTextTrim());
+				}
+			}
+		}
+		return article;
 	}
 
 }

@@ -9,6 +9,8 @@
  */
 package com.sisopipo.publisher;
 
+import java.io.IOException;
+import java.util.List;
 import com.sisopipo.content.Article;
 
 /**
@@ -17,6 +19,8 @@ import com.sisopipo.content.Article;
  */
 public interface ArticlePublisher {
 
-	public void pulish(Article article, boolean isAdministrator) throws Exception;
+	public void publish(List<Article> articles) throws Exception;
+
+	public void finishPublish() throws IOException;
 
 }

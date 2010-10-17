@@ -9,11 +9,8 @@
  */
 package com.sisopipo.content;
 
-import java.io.IOException;
 import junit.framework.TestCase;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import com.sisopipo.exception.OperatonException;
 import c4j.io.StreamUtil;
 import c4j.xml.XmlUtil;
 
@@ -23,7 +20,7 @@ import c4j.xml.XmlUtil;
  */
 public class TestArticleUtil extends TestCase {
 
-	public void testRemove() throws IOException, DocumentException, OperatonException {
+	public void testRemove() throws Exception {
 		String s = StreamUtil.readConfigureToString("list.xml");
 		System.out.println(s);
 		System.out.println("===========================================");
@@ -33,12 +30,12 @@ public class TestArticleUtil extends TestCase {
 		article.setSubject("test remove subject");
 		try {
 			article.setEditor("gelnyang@aa.com");
-			ArticleUtil.removeItem(document, article, false);
+			ArticleUtil.removeItem(document, article);
 			fail("Should not allowed!");
 		} catch (Exception e) {
 		}
 		article.setEditor("gelnyang@163.com");
-		ArticleUtil.removeItem(document, article, false);
+		ArticleUtil.removeItem(document, article);
 		System.out.println(document.asXML());
 	}
 }

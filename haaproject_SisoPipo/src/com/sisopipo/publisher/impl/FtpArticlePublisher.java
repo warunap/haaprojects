@@ -12,7 +12,6 @@ package com.sisopipo.publisher.impl;
 import java.io.File;
 import java.io.IOException;
 import org.apache.commons.net.ftp.FTPClient;
-import c4j.file.FileUtil;
 import c4j.net.FTPWorker;
 import c4j.net.FtpUtil;
 
@@ -32,37 +31,45 @@ public class FtpArticlePublisher extends DirectoryArticlePublisher {
 
 	private String ftppasswd;
 
-	public void setBaseDir(String baseDir) {
-		this.baseDir = baseDir;
+	private String ftpBaseDir;
+
+	public void setFtpBaseDir(String ftpBaseDir) {
+		this.ftpBaseDir = ftpBaseDir;
 	}
 
-	protected String getTargetDir(String relativeDir) {
-		return baseDir + relativeDir;
-	}
+	protected void initialLocalTargetDir(String localTargetDir, String relativeDir) throws IOException {
+		if (new File(localTargetDir + LIST_FILE_NAME).exists())
+			return;
 
-	protected void publishFile(File tempFile, String targetDir) throws IOException {
 		FTPWorker ftpclient = getFtpClient();
-		ftpclient.changeWorkingDirectory(targetDir);
-		ftpclient.putFileToServer(tempFile.getAbsolutePath(), tempFile.getName());
-		FileUtil.deleteFile(tempFile);
+		String ftpTargeDir = ftpBaseDir + relativeDir;
+		String listFilePath = ftpTargeDir + LIST_FILE_NAME;
+		ftpclient.getFileToDir(listFilePath, localTargetDir);
 	}
 
-	protected void removeFile(String filePath) throws IOException {
-		boolean result = ftpclient.deleteFile(filePath);
+	protected String publishFile(File tempFile, String localTargetDir, String relativeDir) throws IOException {
+		String localFilePath = super.publishFile(tempFile, localTargetDir, relativeDir);
+
+		FTPWorker ftpclient = getFtpClient();
+		String remoteFilePath = ftpBaseDir + relativeDir + tempFile.getName();
+		ftpclient.changeWorkingDirectory(ftpBaseDir + relativeDir);
+		ftpclient.put(localFilePath, remoteFilePath);
+		return remoteFilePath;
+	}
+
+	protected void removeFile(String localTargetDir, String storedFileName, String relativeDir) throws IOException {
+		super.removeFile(localTargetDir, storedFileName, relativeDir);
+
+		String filePath = ftpBaseDir + relativeDir + storedFileName;
+		boolean result = getFtpClient().deleteFile(filePath);
 		if (!result)
 			logger.error("Failed to delete file " + filePath);
+
 	}
 
-	protected File getFile(String listFilePath) throws IOException {
-		return getFtpClient().getFileToTmp(listFilePath);
-	}
-
-	protected boolean isFileExists(String listFilePath) throws IOException {
-		return getFtpClient().existsFile(listFilePath);
-	}
-
-	protected void finishPublish() throws IOException {
+	public void finishPublish() throws IOException {
 		getFtpClient().close();
+		ftpclient = null;
 	}
 
 	public FTPWorker getFtpClient() throws IOException {

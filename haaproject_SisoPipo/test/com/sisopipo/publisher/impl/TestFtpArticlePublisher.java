@@ -9,33 +9,43 @@
  */
 package com.sisopipo.publisher.impl;
 
-import java.util.Date;
-import junit.framework.TestCase;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import c4j.file.FileUtil;
 import com.sisopipo.content.Article;
 
 /**
  * @author Geln Yang
  * @version 1.0
  */
-public class TestFtpArticlePublisher extends TestCase {
+public class TestFtpArticlePublisher extends BasePublisherTest {
 
 	FtpArticlePublisher publisher = new FtpArticlePublisher();
 
 	protected void setUp() throws Exception {
-		publisher.setBaseDir("/logs/");
-		publisher.setFtpurl("ftp://user.ftp.com/");
+		Properties properties = FileUtil.readFileAsProperties("sisopipo.properties");
+		publisher.setLocalBaseDir(properties.getProperty("publisher.local.basedir"));
+		publisher.setFtpBaseDir(properties.getProperty("publisher.ftp.basedir"));
+		publisher.setFtpurl(properties.getProperty("publisher.ftp.url"));
 		publisher.setFtpport(21);
-		publisher.setFtpuser("user");
-		publisher.setFtppasswd("*****");
+		publisher.setFtpuser(properties.getProperty("publisher.ftp.user"));
+		publisher.setFtppasswd(properties.getProperty("publisher.ftp.password"));
 	}
 
 	public void testPublish() throws Exception {
-		Article article = new Article();
-		article.setSubject("hello");
-		article.setTags("Science");
-		article.setContent("hello my girl");
-		article.setDate(new Date());
-		publisher.pulish(article, false);
+		List<Article> articles = new ArrayList<Article>();
+		Article article = newArticle("hi 163", "163 good", "163", "gelnyang@gmail.com");
+		articles.add(article);
+		article = newArticle("hello baidu", "baidu good", "baidu", "gelnyang@gmail.com");
+		articles.add(article);
+		article = newArticle("hello sina", "sina good", "sina", "gelnyang@gmail.com");
+		articles.add(article);
+
+		publisher.publish(articles);
+
+		publisher.finishPublish();
 		System.out.println("over");
 	}
+
 }

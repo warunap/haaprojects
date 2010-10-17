@@ -40,6 +40,8 @@ public class Article implements Serializable {
 	/** Article attachments,include images,flash */
 	private List<File> attachments;
 
+	private String path;
+
 	public boolean toRemove() {
 		return "delete".equalsIgnoreCase(action) || "remove".equalsIgnoreCase(action);
 	}
@@ -53,15 +55,16 @@ public class Article implements Serializable {
 	}
 
 	public void setSubject(String title) {
-		this.subject = title;
+		this.subject = title == null ? null : title.trim();
+
 	}
 
 	public String getTags() {
 		return tags;
 	}
 
-	public void setTags(String category) {
-		this.tags = category;
+	public void setTags(String tags) {
+		this.tags = tags;
 	}
 
 	public String getContent() {
@@ -69,7 +72,7 @@ public class Article implements Serializable {
 	}
 
 	public void setContent(String content) {
-		this.content = content;
+		this.content = content == null ? null : content.trim();
 	}
 
 	public Date getDate() {
@@ -102,5 +105,13 @@ public class Article implements Serializable {
 
 	public void setAction(String action) {
 		this.action = action;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 }

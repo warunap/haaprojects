@@ -20,17 +20,18 @@ public class PublisherFactory {
 
 	public static ArticlePublisher directoryFactory(String baseDir) {
 		DirectoryArticlePublisher publisher = new DirectoryArticlePublisher();
-		publisher.setBaseDir(baseDir);
+		publisher.setLocalBaseDir(baseDir);
 		return publisher;
 	}
 
-	public static ArticlePublisher ftpFactory(String ftpurl, int ftpport, String ftpuser, String ftppasswd, String baseDir) {
+	public static ArticlePublisher ftpFactory(String ftpurl, int ftpport, String ftpuser, String ftppasswd, String ftpBaseDir, String localBaseDir) {
 		FtpArticlePublisher publisher = new FtpArticlePublisher();
 		publisher.setFtpurl(ftpurl);
 		publisher.setFtpport(ftpport);
 		publisher.setFtpuser(ftpuser);
 		publisher.setFtppasswd(ftppasswd);
-		publisher.setBaseDir(baseDir);
+		publisher.setFtpBaseDir(ftpBaseDir);
+		publisher.setLocalBaseDir(localBaseDir);
 		return publisher;
 	}
 
