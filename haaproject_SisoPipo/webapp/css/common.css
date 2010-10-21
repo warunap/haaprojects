@@ -1,0 +1,11 @@
+a{text-decoration:none;}
+#banner{border-bottom:1px solid lightblue;}
+#menuarea{border-right:1px solid lightblue;width:250px;display:inline-block; clear:right; float:left;}
+#viewarea{display:inline-block;}
+ul.inlinelayout{display:inline;}
+ul.inlinelayout>li{float:left;}
+
+#viewSubject{padding:2px;font-size:24px;font-weight:bold;border-bottom:1px dashed lightblue;}
+ul.textlist{}
+ul.textlist>li{margin-left:2px;padding:2px;border-bottom:1px solid lightblue;}
+
