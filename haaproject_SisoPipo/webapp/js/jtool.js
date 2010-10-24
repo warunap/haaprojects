@@ -62,7 +62,7 @@ jQuery.fn.exists = function () {
 		window.open(encodeURI(url));
 	}, open:function (url) {
 		window.open(encodeURI(url));
-	}, get:function (targetUrl, handler, params, toCache, dataType) {
+	}, get:function (targetUrl, params, toCache, dataType, handler, errorHandler) {
 		if (!dataType) {
 			dataType = "html";
 		}
@@ -82,6 +82,8 @@ jQuery.fn.exists = function () {
 			if (toCache) {
 				jtool.ajaxcache[url] = content;
 			}
+		}, error:function (xhr, ajaxOptions, thrownError) {
+			errorHandler(xhr, ajaxOptions, thrownError);
 		}});
 	}, load:function (containerId, targetUrl, params, toCache) {
 		var container = $("#" + containerId);

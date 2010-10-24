@@ -1,21 +1,42 @@
 
+var CURRENT_LANG = "zh";
 $(document).ready(function () {
 	$("#datepicker").datepicker({onSelect:function (dateText, inst) {
 		loadSubjectList(inst.selectedYear, inst.selectedMonth + 1, inst.selectedDay);
 	}});
-	setFrameSize();
+	var date = new Date();
+	loadSubjectList(date.getFullYear(), date.getMonth() + 1, date.getDate());
+	setLayoutSize();
 	window.onresize = function () {
-		setFrameSize();
+		setLayoutSize();
 	};
+	$("#topshrinkline").click(function () {
+		$("#banner").toggle();
+		setLayoutSize();
+	});
+	$("#shrinkline").click(function () {
+		$("#menuarea").toggle();
+		setLayoutSize();
+	});
+	$("#shrinkline").click();
 });
-function setFrameSize() {
-	var docwidth = $(document).width();
-	var docheight = $(document).height();
+function setLayoutSize() {
 	var leftwidth = $("#menuarea").width();
-	var currentWidth = docwidth - leftwidth - 10;
+	if (!$("#menuarea").is(":visible")) {
+		leftwidth = 0;
+	}
+	var bannerHeight = $("#banner").height();
+	if (!$("#banner").is(":visible")) {
+		bannerHeight = 0;
+	}
+	var shrinklineWidth = $("#shrinkline").width();
+	var currentWidth = $(window).width() - leftwidth - shrinklineWidth - 3;
+	var currentHeight = $(window).height() - bannerHeight - $("#topshrinkline").height();
+	$("#shrinkline").css("height", currentHeight + "px");
 	$("#viewSubject").css("width", currentWidth + "px");
-	$("#viewframe").css("width", currentWidth + "px");
-	$("#viewframe").css("height", (docheight - 150) + "px");
+	$("#viewarea").css("width", currentWidth + "px");
+	var containerHeight = $(window).height() - bannerHeight - $("#topshrinkline").height() - $("#listHeader").height() - 3;
+	$("#viewcontainer").css("height", containerHeight + "px");
 }
 function loadSubjectList(year, month, day) {
 	var prefix = year + "/" + month + "/" + day + "/";
@@ -24,26 +45,61 @@ function loadSubjectList(year, month, day) {
 		var items = $(xml).find("list>item");
 		var titlelist = $("#titlelist");
 		titlelist.html("");
-		$(items).each(function () {
-			var item = $(this);
-			var subject = item.find("subject").text();
-			var fileName = item.find("path").text();
-			var li = $("<li></li>").appendTo(titlelist);
-			var a = $("<a href=\"#\"></a>").appendTo(li);
-			a.click(function () {
-				loadArtile(prefix + fileName, subject);
+		if (!items || items.length == 0) {
+			noArticleNotice(year + "/" + month + "/" + day);
+		} else {
+			$("#outputmsg").html("");
+			$(items).each(function () {
+				var item = $(this);
+				var subject = item.find("subject").text();
+				var fileName = item.find("path").text();
+				var li = $("<li></li>").appendTo(titlelist);
+				var a = $("<a href=\"#\"></a>").appendTo(li);
+				a.click(function () {
+					var frame = li.find("iframe");
+					if (frame.exists()) {
+						frame.remove();
+					} else {
+						loadArtile(prefix + fileName, subject, li);
+					}
+				});
+				a.text(subject);
 			});
-			a.text(subject);
-		});
+		}
+	};
+	var errorHandler = function (xhr, ajaxOptions, thrownError) {
+		if (xhr.status == "404") {
+			noArticleNotice(year + "/" + month + "/" + day);
+		}
 	};
 	try {
-		jtool.get(url, handler, null, true, "xml");
+		jtool.get(url, null, true, "xml", handler, errorHandler);
 	}
 	catch (e) {
+		alert(e);
 	}
 }
-function loadArtile(url, subject) {
-	$("#viewSubject").text(subject);
-	$("#viewframe").attr("src", url);
+function loadArtile(url, subject, li) {
+	var frame = $("<iframe></iframe>").css("border", "0").css("width", "100%");
+	frame.css("overflow", "hidden");
+	frame.css("height", "1px");
+	var f = frame[0];
+	f.onload = function () {
+		var height;
+		if (f.contentDocument) {
+			height = f.contentDocument.body.offsetHeight + 20;
+		} else {
+			height = f.contentWindow.document.body.scrollHeight;
+		}
+		frame.css("height", height + "px");
+	};
+	frame.attr("src", url).appendTo(li);
+}
+function noArticleNotice(date) {
+	if (CURRENT_LANG == "en") {
+		$("#outputmsg").html("No article at " + date + "!");
+	} else {
+		$("#outputmsg").html(date + "\u6ca1\u6709\u6587\u7ae0!");
+	}
 }
 

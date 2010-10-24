@@ -1,11 +1,26 @@
+body{overflow:hidden;}
+div{text-align:left;vertical-align:top;}
 a{text-decoration:none;}
-#banner{border-bottom:1px solid lightblue;}
-#menuarea{border-right:1px solid lightblue;width:250px;display:inline-block; clear:right; float:left;}
-#viewarea{display:inline-block;}
-ul.inlinelayout{display:inline;}
-ul.inlinelayout>li{float:left;}
+ul.inlinelayout{list-style:none;}
+ul.inlinelayout>li{float:left;display:inline-block;}
 
-#viewSubject{padding:2px;font-size:24px;font-weight:bold;border-bottom:1px dashed lightblue;}
+#copyright{text-align:center;padding:2px;border-bottom:1px solid lightblue;}
+#banner{border-bottom:1px solid lightblue;}
+#menuarea{border-right:1px solid lightblue;width:250px;display:none;}
+#viewarea{}
+
+#shrinkline{width:10px;background:#EBEFF9;cursor:pointer;}
+#shrinkline:hover{background:#C2CFF1;}
+#topshrinkline{height:8px;background:#EBEFF9;cursor:pointer;}
+#topshrinkline:hover{background:#C2CFF1;}
+
+#viewcontainer{overflow-y:scroll;}
+#outputmsg{background:#F7B64A;color:red;position:absolute;left:300px;}
+#lang{float:right;}
+#viewSubject{padding:2px;font-size:24px;height:30px;font-weight:bold;border-bottom:1px solid lightblue; clear:both;}
 ul.textlist{}
-ul.textlist>li{margin-left:2px;padding:2px;border-bottom:1px solid lightblue;}
+ul.textlist>li{padding:2px;border-bottom:1px dashed lightblue;color: #339;}
+ul.textlist>li:before{content: "\00BB\0020";}
+
+h1.title{background:#C2CFF1;padding:2px;}
 
