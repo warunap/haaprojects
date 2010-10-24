@@ -83,16 +83,16 @@ function loadArtile(url, subject, li) {
 	var frame = $("<iframe></iframe>").css("border", "0").css("width", "100%");
 	frame.css("overflow", "hidden");
 	frame.css("height", "1px");
-	var f = frame[0];
-	f.onload = function () {
+	frame.css("padding", "0");
+	frame.load(function () {
 		var height;
-		if (f.contentDocument) {
-			height = f.contentDocument.body.offsetHeight + 20;
+		if (this.contentDocument) {
+			height = $(this.contentDocument).height() + 10;
 		} else {
-			height = f.contentWindow.document.body.scrollHeight;
+			height = $(this.contentWindow).height() + 10;
 		}
 		frame.css("height", height + "px");
-	};
+	});
 	frame.attr("src", url).appendTo(li);
 }
 function noArticleNotice(date) {
