@@ -1,5 +1,7 @@
 
-var CURRENT_LANG = "zh";
+if (!CURRENT_LANG) {
+	CURRENT_LANG = "zh";
+}
 $(document).ready(function () {
 	$("#datepicker").datepicker({onSelect:function (dateText, inst) {
 		loadSubjectList(inst.selectedYear, inst.selectedMonth + 1, inst.selectedDay);

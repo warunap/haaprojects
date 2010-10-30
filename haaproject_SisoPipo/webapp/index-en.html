@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE HTML>
 <html lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -7,14 +7,6 @@
 		<meta name="description" content="Information Reading Guide">
 		<meta name="keywords" content="sisopipo siso pipo Information Reading Guide">
 		<meta name="language" content="en">
-		<link rel="stylesheet" type="text/css" href="css/reset.css" />
-		<link rel="stylesheet" type="text/css" href="css/ui-lightness/jquery-ui-1.8.5.custom.css" />
-		<link rel="stylesheet" type="text/css" href="css/common.css" />
-		<script type="text/javascript" src="js/jquery.js"></script>
-		<script type="text/javascript" src="js/jquery-ui.js"></script>
-		<script type="text/javascript" src="js/jtool.js"></script>
-		<script type="text/javascript" src="js/sisopipo.js"></script>
-		<script type="text/javascript">CURRENT_LANG="en";</script>
 		<title>SisoPipo >> Information Reading Guide</title>
 	</head>
 	<body>
@@ -45,10 +37,31 @@
 				</h1>
 				<div id="viewcontainer">
 					<ul id="titlelist" class="textlist">
-
 					</ul>
 				</div>
 			</li>
 		</ul>
 	</body>
 </html>
+<script type="text/javascript">
+	CURRENT_LANG="en";
+	function l(u){
+		for(var i in u){
+			var link   = document.createElement("link");
+	        link.type  = "text/css";
+	        link.rel="stylesheet";
+	        link.href   = u[i];
+	        document.body.appendChild(link);
+        }
+	}
+	l(["css/reset.css","css/ui-lightness/jquery-ui-1.8.5.custom.css","css/common.css"]);
+	function s(u){
+		for(var i in u){
+			var script   = document.createElement("script");
+	        script.type  = "text/javascript";
+	        script.src   = u[i];
+	        document.body.appendChild(script);
+        }
+	}
+	s(["js/jquery.js","js/jquery-ui.js","js/jtool.js","js/sisopipo.js"]);
+</script>
