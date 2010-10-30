@@ -12,6 +12,10 @@ $(document).ready(function () {
 	window.onresize = function () {
 		setLayoutSize();
 	};
+	window.finished = function () {
+		return true;
+	};
+	v();
 	$("#topshrinkline").click(function () {
 		$("#banner").toggle();
 		setLayoutSize();
@@ -57,6 +61,7 @@ function loadSubjectList(year, month, day) {
 				var fileName = item.find("path").text();
 				var li = $("<li></li>").appendTo(titlelist);
 				var a = $("<a href=\"#\"></a>").appendTo(li);
+				a.text(subject);
 				a.click(function () {
 					var frame = li.find("iframe");
 					if (frame.exists()) {
@@ -65,7 +70,6 @@ function loadSubjectList(year, month, day) {
 						loadArtile(prefix + fileName, subject, li);
 					}
 				});
-				a.text(subject);
 			});
 		}
 	};
@@ -102,6 +106,13 @@ function noArticleNotice(date) {
 		$("#outputmsg").html("No article at " + date + "!");
 	} else {
 		$("#outputmsg").html(date + "\u6ca1\u6709\u6587\u7ae0!");
+	}
+}
+function slownote() {
+	if (CURRENT_LANG == "en") {
+		$("#outputmsg").html("Detecting your internet speed is slow!");
+	} else {
+		$("#outputmsg").html("\u68c0\u67e5\u53d1\u73b0\u4f60\u7684\u7f51\u901f\u5f88\u6162!");
 	}
 }
 

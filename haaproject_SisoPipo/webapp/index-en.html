@@ -10,37 +10,44 @@
 		<title>SisoPipo >> Information Reading Guide</title>
 	</head>
 	<body>
-		<font id="outputmsg"></font>
-		<div id="banner">
-			<a href="#"><img src="images/logo.gif" border="0" /> </a>
-			<font>Information Reading Guide</font>
-			<font id="lang">English <a href="index.html">中文</a> </font>
+		<div id="loading">
+			<H1>
+				Loading ...
+			</H1>
 		</div>
-		<div id="topshrinkline">
-			&nbsp;
-		</div>
-		<ul class="inlinelayout">
-			<li class="left" id="menuarea">
-				<div id="datepicker">
-				</div>
-
-				<div id="copyright">
-					&copy;2010 SisoPipo
-				</div>
-			</li>
-			<li class="mid" id="shrinkline">
+		<div id="container" style="display: none;">
+			<font id="outputmsg"></font>
+			<div id="banner">
+				<a href="#"><img src="images/logo.gif" border="0" /> </a>
+				<font>Information Reading Guide</font>
+				<font id="lang">English <a href="index.html">中文</a> </font>
+			</div>
+			<div id="topshrinkline">
 				&nbsp;
-			</li>
-			<li class="right" id="viewarea">
-				<h1 class="title" id="listHeader">
-					Article List
-				</h1>
-				<div id="viewcontainer">
-					<ul id="titlelist" class="textlist">
-					</ul>
-				</div>
-			</li>
-		</ul>
+			</div>
+			<ul class="inlinelayout">
+				<li class="left" id="menuarea">
+					<div id="datepicker">
+					</div>
+
+					<div id="copyright">
+						&copy;2010 SisoPipo
+					</div>
+				</li>
+				<li class="mid" id="shrinkline">
+					&nbsp;
+				</li>
+				<li class="right" id="viewarea">
+					<h1 class="title" id="listHeader">
+						Article List
+					</h1>
+					<div id="viewcontainer">
+						<ul id="titlelist" class="textlist">
+						</ul>
+					</div>
+				</li>
+			</ul>
+		</div>
 	</body>
 </html>
 <script type="text/javascript">
@@ -64,4 +71,20 @@
         }
 	}
 	s(["js/jquery.js","js/jquery-ui.js","js/jtool.js","js/sisopipo.js"]);
+	var times = 0;
+	function v() {
+		if (window.finished || times++ > 10) {
+			var loading = document.getElementById("loading");
+			if (loading) {
+				document.body.removeChild(loading);
+			}
+			document.getElementById("container").style.display = "";
+			if (times > 10) {
+				slownote();
+			}
+		} else {
+			setTimeout("v()", 1000);
+		}
+	}
+	setTimeout("v()", 1000);
 </script>
