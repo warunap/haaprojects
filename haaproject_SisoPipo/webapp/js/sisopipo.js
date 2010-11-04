@@ -45,6 +45,12 @@ function setLayoutSize() {
 	$("#viewcontainer").css("height", containerHeight + "px");
 }
 function loadSubjectList(year, month, day) {
+	if (month < 10) {
+		month = "0" + month;
+	}
+	if (day < 10) {
+		day = "0" + day;
+	}
 	var prefix = year + "/" + month + "/" + day + "/";
 	var url = prefix + "list.xml";
 	var handler = function (xml) {
