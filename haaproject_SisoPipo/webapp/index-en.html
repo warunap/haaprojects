@@ -7,6 +7,7 @@
 		<meta name="description" content="Information Reading Guide">
 		<meta name="keywords" content="sisopipo siso pipo Information Reading Guide">
 		<meta name="language" content="en">
+		<script type="text/javascript" src="js/init.js"></script>
 		<title>SisoPipo >> Information Reading Guide</title>
 	</head>
 	<body>
@@ -18,7 +19,7 @@
 		<div id="container" style="display: none;">
 			<font id="outputmsg"></font>
 			<div id="banner">
-				<a href="#"><img src="images/logo.gif" border="0" /> </a>
+				<a href="#"><img src="images/logo.gif" height="25" border="0" /> </a>
 				<font>Information Reading Guide</font>
 				<font id="lang">English <a href="index.html">中文</a> </font>
 			</div>
@@ -38,9 +39,10 @@
 					&nbsp;
 				</li>
 				<li class="right" id="viewarea">
-					<h1 class="title" id="listHeader">
-						Article List
-					</h1>
+					<div id="listHeader">
+						<font class="title"><font id="todaydate"></font> Article List </font> >>
+						<font id="tags" class="tags"> </font>
+					</div>
 					<div id="viewcontainer">
 						<ul id="titlelist" class="textlist">
 						</ul>
@@ -52,25 +54,8 @@
 </html>
 <script type="text/javascript">
 	CURRENT_LANG="en";
-	function l(u){
-		for(var i in u){
-			var link   = document.createElement("link");
-	        link.type  = "text/css";
-	        link.rel="stylesheet";
-	        link.href   = u[i];
-	        document.body.appendChild(link);
-        }
-	}
-	l(["css/reset.css","css/ui-lightness/jquery-ui-1.8.5.custom.css","css/common.css"]);
-	function s(u){
-		for(var i in u){
-			var script   = document.createElement("script");
-	        script.type  = "text/javascript";
-	        script.src   = u[i];
-	        document.body.appendChild(script);
-        }
-	}
-	s(["js/jquery.js","js/jquery-ui.js","js/jtool.js","js/sisopipo.js"]);
+	link(["css/reset.css","css/ui-lightness/jquery-ui-1.8.5.custom.css","css/common.css"]);
+	script(["js/jquery.js","js/jquery-ui.js","js/jtool.js","js/sisopipo.js"]);
 	var times = 0;
 	function v() {
 		if (window.finished || times++ > 10) {

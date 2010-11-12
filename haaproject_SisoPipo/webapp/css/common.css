@@ -1,4 +1,4 @@
-body{overflow:hidden;}
+body{overflow:hidden;font-size:14px;}
 div{text-align:left;vertical-align:top;}
 a{text-decoration:none;}
 ul.inlinelayout{list-style:none;}
@@ -18,9 +18,17 @@ ul.inlinelayout>li{float:left;display:inline-block;}
 #outputmsg{background:#F7B64A;color:red;position:absolute;left:300px;}
 #lang{float:right;}
 #viewSubject{padding:2px;font-size:24px;height:30px;font-weight:bold;border-bottom:1px solid lightblue; clear:both;}
+
+#listHeader{background:#C2CFF1;}
+#tags{display:inline;}
+.tags{}
+.tags>a{margin:0;padding:0 5px 0 5px; display:inline-table;background:#C2CFF1; cursor:pointer;}
+.tags>a:hover{background:#EBEFF9;}
+.tags .selected{background:#EBEFF9;}
+
 ul.textlist{}
 ul.textlist>li{padding:2px;border-bottom:1px dashed lightblue;color: #339;}
 ul.textlist>li:before{content: "\00BB\0020";}
 
-h1.title{background:#C2CFF1;padding:2px;}
+.title{padding:2px;}
 

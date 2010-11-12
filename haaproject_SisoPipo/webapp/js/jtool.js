@@ -1,7 +1,20 @@
 
+/*---------------------------------------
+Whether or not a Jquery object exists
+---------------------------------------*/
 jQuery.fn.exists = function () {
 	return jQuery(this).length > 0;
 };
+/*---------------------------------------
+Whether a Jquery ojbect has a attribute and its lower case value equals to "true".
+---------------------------------------*/
+jQuery.fn.attrTrue = function (attr) {
+	var v = jQuery(this).attr(attr);
+	return v && v.toLowerCase() == "true";
+};
+/*---------------------------------------
+jtool Ojbect initialization.
+---------------------------------------*/
 (function () {
 	var jtool = window.jtool = {init:function (obj) {
 		this.obj = obj;
