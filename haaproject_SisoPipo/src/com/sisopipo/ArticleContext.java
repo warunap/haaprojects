@@ -42,6 +42,8 @@ public class ArticleContext {
 
 	private static ArticleFactory articleFactory;
 
+	private static boolean editorLimited = false;
+
 	static {
 		intial();
 	}
@@ -54,6 +56,10 @@ public class ArticleContext {
 			if (interv != null)
 				interval = Integer.parseInt(interv);
 
+			String limited = getConfig("publisher.editor.limited");
+			if (limited != null) {
+				editorLimited = Boolean.valueOf(limited);
+			}
 			String editors = getConfig("publisher.editor.list");
 			if (editors != null) {
 				String[] arr = editors.split("#");
@@ -119,6 +125,14 @@ public class ArticleContext {
 
 	public static ArticleFactory getArticleFactory() {
 		return articleFactory;
+	}
+
+	public static boolean editorLimited() {
+		return editorLimited;
+	}
+
+	public static boolean isAuthenticateEditor(String editor) {
+		return allowedEditors.contains(editor);
 	}
 
 }

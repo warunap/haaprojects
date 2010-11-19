@@ -35,18 +35,16 @@ public abstract class AbstractArticlePublisher implements ArticlePublisher {
 		for (Article article : articles) {
 			logger.debug("get article:" + article.getSubject());
 			String editor = article.getEditor();
-			boolean isAdmin = editor.equals(ArticleContext.getAdministrator());
-			if (!isAdmin) {
-				if (!ArticleContext.getAllowedEditors().contains(editor)) {
-					logger.error("Not allowed user " + editor);
-					continue;
-				}
-			}
 
 			if (article.toRemove())
 				removeArticles.add(article);
-			else {
-				addArticles.add(article);
+
+			if (article.toAdd()) {
+				if (!ArticleContext.editorLimited() || editor.equals(ArticleContext.getAdministrator()) || ArticleContext.isAuthenticateEditor(editor))
+					addArticles.add(article);
+				else {
+					logger.error("Not allowed publish!" + article.getEditor() + "," + article.getSubject());
+				}
 			}
 		}
 		/* remove articles */
