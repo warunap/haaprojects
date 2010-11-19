@@ -9,6 +9,9 @@
  */
 package com.sisopipo.content;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -22,9 +25,14 @@ import org.dom4j.Element;
 import org.dom4j.Text;
 import org.dom4j.dom.DOMElement;
 import org.dom4j.dom.DOMText;
+import c4j.encode.Encoder;
+import c4j.freemarker.FreemarkerUtil;
+import c4j.net.HTMLUtil;
 import c4j.xml.XmlUtil;
 import com.sisopipo.ArticleContext;
 import com.sisopipo.exception.OperatonException;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 /**
  * @author Geln Yang
@@ -35,11 +43,40 @@ public class ArticleUtil {
 
 	private static final String DEFAULT_DATE_FORMAT = "yyyy/MM/dd HH:mm:ss";
 
+	private static Template htmlHeadTemplate;
+
+	private static Template analysisTemplate;
+	static {
+		try {
+			htmlHeadTemplate = FreemarkerUtil.loadTemplate("/template/html_header.ftl");
+			analysisTemplate = FreemarkerUtil.loadTemplate("/template/google_analysis.ftl");
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 	public static String createListFileContent() {
 		String s = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 		s += "<list>";
 		s += "</list>";
 		return s;
+	}
+
+	public static String formatHTMLContent(String content, String subject, String editor) throws IOException, TemplateException {
+		content = Encoder.encode(content);
+		String result = HTMLUtil.getTagContent(content, "body");
+		if (result == null)
+			result = content;
+		Map<String, String> rootMap = new HashMap<String, String>();
+		rootMap.put("description", subject);
+		rootMap.put("keywords", subject);
+		rootMap.put("editor", editor);
+		rootMap.put("title", subject);
+		Writer header = new StringWriter();
+		Writer analysis = new StringWriter();
+		htmlHeadTemplate.process(rootMap, header);
+		analysisTemplate.process(rootMap, analysis);
+		return header.toString() + "<body>" + result + "</body></html>" + analysis.toString();
 	}
 
 	public static Document createListDocument() throws DocumentException {
@@ -114,7 +151,6 @@ public class ArticleUtil {
 		String xpath = "//ns:list/ns:item/ns:subject[text()='" + subject + "']";
 		List<Element> nodes = XmlUtil.parseNodes(xpath, root, xmlns);
 
-		Element targetElement = null;
 		if (nodes != null && nodes.size() > 0) {
 			return nodes.get(0).getParent();
 		}
@@ -122,6 +158,7 @@ public class ArticleUtil {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static Article parse(Element artileElementItem) throws ParseException {
 		Article article = new Article();
 		List content = artileElementItem.content();

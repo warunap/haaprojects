@@ -23,6 +23,7 @@ import c4j.mail.MailSessionUtil;
 import c4j.mail.MailReceiver.MailMessage;
 import c4j.string.StringUtil;
 import com.sisopipo.content.Article;
+import com.sisopipo.content.ArticleUtil;
 import com.sisopipo.factory.ArticleFactory;
 
 /**
@@ -51,6 +52,8 @@ public class EmailAritcleFactory implements ArticleFactory {
 			String editor = mailMessage.getFromMail();
 			String content = mailMessage.getBodyText();
 			Date sentDate = mailMessage.getSendDate();
+
+
 			String tags = CATEGORY_DEFAULT;
 
 			logger.info("New Article:" + subject);
@@ -94,6 +97,9 @@ public class EmailAritcleFactory implements ArticleFactory {
 
 			article.setDate(sentDate);
 			article.setEditor(editor);
+
+			content = ArticleUtil.formatHTMLContent(content, subject, editor);
+			
 			article.setContent(content);
 			article.setSubject(subject);
 			article.setTags(tags);
@@ -102,16 +108,6 @@ public class EmailAritcleFactory implements ArticleFactory {
 		}
 		receiver.close();
 		return articles;
-	}
-
-	public static void main(String[] args) throws Exception {
-		List<Article> articles = new EmailAritcleFactory().generete();
-		for (Article article : articles) {
-			System.out.println(article.getSubject());
-			System.out.println(article.getDate());
-			System.out.println(article.getTags());
-		}
-		System.out.println("over");
 	}
 
 }

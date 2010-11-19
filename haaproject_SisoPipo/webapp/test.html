@@ -1,0 +1,24 @@
+<html>
+	<head>
+		<title>test</title>
+		<script type="text/javascript" src="js/init.js"></script>
+	</head>
+	<body>
+		<center>
+			<h1>
+				test
+			</h1>
+		</center>
+		<script type="text/javascript">
+		var map = new Map();
+		map.put("a",1);
+		map.put("b",2);
+		map.put("b",3);
+		map.put("a",44);
+		alert(map.size());
+		for (var key in map.iterate()){
+			alert(key+"="+map.get(key));
+		}
+		</script>
+	</body>
+</html>
