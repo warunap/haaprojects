@@ -12,10 +12,10 @@ loadModuleCSS('css/rssreader.css');
 loadGlobalJs('js/jtool.js');
 loadModuleJS('js/rssreader.js');
 $db = connectDB();
-print("<div>");
-print("<h3>选择阅读</h3>");
-print("<hr/>");
-print("<ul>");
+print('<div><img src="../images/rssreader.jpg" class="icon" border="0" />');
+print('<h3>选择阅读</h3>');
+print('<hr/>');
+print('<ul>');
 foreach($db->query('SELECT * from ' . RSS_LINK_TABLE) as $row) {
 	print('<li>');
 	print('[' . $row['tags'] . ']<a href="#" onclick="javascript:readrss(\'' . $row['rlink'] . '\')" >' .  $row['rtitle'] . '</a>');

@@ -3,7 +3,7 @@ div{text-align:left;vertical-align:top;}
 a{text-decoration:none;color:blue;}
 ul.inlinelayout{list-style:none;}
 ul.inlinelayout>li{float:left;display:inline-block;}
-
+.icon{height:30px;}
 #copyright{text-align:center;padding:2px;border-bottom:1px solid lightblue;}
 #banner{border-bottom:1px solid lightblue;}
 #menuarea{border-right:1px solid lightblue;width:350px;display:none;}
