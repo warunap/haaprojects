@@ -7,7 +7,7 @@
 var times = 0;
 var FINISHED_LOAD_RSS = false;
 var NOT_BEGIN_LOAD = true;
-var loadFontSize=24;
+var loadFontSize = 24;
 function v() {
 	var loading = document.getElementById("loading");
 	if ($ && jtool && NOT_BEGIN_LOAD) {
@@ -27,8 +27,8 @@ function v() {
 		if (loading) {
 			var text = loading.innerHTML;
 			loading.innerHTML = text + ".";
-			loading.style.fontSize=loadFontSize+"px";
-			loadFontSize+=5;
+			loading.style.fontSize = loadFontSize + "px";
+			loadFontSize += 5;
 		}
 		setTimeout("v()", 1000);
 	}
@@ -83,6 +83,9 @@ function loadRSS() {
 				});
 
 			});
+
+			titileListContainer.find("li>a:first").click();
+
 		}
 	};
 	var errorHandler = function(xhr, ajaxOptions, thrownError) {

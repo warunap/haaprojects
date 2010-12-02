@@ -2,7 +2,7 @@
 /** ===============================================
  * 2010&copy;SisoPipo.com
  * Website Project
- * 
+ *
  * @author Geln Yang
  * @version 1.0
  ==================================================== */
@@ -13,7 +13,7 @@ function showRSS(){
 	$db = connectDB();
 	foreach($db->query('SELECT * from ' . RSS_LINK_TABLE) as $row) {
 		print($row[0] . ','. $row[1] . ',' .$row[2]);
-		print '<br/>';
+		print ('<br/>');
 	}
 }
 

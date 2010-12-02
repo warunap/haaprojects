@@ -6,9 +6,11 @@
  * @author Geln Yang
  * @version 1.0
  ==================================================== */
-$link=$_POST["link"];
 header('Content-type:text/xml; charset=UTF-8');
+$link=$_REQUEST["link"];
+
 if($link!=null){
+	$link = urldecode($link);
 	$xmlDoc = new DOMDocument();
 	$xmlDoc->load($link);
 	$channel=$xmlDoc->getElementsByTagName('channel')->item(0);
