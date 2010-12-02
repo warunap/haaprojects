@@ -1,4 +1,11 @@
 <?php
+/** ===============================================
+ * 2010&copy;SisoPipo.com
+ * Website Project
+ * 
+ * @author Geln Yang
+ * @version 1.0
+ ==================================================== */
 define('DB_USER','root');
 define('DB_PASS','password');
 define('DB_HOST','localhost');

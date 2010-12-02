@@ -95,7 +95,7 @@ jtool Ojbect initialization.
 				return;
 			}
 		}
-		$.ajax({url:targetUrl, type:"GET", data:(params), dataType:dataType, success:function (content) {
+		$.ajax({url:targetUrl, type:"POST", data:(params), dataType:dataType, success:function (content) {
 			handler(content);
 			if (toCache) {
 				jtool.ajaxcache[url] = content;

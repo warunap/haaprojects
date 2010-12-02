@@ -1,4 +1,8 @@
 <?php
+/** ===============================================
+ * 2010&copy;SisoPipo.com
+ * Website Project
+ ==================================================== */
 
 /** -------------------------
  Initial abstract path
@@ -47,36 +51,65 @@ function startPage($title){
  * load base js libaray
  ----------------------------*/
 function initJSLibrary(){
-	loadGlobalJs('js/init.js');
+	print '<script type="text/javascript" src="' . BASEURL . 'js/init.js' . '"></script>';
+	print '<script type="text/javascript" src="' . BASEURL . 'js/jquery.js' . '"></script>';
 }
-function loadGlobalJs($jsabspath){
-	print '<script type="text/javascript" src="' . BASEURL . $jsabspath . '"></script>';
-}
-function loadJS($jspath){
+function loadModuleJS($jspath){
 	$pathInfo = pathinfo($_SERVER['PHP_SELF']);
 	$path=	$pathInfo['dirname'] . '/';
-	lazyLoadJs(substr($path,1) . $jspath);
+	loadGlobalJs(substr($path,1) . $jspath);
 }
-function lazyLoadJs($jsabspath){
-	print '<script type="text/javascript">script(["' . BASEURL . $jsabspath . '"]);</script>';
+function loadGlobalJs($jsabspath){
+	if(is_array($jsabspath)){
+		print '<script type="text/javascript">script([';
+		$last_item = end($jsabspath);
+		$last_value=$last_item['value'];
+		foreach ($jsabspath as $path){
+			print '"' . BASEURL . $path . '"';
+			if($path!=$last_value){
+				print ',';
+			}
+		}
+		print ']);</script>';
+	}else{
+		print '<script type="text/javascript">script(["' . BASEURL . $jsabspath . '"]);</script>';
+	}
+}
+function currentURLDir(){
+	$pathInfo = pathinfo($_SERVER['PHP_SELF']);
+	$path=	$pathInfo['dirname'] . '/';
+	return BASEURL . substr($path,1);
 }
 /** -----------------------------
  * load CSS libaray
  ----------------------------*/
 function initCSS(){
-	loadGlobalCSS('css/reset.css');
-	loadGlobalCSS('css/common.css');
+	addCSS('css/reset.css');
+	addCSS('css/common.css');
 }
-function loadGlobalCSS($csspath){
+function addCSS($csspath){
 	print '<link type="text/css" rel="stylesheet" href="' . BASEURL . $csspath . '" >';
 }
-function loadCSS($csspath){
+function loadModuleCSS($csspath){
 	$pathInfo = pathinfo($_SERVER['PHP_SELF']);
 	$path=	$pathInfo['dirname'] . '/';
-	lazyLoadCSS(substr($path,1) . $csspath);
+	loadGlobalCSS(substr($path,1) . $csspath);
 }
-function lazyLoadCSS($csspath){
-	print '<script type="text/javascript">link(["' . BASEURL . $csspath . '"]);</script>';
+function loadGlobalCSS($csspath){
+	if(is_array($csspath)){
+		print '<script type="text/javascript">link([';
+		$last_item = end($csspath);
+		$last_value=$last_item['value'];
+		foreach ($csspath as $path){
+			print '"' . BASEURL . $path . '"';
+			if($path!=$last_value){
+				print ',';
+			}
+		}
+		print ']);</script>';
+	}else{
+		print '<script type="text/javascript">link(["' . BASEURL . $csspath . '"]);</script>';
+	}
 }
 /** -----------------------------
  * set page content type and charset

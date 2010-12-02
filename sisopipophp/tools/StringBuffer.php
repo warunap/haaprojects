@@ -1,4 +1,11 @@
 <?php
+/** ===============================================
+ * 2010&copy;SisoPipo.com
+ * Website Project
+ * 
+ * @author Geln Yang
+ * @version 1.0
+ ==================================================== */
 /**
  * @author Sourcemaker Development
  * @package org.sourcemaker.util
