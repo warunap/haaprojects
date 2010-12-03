@@ -59,6 +59,7 @@ function initialPage() {
  ----------------------------------------*/
 function loadRSS() {
 	var handler = function(xml) {
+		FINISHED_LOAD_RSS = true;
 		var rss_title = $(xml).find("rss>channel>title").text();
 		rss_title = rss_title.replace(/^\[CDATA\[/, '').replace(/\]\]$/, '');
 		$("#rsstitle").text(rss_title);

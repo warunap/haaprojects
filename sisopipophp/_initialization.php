@@ -15,12 +15,13 @@ if ( !defined('ABSPATH') ){
  ----------------------------*/
 if (!defined('BASEURL')){
 	$port=$_SERVER['SERVER_PORT'];
-	$url='http://' . $_SERVER['SERVER_ADDR'];
+	$url='http://' . $_SERVER['HTTP_HOST'];
 	if($port!='80')	{
 		$url.= ':'.$port;
 	}
 	define('BASEURL',$url . '/');
 }
+
 /** -----------------------------
  * Load website configuration
  ----------------------------*/

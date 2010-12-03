@@ -41,7 +41,7 @@ function addRSS($link, $tags){
 
 	try {
 		$db = connectDB();
-		$sql="insert into ' . RSS_LINK_TABLE . '(rlink,rtitle,tags) values('" .$link ."','" . $channel_title ."','" . $tags ."')";
+		$sql='insert into ' . RSS_LINK_TABLE . '(rlink,rtitle,tags) values(\'' .$link .'\',\'' . $channel_title .'\',\'' . $tags .'\')';
 		$count = $db->exec($sql);
 		print $sql;
 		print  "<br/>";
