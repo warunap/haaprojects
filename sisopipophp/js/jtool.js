@@ -1,31 +1,42 @@
 /*
- * @version 1.0
+ * @version 1.1
  * @date:2010/10/01
  * @author:Geln Yang
  */
-
-/*---------------------------------------
-Whether or not a Jquery object exists
----------------------------------------*/
-jQuery.fn.exists = function () {
-	return jQuery(this).length > 0;
-};
-/*---------------------------------------
-Whether a Jquery ojbect has a attribute and its lower case value equals to "true".
----------------------------------------*/
-jQuery.fn.attrTrue = function (attr) {
-	var v = jQuery(this).attr(attr);
-	return v && v.toLowerCase() == "true";
-};
-/*---------------------------------------
-jtool Ojbect initialization.
----------------------------------------*/
 (function () {
-	var jtool = window.jtool = {init:function (obj) {
+	/*---------------------------------------
+	Whether or not a Jquery object exists
+	---------------------------------------*/
+	jQuery.fn.exists = function () {
+		return jQuery(this).length > 0;
+	};
+	/*---------------------------------------
+	Whether a Jquery ojbect has a attribute and its lower case value equals to "true".
+	---------------------------------------*/
+	jQuery.fn.attrTrue = function (attr) {
+		var v = jQuery(this).attr(attr);
+		return v && v.toLowerCase() == "true";
+	};
+	/*---------------------------------------
+	jtool Ojbect initialization.
+	---------------------------------------*/
+	var jtool = window.jtool = {
+	/*------------------
+	a test function
+	--------------------*/
+	init:function (obj) {
 		this.obj = obj;
-	}, test:function () {
+	}, 
+	/*------------------
+	a test funciton
+	--------------------*/
+	test:function () {
 		alert("calling a test method!");
-	}, addParam:function (key, value) {
+	}, 
+	/*------------------
+	add a prameter to the current page URL.
+	--------------------*/
+	addParam:function (key, value) {
 		key = escape(key);
 		value = escape(value);
 		var s = document.location.search;
@@ -36,7 +47,11 @@ jtool Ojbect initialization.
 			s += (s.length > 0 ? "&" : "?") + kvp;
 		}
 		document.location.search = s;
-	}, addUrlParam:function (sourceUrl, parameterName, parameterValue, replaceDuplicates) {
+	}, 
+	/*------------------
+	add a prameter to the target source URL.
+	--------------------*/
+	addUrlParam:function (sourceUrl, parameterName, parameterValue, replaceDuplicates) {
 		if ((sourceUrl == null) || (sourceUrl.length == 0)) {
 			sourceUrl = document.location.href;
 		}
@@ -63,24 +78,57 @@ jtool Ojbect initialization.
 		}
 		newQueryString += parameterName + "=" + parameterValue;
 		return urlParts[0] + newQueryString;
-	}, encodeURL:function (url) {
+	}, 
+	
+	/*------------------
+	encode url
+	--------------------*/
+	encodeURL:function (url) {
 		return encodeURI(encodeURI(url));
-	}, goto:function (url) {
+	},
+	/*------------------
+	Jump to the target URL.
+	--------------------*/
+	goto:function (url) {
 		window.location.href = jtool.encodeURL(url);
-	}, goInto:function (url) {
+	}, 
+	/*------------------
+	Jump to the target URL which will be added two parameters "urlfrom" and "urltext" into.
+	--------------------*/
+	goInto:function (url) {
 		url = jtool.formatURLReffer(url);
 		window.location.href = url;
-	}, formatURLReffer:function (targetURL) {
+	}, 
+
+	/*------------------
+	add two parameters "urlfrom" and "urltext" to the target URL.
+	--------------------*/
+	formatURLReffer:function (targetURL) {
 		var url = escape(document.location.href);
 		targetURL = jtool.addUrlParam(targetURL, "urlfrom", url);
 		var pagetitle = $($("title")[0]).text();
 		targetURL = jtool.addUrlParam(targetURL, "urltext", pagetitle);
 		return targetURL;
-	}, openPage:function (url) {
+	}, 
+
+	/*------------------
+	open a URL which will be encoded first.
+	--------------------*/
+	openPage:function (url) {
 		window.open(encodeURI(url));
-	}, open:function (url) {
+	}, 
+
+	/*------------------
+	open a URL which will be encoded first.The function is same as function "openPage".
+	--------------------*/
+	open:function (url) {
 		window.open(encodeURI(url));
-	}, get:function (targetUrl, params, toCache, dataType, handler, errorHandler) {
+	}, 
+
+	/*------------------
+	Get a URL content and handle it. The content can be cached in current page.
+	--------------------*/
+	get:function (targetUrl, params, toCache, dataType, handler, errorHandler) {
 		if (!dataType) {
 			dataType = "html";
 		}
@@ -103,7 +151,11 @@ jtool Ojbect initialization.
 		}, error:function (xhr, ajaxOptions, thrownError) {
 			errorHandler(xhr, ajaxOptions, thrownError);
 		}});
-	}, load:function (containerId, targetUrl, params, toCache) {
+	}, 
+	/*------------------
+	load a page content into the target DOM container.
+	--------------------*/
+	load:function (containerId, targetUrl, params, toCache) {
 		var container = $("#" + containerId);
 		if (container.exists()) {
 			if (toCache) {
@@ -120,15 +172,33 @@ jtool Ojbect initialization.
 				}
 			}});
 		}
-	}, addOption:function (selectObj, values) {
-		/*add a map into a select object*/
+	}, 
+
+	/*------------------
+	add a Option into a Select.
+	--------------------*/
+	addOption:function (selectObj, values) {
+		/* add a map into a select object */
 		$.each(values, function (key, value) {
 			$(selectObj).append($("<option></option>").attr("value", key).text(value));
 		});
-	}, page:{goto:function (pageno) {
-		var url = jtool.addUrlParam(null, "page.currentPage", pageno, true);
-		window.location.href = url;
-	}}, flashview:function (containerId) {
+	},
+	/*------------------
+	Page functions initialization
+	--------------------*/
+	page:{
+		/*------------------
+		change location href parameter "page.currentPage" then jump to the page.
+		--------------------*/
+		goto:function (pageno) {
+			var url = jtool.addUrlParam(null, "page.currentPage", pageno, true);
+			window.location.href = url;
+		}
+	},
+	/*------------------
+	create a flash view mode by fading in-out-in. 
+	--------------------*/
+	flashview:function (containerId) {
 		$(document).ready(function () {
 			var obj = $("#" + containerId);
 			obj.hide();
@@ -139,7 +209,19 @@ jtool Ojbect initialization.
 			});
 			obj.fadeIn(1000);
 		});
+	},
+	/*------------------
+	change all the link target value to "_blank" under the container .
+	--------------------*/
+	linkAll2Blank:function (container) {
+		var obj =$(container);
+		if(typeof(containerId)=="string"){
+			obj = $("#"+container);
+		}
+		 obj.find("a").each(function(){
+			 $(this).attr("target","_blank");
+		 });
 	}};
 	jtool.ajaxcache = {};
-})();
+})(jQuery);
 

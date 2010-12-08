@@ -33,7 +33,7 @@ if($link!=null)
 	print('<li class="mid" id="shrinkline">&nbsp;</li>');
 
 	print('<li class="right" id="viewarea">');
-	print('<div id="listHeader" class="title">文章阅读  >> </div>');
+	print('<div id="listHeader" class="title">文章阅读  >> <font id="articleTitle"></font> </div>');
 	print('<div id="viewcontainer">');
 	print('</div>');
 	print('</li>');
