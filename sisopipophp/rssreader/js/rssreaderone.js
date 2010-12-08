@@ -112,7 +112,7 @@ function loadRSS() {
 
 			});
 
-			setLayoutSize();
+			initialPage();
 		}
 	};
 	var errorHandler = function(xhr, ajaxOptions, thrownError) {

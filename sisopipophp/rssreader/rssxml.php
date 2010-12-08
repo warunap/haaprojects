@@ -6,7 +6,7 @@
  * @author Geln Yang
  * @version 1.0
  ==================================================== */
-header('Content-type:text/xml; charset=UTF-8');
+header('Content-type:text/xml');
 $link=$_REQUEST["link"];
 
 if($link!=null){
