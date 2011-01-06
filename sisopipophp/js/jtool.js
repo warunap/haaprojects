@@ -1,8 +1,8 @@
-/*
- * @version 1.1
- * @date:2010/10/01
- * @author:Geln Yang
- */
+/*---------------------------------------
+@version 1.1
+@date:2010/10/01
+@author:Geln Yang
+---------------------------------------*/
 (function () {
 	/*---------------------------------------
 	Whether or not a Jquery object exists
@@ -11,7 +11,7 @@
 		return jQuery(this).length > 0;
 	};
 	/*---------------------------------------
-	Whether a Jquery ojbect has a attribute and its lower case value equals to "true".
+	Whether a Jquery ojbect has a attribute and its lower case value equals to true
 	---------------------------------------*/
 	jQuery.fn.attrTrue = function (attr) {
 		var v = jQuery(this).attr(attr);
