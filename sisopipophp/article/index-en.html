@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="Pragma" content="cache">
+		<meta name="description" content="Information Reading Guide">
+		<meta name="keywords" content="sisopipo siso pipo Information Reading Guide">
+		<meta name="language" content="en">
+		<script type="text/javascript" src="js/init.js"></script>
+		<title>SisoPipo >> Information Reading Guide</title>
+	</head>
+	<body>
+		<div id="loading">
+			<H1>
+				Loading ...
+			</H1>
+		</div>
+		<div id="container" style="display: none;">
+			<font id="outputmsg"></font>
+			<div id="banner">
+				<a href="../index.html"><img src="images/logo.gif" height="25" border="0" /> </a>
+				<font>Information Reading Guide</font>
+				<font id="lang">English <a href="index.html">中文</a> </font>
+			</div>
+			<div id="topshrinkline">
+				&nbsp;
+			</div>
+			<ul class="inlinelayout">
+				<li class="left" id="menuarea">
+					<div id="datepicker">
+					</div>
+					<div>
+						<a href="how-to-publish-article.htm" target="_blank">Publish Article</a>
+					</div>
+					<div id="copyright">
+						&copy;2010 SisoPipo
+					</div>
+				</li>
+				<li class="mid" id="shrinkline">
+					&nbsp;
+				</li>
+				<li class="right" id="viewarea">
+					<div id="listHeader">
+						<font class="title"><font id="todaydate"></font> Article List </font> >>
+						<font id="tags" class="tags"> </font>
+					</div>
+					<div id="viewcontainer">
+						<ul id="titlelist" class="textlist">
+						</ul>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	CURRENT_LANG="en";
+	link(["css/reset.css","css/ui-lightness/jquery-ui-1.8.5.custom.css","css/common.css"]);
+	script(["js/jquery.js","js/jquery-ui.js","js/jtool.js","js/sisopipo.js"]);
+	var times = 0;
+	function v() {
+		if (window.finished || times++ > 10) {
+			var loading = document.getElementById("loading");
+			if (loading) {
+				document.body.removeChild(loading);
+			}
+			document.getElementById("container").style.display = "";
+			if (times > 10) {
+				slownote();
+			}
+		} else {
+			setTimeout("v()", 1000);
+		}
+	}
+	setTimeout("v()", 1000);
+</script>
+<script type="text/javascript">var _gaq=_gaq||[];_gaq.push(['_setAccount','UA-17986043-2']);_gaq.push(['_trackPageview']);_gaq.push(['_addOrganic','bing','q']);_gaq.push(['_addOrganic','baidu','word']);_gaq.push(['_addOrganic','soso','w']);_gaq.push(['_addOrganic','3721','name']);_gaq.push(['_addOrganic','yodao','q']);_gaq.push(['_addOrganic','vnet','kw']);_gaq.push(['_addOrganic','sogou','query']);_gaq.push(['_setDomainName','.sisopipo.com']);_gaq.push(['_setVar','article']);(function(){var ga=document.createElement('script');ga.type='text/javascript';ga.async=true;ga.src=('https:'==document.location.protocol?'https://ssl':'http://www')+'.google-analytics.com/ga.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(ga,s)})();</script>
