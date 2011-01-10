@@ -1,3 +1,4 @@
+
 /*============================================
  * 2010&copy;SisoPipo.com Website Project
  * 
@@ -38,14 +39,14 @@ function initialPage() {
 	if (loading) {
 		document.body.removeChild(loading);
 		document.getElementById("container").style.display = "";
-		window.onresize = function() {
+		window.onresize = function () {
 			setLayoutSize();
 		};
-		$("#topshrinkline").click(function() {
+		$("#topshrinkline").click(function () {
 			$("#banner").toggle();
 			setLayoutSize();
 		});
-		$("#shrinkline").click(function() {
+		$("#shrinkline").click(function () {
 			$("#menuarea").toggle();
 			setLayoutSize();
 		});
@@ -55,79 +56,90 @@ function initialPage() {
 	} else {
 		setLayoutSize();
 	}
-};
-
+}
 /*---------------------------------------
  Load RSS Link
  ----------------------------------------*/
 function loadRSS() {
-	var handler = function(xml) {
+	var handler = function (xml) {
 		FINISHED_LOAD_RSS = true;
-
 		var viewcontainer = $("#viewcontainer");
 		var articleTitle = $("#articleTitle");
-
 		var titileListContainer = $("#titileList").find("ul")[0];
 		titileListContainer = $(titileListContainer);
 		titileListContainer.html("");
-
 		var rss_title = $(xml).find("rss>channel>title").text();
-		rss_title = rss_title.replace(/^\[CDATA\[/, '').replace(/\]\]$/, '');
+		rss_title = rss_title.replace(/^\[CDATA\[/, "").replace(/\]\]$/, "");
 		$("#rsstitle").text(rss_title);
 		document.title = rss_title;
-
 		var articleList = $(xml).find("rss>channel>item");
 		if (!articleList || articleList.length == 0) {
 			alert("No article!");
 		} else {
 			var firstShowed = false;
-			$(articleList).each(function() {
+			$(articleList).each(function () {
 				var item = $(this);
 				var title = item.find("title").text();
-				// var link = item.find("link").text();
+				var link = item.find("link").text();
 				/*
 				 * the article content may contained in the tag "<content:encoded>"
 				 * for some RSS resource like WordPress Blog.
 				 */
 				var contentItem = item.find("content\\:encoded");
-				if (!contentItem.exists())
+				if (!contentItem.exists()) {
 					contentItem = item.find("description");
+				}
 				var content = contentItem.text();
-				content = content.replace(/^\[CDATA\[/, '').replace(/\]\]$/, '');
-
+				content = content.replace(/^\[CDATA\[/, "").replace(/\]\]$/, "");
 				var li = $("<li></li>").appendTo(titileListContainer);
 				var a = $("<a href=\"#\"></a>").appendTo(li);
 				a.text(title);
-				a.click(function() {
+				a.click(function () {
 					articleTitle.html(title);
 					viewcontainer.html(content);
 					jtool.linkAll2Blank(viewcontainer);
+					var temptext = viewcontainer.text();
+					if (temptext.length < 400) {
+						$("<hr/>").appendTo(viewcontainer);
+						$("<input type='button'/>").val("\u67e5\u770b\u539f\u6587").appendTo(viewcontainer).click(function () {
+							viewcontainer.html("");
+							var iframe = $("<iframe></iframe>").css("border", "0").css("width", "100%");
+							iframe.css("height", "650px");
+							iframe.css("padding", "0");
+							iframe.load(function () {
+								var height;
+								if (this.contentDocument) {
+									height = $(this.contentDocument).height() + 10;
+								} else {
+									height = $(this.contentWindow).height() + 10;
+								}
+								alert(height);
+								iframe.css("height", height + "px");
+							});
+							iframe.attr("src", link).appendTo(viewcontainer);
+						});
+					}
 				});
-
 				/* show first article immediately */
 				if (!firstShowed) {
 					a.click();
 					firstShowed = true;
 				}
-
 			});
-
 			initialPage();
 		}
 	};
-	var errorHandler = function(xhr, ajaxOptions, thrownError) {
+	var errorHandler = function (xhr, ajaxOptions, thrownError) {
 		if (xhr.status == "404") {
 			alert("Can't find RSS Resource:" + RSS_LINK);
 		}
 	};
 	try {
-		jtool.get(RSSRouterURL, {
-			"link" : RSS_LINK
-		}, true, "xml", handler, errorHandler);
-	} catch (e) {
+		jtool.get(RSSRouterURL, {"link":RSS_LINK}, true, "xml", handler, errorHandler);
+	}
+	catch (e) {
 		alert(e);
 	}
-
 }
 /*---------------------------------------
  Set Page Layout Size
@@ -167,3 +179,4 @@ function showmsg(msg) {
 	}
 	container.html(msg);
 }
+
