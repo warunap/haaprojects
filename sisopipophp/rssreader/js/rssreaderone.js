@@ -96,29 +96,23 @@ function loadRSS() {
 				a.text(title);
 				a.click(function () {
 					articleTitle.html(title);
-					viewcontainer.html(content);
-					jtool.linkAll2Blank(viewcontainer);
-					var temptext = viewcontainer.text();
-					if (temptext.length < 400) {
-						$("<hr/>").appendTo(viewcontainer);
-						$("<input type='button'/>").val("\u67e5\u770b\u539f\u6587").appendTo(viewcontainer).click(function () {
-							viewcontainer.html("");
-							var iframe = $("<iframe></iframe>").css("border", "0").css("width", "100%");
-							iframe.css("height", "650px");
-							iframe.css("padding", "0");
-							iframe.load(function () {
-								var height;
-								if (this.contentDocument) {
-									height = $(this.contentDocument).height() + 10;
-								} else {
-									height = $(this.contentWindow).height() + 10;
-								}
-								alert(height);
-								iframe.css("height", height + "px");
-							});
-							iframe.attr("src", link).appendTo(viewcontainer);
+					var btn = $("<input type='button'/>").val("\u67e5\u770b\u539f\u6587");
+					btn.click(function () {
+						viewcontainer.html("").css("overflow-y", "hidden");
+						var iframe = $("<iframe></iframe>").css("border", "0").css("width", "100%");
+						iframe.height("1px");
+						iframe.css("padding", "0").appendTo(viewcontainer);
+						iframe.load(function () {
+							setLayoutSize();
 						});
-					}
+						iframe.attr("src", link);
+						setTimeout("setLayoutSize()", 100);
+					});
+					btn.appendTo(articleTitle);
+					viewcontainer.css("overflow-y", "scroll").html(content).scrollTop(0);
+					jtool.linkAll2Blank(viewcontainer);
+					$("<hr/>").appendTo(viewcontainer);
+					btn.clone().appendTo(viewcontainer);
 				});
 				/* show first article immediately */
 				if (!firstShowed) {
@@ -162,6 +156,15 @@ function setLayoutSize() {
 	var containerHeight = $(window).height() - bannerHeight - $("#topshrinkline").height() - $("#listHeader").height() - 3;
 	$("#viewcontainer").css("height", containerHeight + "px");
 	$("#titileList").css("height", containerHeight + "px");
+	var iframe = $("#viewcontainer>iframe");
+	if (iframe.exists()) {
+		//var iframeheight = iframe.contents().find("html").height();
+		var iframeheight = iframe.contents().find("body").attr("scrollHeight");
+		if (iframeheight < containerHeight) {
+			iframeheight = containerHeight - 5;
+		}
+		$(iframe, top.document).css("height", iframeheight);
+	}
 }
 /*---------------------------------------
  Show message that the internate speed is slow!
