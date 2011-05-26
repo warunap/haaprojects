@@ -1,6 +1,3 @@
-/**
- * Created By: Comwave Project Team Created Date: May 19, 2011 8:22:46 PM
- */
 package com.haaproject.readfileweb;
 
 import java.io.File;
