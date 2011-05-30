@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="HAAProject_ApacheClickDemo"
+  id="myeclipse.1306719715300"
+  context-root="/click"
+  j2ee-spec="1.4"
+  archive="HAAProject_ApacheClickDemo.war">
+  <attributes>
+    <attribute name="webrootdir" value="webapp" />
+  </attributes>
+</project-module>
+

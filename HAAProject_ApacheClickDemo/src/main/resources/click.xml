@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE click-app PUBLIC
+       "-//Apache Software Foundation//DTD Click Configuration 2.2//EN"
+       "http://click.apache.org/dtds/click-2.3.dtd">
+<click-app>
+	<pages package="org.haaproject.clickdemo.page" automapping="true" autobinding="default" />
+
+	<pages package="org.haaproject.clickdemo.page.listener" automapping="true" autobinding="default">
+		<page path="listener/listenerType1.htm" classname="org.haaproject.clickdemo.page.listener.ControlListenerType1Page" />
+		<page path="listener/listenerType2.htm" classname="org.haaproject.clickdemo.page.listener.ControlListenerType2Page" />
+	</pages>
+
+	<!-- Setup global headers. The headers shown below is the default used by Click -->
+	<headers>
+		<header name="Pragma" value="no-cache" />
+		<header name="Cache-Control" value="no-store, no-cache, must-revalidate, post-check=0, pre-check=0" />
+		<header name="Expires" value="1" type="Date" />
+	</headers>
+
+	<!-- Mode values include: [production], [profile], [development], [debug], [trace] -->
+	<mode value="debug" />
+	<!-- trace mode log request parameters  -->
+	<!-- <mode value="trace" /> -->
+
+	<!-- Set the template engine to use Freemarker instead of Velocity -->
+	<!-- <template-service classname="org.apache.click.extras.service.FreemarkerTemplateService" /> -->
+
+	<!-- Set the org.apache.click.service.CommonsFileUploadService properties: sizeMax and fileSizeMax. -->
+	<file-upload-service classname="org.apache.click.service.CommonsFileUploadService">
+		<!-- Set the total request maximum size to 10mb (10 x 1024 x 1024 = 10485760). The default request upload size is unlimited. -->
+		<property name="sizeMax" value="10485760" />
+		<!-- Set the maximum individual file size to 2mb (2 x 1024 x 1024 = 2097152). The default file upload size is unlimited. -->
+		<property name="fileSizeMax" value="2097152" />
+	</file-upload-service>
+
+</click-app>
