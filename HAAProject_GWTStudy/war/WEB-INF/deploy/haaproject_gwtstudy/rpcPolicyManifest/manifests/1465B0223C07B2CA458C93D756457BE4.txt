@@ -1,0 +1,2 @@
+serviceClass: org.haaproject.gwtstudy.client.GreetingService
+path: FB825CFAD07992B106518BD8399A01F6.gwt.rpc
