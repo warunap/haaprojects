@@ -19,7 +19,6 @@ import org.haaproject.ical4j.Config;
 public class ICalendarTest {
 
 	private static final String CRLF = "\n";
-	private static final String MAIL_SMTP_HOST = "int.comwave.com.tw";
 
 	public static void main(String[] args) throws Exception {
 		Properties props = System.getProperties();
@@ -88,7 +87,7 @@ public class ICalendarTest {
 		 * When used to publish busy time, the "ORGANIZER" property specifies the calendar user associated with the
 		 * published busy time;
 		 */
-		buffer.append("ORGANIZER:mailto:"+Config.getConfig("calendar.organizer") + CRLF);
+		buffer.append("ORGANIZER:mailto:" + Config.getConfig("calendar.organizer") + CRLF);
 		// 會議參加人員
 		/*
 		 * The property defines an "Attendee" within a calendar component.<br> This property MUST be specified in an
