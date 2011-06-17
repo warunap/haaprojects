@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 
 import javax.activation.DataHandler;
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
@@ -39,17 +38,13 @@ public class MailTools {
 	public static MimeMultipart buildMimePartWithInlineImages(String content) throws MessagingException {
 		MimeMultipart multipart = new MimeMultipart();
 		addHTMLMailBody(multipart, content);
-
-		/* set to releated for binding the HTML content with the inline attachments by Content-ID */
-		multipart.setSubType("related");
-
 		return multipart;
 	}
 
 	/**
 	 * Find all image url in the html content and fetch the images as inline-attachments.
 	 */
-	private static void addHTMLMailBody(Multipart multipart, String content) throws MessagingException {
+	private static void addHTMLMailBody(MimeMultipart multipart, String content) throws MessagingException {
 		Pattern pattern = Pattern.compile("<img[ ]+src=\"([^\">]+)\"", Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(content);
 		Set<String> images = new HashSet<String>();
@@ -62,8 +57,10 @@ public class MailTools {
 		for (String imageUrl : images) {
 			try {
 				MimeBodyPart attachPart = buildInlineAttachFromUrl(imageUrl);
-				content = content.replace(imageUrl, "cid:" + attachPart.getContentID());
-				attachments.add(attachPart);
+				if (attachPart != null) {
+					content = content.replace(imageUrl, "cid:" + attachPart.getContentID());
+					attachments.add(attachPart);
+				}
 			} catch (Exception e) {
 				logger.warn(e.getMessage());
 			}
@@ -71,13 +68,18 @@ public class MailTools {
 
 		/* the html content must be the first body part */
 		MimeBodyPart htmlBodyPart = new MimeBodyPart();
+		logger.debug("mail content:" + content);
 		htmlBodyPart.setText(content, "UTF-8");
 		htmlBodyPart.setHeader("Content-type", "text/html;charset=\"UTF-8\"");
 
 		multipart.addBodyPart(htmlBodyPart);
 
-		for (MimeBodyPart mimeBodyPart : attachments) {
-			multipart.addBodyPart(mimeBodyPart);
+		if (attachments.size() > 0) {
+			/* set to releated for binding the HTML content with the inline attachments by Content-ID */
+			multipart.setSubType("related");
+			for (MimeBodyPart mimeBodyPart : attachments) {
+				multipart.addBodyPart(mimeBodyPart);
+			}
 		}
 	}
 
@@ -113,6 +115,7 @@ public class MailTools {
 			}
 		} catch (Exception e) {
 			logger.warn(e.getMessage());
+			return null;
 		}
 		MimeBodyPart attachPart = new MimeBodyPart();
 		attachPart.setFileName(name);
