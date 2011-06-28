@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 public class MailTools {
 
 	private static final Log logger = LogFactory.getLog(MailTools.class);
+	private static final String DEFAULT_CHARSET = "UTF-8";
 
 	/**
 	 * 从所有img标签src指向的图片地址获得图片内容，将其转换为邮件内嵌的图片插入到邮件中, 这样保证在不同的网络中以及离线的情况下仍然可以查看包含图片的完整邮件内容
@@ -69,8 +70,8 @@ public class MailTools {
 		/* the html content must be the first body part */
 		MimeBodyPart htmlBodyPart = new MimeBodyPart();
 		logger.debug("mail content:" + content);
-		htmlBodyPart.setText(content, "UTF-8");
-		htmlBodyPart.setHeader("Content-type", "text/html;charset=\"UTF-8\"");
+		htmlBodyPart.setText(content, DEFAULT_CHARSET);
+		htmlBodyPart.setHeader("Content-type", "text/html;charset=\"" + DEFAULT_CHARSET + "\"");
 
 		multipart.addBodyPart(htmlBodyPart);
 
