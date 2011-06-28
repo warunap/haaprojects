@@ -1,5 +1,4 @@
 /**
- * Created By: Comwave Project Team
  * Created Date: Jun 13, 2011 2:27:15 PM
  */
 package org.haaproject.mail;
