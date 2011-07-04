@@ -43,9 +43,9 @@ public class SignatureTest {
 		boolean verifyResult = SignatureTool.verify(publicKey, sign, text);
 		System.out.println("verifyResult:" + verifyResult);
 
-		String encrypt = SignatureTool.encrypt(publicKey, true, text);
+		String encrypt = SignatureTool.publicEncrypt(publicKey, text);
 		System.out.println("encrypt:" + encrypt);
-		String decrypt = SignatureTool.decrypt(privateKey, false, encrypt);
+		String decrypt = SignatureTool.privateDecrypt(privateKey, encrypt);
 		System.out.println("decrypt:" + decrypt);
 	}
 }

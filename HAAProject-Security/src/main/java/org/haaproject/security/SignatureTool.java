@@ -23,13 +23,10 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Signature;
-import java.security.spec.AlgorithmParameterSpec;
-import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -40,8 +37,12 @@ import org.apache.commons.codec.binary.Base64;
  * <pre></pre>
  * 
  * <p>
- * This tool use bouncy castle(BC) as JCE provider.
- * </p>
+ * About bouncy castle(BC) JCE provider:<br>
+ * The value of key size parameter to initial KeyPairGenerator must be one of
+ * the following: 192,239,256,224,384,521
+ * 
+ * @see org.bouncycastle.jce.provider.asymmetric.ec.KeyPairGenerator.EC
+ *      </p>
  * 
  * JDK Version：1.6
  * 
@@ -51,44 +52,49 @@ public class SignatureTool {
 
 	private static final String DEFAULT_ENCODE = "UTF-8";
 
-	/**
-	 * BC provide a asymmetric cipher EC.
-	 */
-	private static String getAsymmetricCipher() {
-		return "EC";
-		//return "RSA";
-	}
+	private static final String ASYMMETRIC_CIPHER = "RSA";
 
-	private static String getSignatureCipher() {
-		return "ECDSA";
-		//return "MD5withRSA";
-	}
+	private static final String SYMMETRIC_CIPHER = "RSA";
+
+	private static final String SIGNATURE_SIPHER = "MD5withRSA";
+
+	private static final int KEY_SIZE = 512;
 
 	/**
-	 * The value of key size parameter to initial KeyPairGenerator must be one
-	 * of the following: 192,239,256,224,384,521
-	 * 
-	 * @see org.bouncycastle.jce.provider.asymmetric.ec.KeyPairGenerator.EC
+	 * 产生密钥对
 	 */
 	public static KeyPair generateKeyPair() throws NoSuchAlgorithmException {
-		KeyPairGenerator keygen = KeyPairGenerator.getInstance(getAsymmetricCipher());
+		return generateKeyPair(null);
+	}
+
+	/**
+	 * 产生密钥对
+	 */
+	public static KeyPair generateKeyPair(String cipher) throws NoSuchAlgorithmException {
+		KeyPairGenerator keygen = KeyPairGenerator.getInstance(cipher == null ? ASYMMETRIC_CIPHER : cipher);
 		SecureRandom secrand = new SecureRandom();
 		secrand.setSeed(System.currentTimeMillis());
-		keygen.initialize(521, secrand);
+		keygen.initialize(KEY_SIZE, secrand);
 		return keygen.genKeyPair();
 	}
 
+	/**
+	 * 使用私钥对文本串进行签名，返回编码后的结果
+	 */
 	public static String sign(String privateKey, String text) throws Exception {
-		Signature signet = java.security.Signature.getInstance(getSignatureCipher());
-		signet.initSign((PrivateKey) convert2Key(privateKey, false));
-		signet.update(text.getBytes(DEFAULT_ENCODE));
-		return new String(Base64.encodeBase64(signet.sign()), DEFAULT_ENCODE);
+		Signature signet = java.security.Signature.getInstance(SIGNATURE_SIPHER);
+		signet.initSign((PrivateKey) convert2Key(privateKey, false, false));
+		signet.update(s2b(text));
+		return b2s(Base64.encodeBase64(signet.sign()));
 	}
 
+	/**
+	 * 使用公钥验证签名是否正确
+	 */
 	public static boolean verify(String publicKey, String signatureText, String text) throws Exception {
-		Signature signature = Signature.getInstance(getSignatureCipher());
-		signature.initVerify((PublicKey) convert2Key(publicKey, true));
-		signature.update(text.getBytes(DEFAULT_ENCODE));
+		Signature signature = Signature.getInstance(SIGNATURE_SIPHER);
+		signature.initVerify((PublicKey) convert2Key(publicKey, true, false));
+		signature.update(s2b(text));
 		byte[] signed = decode64(signatureText.getBytes(DEFAULT_ENCODE));
 		if (signature.verify(signed))
 			return true;
@@ -97,40 +103,76 @@ public class SignatureTool {
 	}
 
 	/**
-	 * TODO
-	 * 
+	 * 使用公钥加密
 	 */
-	public static String encrypt(String encodedKey, boolean isPublicKey, String text) throws Exception {
-		Cipher cipher = Cipher.getInstance("Blowfish/ECB/PKCS5Padding");// Create an 8-byte initialization vector
-		byte[] iv = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c,
-				0x0d, 0x0e, 0x0f };
-
-		AlgorithmParameterSpec paramSpec = new IvParameterSpec(iv);
-		cipher.init(Cipher.ENCRYPT_MODE, convert2Key(encodedKey, isPublicKey), paramSpec);
-		return new String(encode64(cipher.doFinal(text.getBytes(DEFAULT_ENCODE))), DEFAULT_ENCODE);
+	public static String publicEncrypt(String publicKey, String text) throws Exception {
+		return encrypt(publicKey, true, text);
 	}
 
 	/**
-	 * TODO
-	 * 
+	 * 使用私钥加密
 	 */
-	public static String decrypt(String encodedKey, boolean isPublicKey, String encryptString) throws Exception {
-		Cipher cipher = Cipher.getInstance("Blowfish/ECB/PKCS5Padding");
-		cipher.init(Cipher.DECRYPT_MODE, convert2Key(encodedKey, isPublicKey));
-		byte[] decodeVal = decode64(encryptString.getBytes(DEFAULT_ENCODE));
-		return new String(cipher.doFinal(decodeVal), DEFAULT_ENCODE);
+	public static String privateEncrypt(String privateKey, String text) throws Exception {
+		return encrypt(privateKey, false, text);
 	}
 
 	/**
-	 * @see org.bouncycastle.jce.provider.asymmetric.ec.KeyFactory#engineGeneratePublic(KeySpec)
+	 * 使用公钥解密
 	 */
-	private static Key convert2Key(String encodedKey, boolean isPublicKey) throws Exception {
-		KeyFactory keyFactory = KeyFactory.getInstance(getAsymmetricCipher());
+	public static String publicDecrypt(String publicKey, String text) throws Exception {
+		return decrypt(publicKey, true, text);
+	}
+
+	/**
+	 * 使用私钥解密
+	 */
+	public static String privateDecrypt(String privateKey, String text) throws Exception {
+		return decrypt(privateKey, false, text);
+	}
+
+	/**
+	 * 返回编码后的私钥字符串
+	 */
+	public static String getEncodedPrivateKey(KeyPair keyPair) throws UnsupportedEncodingException {
+		return b2s(encode64(keyPair.getPrivate().getEncoded()));
+	}
+
+	/**
+	 * 返回编码后的公钥字符串
+	 */
+	public static String getEncodedPublicKey(KeyPair keyPair) throws UnsupportedEncodingException {
+		return b2s(encode64(keyPair.getPublic().getEncoded()));
+	}
+
+	/**
+	 * 加密
+	 */
+	private static String encrypt(String encodedKey, boolean isPublicKey, String text) throws Exception {
+		Cipher cipher = Cipher.getInstance(SYMMETRIC_CIPHER);
+		cipher.init(Cipher.ENCRYPT_MODE, convert2Key(encodedKey, isPublicKey, true));
+		return b2s(encode64(cipher.doFinal(s2b(text))));
+	}
+
+	/**
+	 * 解密
+	 */
+	private static String decrypt(String encodedKey, boolean isPublicKey, String encryptString) throws Exception {
+		Cipher cipher = Cipher.getInstance(SYMMETRIC_CIPHER);
+		cipher.init(Cipher.DECRYPT_MODE, convert2Key(encodedKey, isPublicKey, true));
+		byte[] decodeVal = decode64(s2b(encryptString));
+		return b2s(cipher.doFinal(decodeVal));
+	}
+
+	/**
+	 * 将编码key字符串转换为{@link Key}对象
+	 */
+	private static Key convert2Key(String encodedKey, boolean isPublicKey, boolean symmetric) throws Exception {
+		KeyFactory keyFactory = KeyFactory.getInstance(symmetric ? SYMMETRIC_CIPHER : ASYMMETRIC_CIPHER);
 		if (isPublicKey) {
-			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decode64(encodedKey.getBytes(DEFAULT_ENCODE)));
+			X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decode64(s2b(encodedKey)));
 			return keyFactory.generatePublic(keySpec);
 		} else {
-			PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decode64(encodedKey.getBytes(DEFAULT_ENCODE)));
+			PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decode64(s2b(encodedKey)));
 			return keyFactory.generatePrivate(keySpec);
 
 		}
@@ -144,11 +186,12 @@ public class SignatureTool {
 		return Base64.decodeBase64(s);
 	}
 
-	public static String getEncodedPrivateKey(KeyPair keyPair) throws UnsupportedEncodingException {
-		return new String(encode64(keyPair.getPrivate().getEncoded()), DEFAULT_ENCODE);
+	private static String b2s(byte[] bytes) throws UnsupportedEncodingException {
+		return new String(bytes, DEFAULT_ENCODE);
 	}
 
-	public static String getEncodedPublicKey(KeyPair keyPair) throws UnsupportedEncodingException {
-		return new String(encode64(keyPair.getPublic().getEncoded()), DEFAULT_ENCODE);
+	private static byte[] s2b(String s) throws UnsupportedEncodingException {
+		return s.getBytes(DEFAULT_ENCODE);
 	}
+
 }

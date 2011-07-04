@@ -15,8 +15,6 @@ package org.haaproject.security;
 
 import java.security.Provider;
 import java.security.Security;
-import java.security.Provider.Service;
-import java.util.Set;
 
 /**
  * <pre><b><font color="blue">SecuritySystemChecker</font></b></pre>
@@ -31,6 +29,15 @@ import java.util.Set;
 public class SecurityEnvChecker {
 
 	public static void main(String[] args) {
+		showProviders();
+		showAlgorithmByType("MessageDigest");
+		showAlgorithmByType("KeyPairGenerator");
+		showAlgorithmByType("Signature");
+		showAlgorithmByType("Cipher");
+		showAlgorithmByType("KeyFactory");
+	}
+
+	public static void showProviders() {
 		System.out.println("-------列出加密服务提供者-----");
 		Provider[] pro = Security.getProviders();
 		for (Provider p : pro) {
@@ -46,22 +53,13 @@ public class SecurityEnvChecker {
 			//				}
 			//			}
 		}
-		System.out.println("");
-		System.out.println("-------列出系统支持的消息摘要算法：");
-		for (String s : Security.getAlgorithms("MessageDigest")) {
+	}
+
+	private static void showAlgorithmByType(String type) {
+		System.out.println("-------列出系统支持 [" + type + "] 的算法：");
+		for (String s : Security.getAlgorithms(type)) {
 			System.out.println(s);
 		}
-		System.out.println("-------列出系统支持的生成公钥和私钥对的算法：");
-		for (String s : Security.getAlgorithms("KeyPairGenerator")) {
-			System.out.println(s);
-		}
-		System.out.println("-------列出系统支持签名的算法：");
-		for (String s : Security.getAlgorithms("Signature")) {
-			System.out.println(s);
-		}
-		//		System.out.println("-------列出系统支持Cipher的算法：");
-		//		for (String s : Security.getAlgorithms("Cipher")) {
-		//			System.out.println(s);
-		//		}
+
 	}
 }
