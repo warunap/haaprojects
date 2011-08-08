@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1.7//EN" "http://struts.apache.org/dtds/struts-2.1.7.dtd">
+<struts>
+	<package name="common" extends="default">
+
+		<action name="upload" class="com.haaproject.struts.ajax.upload.UploadAction">
+			<interceptor-ref name="fileUpload" />
+			<interceptor-ref name="defaultStack" />
+			<result name="success" type="dispatcher">/upload_result.jsp</result>
+		</action>
+
+		<action name="save" class="com.haaproject.struts.ajax.upload.SaveAction">
+			<result name="success" type="dispatcher">/save_result.jsp</result>
+		</action>
+
+	</package>
+
+</struts>
