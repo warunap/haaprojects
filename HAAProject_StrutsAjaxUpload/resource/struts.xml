@@ -9,12 +9,12 @@
 			<interceptor name="chain" class="com.opensymphony.xwork2.interceptor.ChainingInterceptor">
 				<param name="copyMessages">true</param>
 			</interceptor>
+			<interceptor name="ajaxupload" class="com.haaproject.struts.ajax.upload.AjaxUploadIntercepter">
+			</interceptor>
 
-			<interceptor-stack name="defaultStack">
-				<interceptor-ref name="staticParams" />
-				<interceptor-ref name="params" />
-				<interceptor-ref name="conversionError" />
-				<interceptor-ref name="chain" />
+			<interceptor-stack name="ajaxuploadStack">
+				<interceptor-ref name="defaultStack" />
+				<interceptor-ref name="ajaxupload" />
 			</interceptor-stack>
 
 			<interceptor-stack name="validationStack">
@@ -24,7 +24,7 @@
 			</interceptor-stack>
 		</interceptors>
 
-		<default-interceptor-ref name="defaultStack" />
+		<default-interceptor-ref name="ajaxuploadStack" />
 
 		<global-results>
 			<result name="index" type="dispatcher">/index.jsp</result>

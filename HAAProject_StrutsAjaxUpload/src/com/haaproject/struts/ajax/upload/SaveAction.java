@@ -4,6 +4,9 @@
  */
 package com.haaproject.struts.ajax.upload;
 
+import java.io.File;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -18,12 +21,27 @@ public class SaveAction extends ActionSupport {
 	private static Log LOG = LogFactory.getLog(SaveAction.class);
 	private String subject;
 	private String content;
+	private List<File> attachments;
 
 	public String execute() throws Exception {
 		LOG.info("save action");
 		LOG.info("subject:" + subject);
 		LOG.info("subject:" + content);
+		if (attachments != null && attachments.size() > 0) {
+			for (File file : attachments) {
+				if (file != null)
+					LOG.info("attachment:" + file.getName());
+			}
+		}
 		return SUCCESS;
+	}
+
+	public List<File> getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(List<File> attachments) {
+		this.attachments = attachments;
 	}
 
 	public String getSubject() {

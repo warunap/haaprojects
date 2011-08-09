@@ -7,10 +7,8 @@
 		<script type="text/javascript">
 			var context_path = "<%=request.getContextPath()%>";
 		</script>
-		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/swfobject.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery.uploadify.v2.1.4.js"></script>
-		<script type="text/javascript" src="<%=request.getContextPath()%>/js/upload.js"></script>
+		<link href="<%=request.getContextPath()%>/css/style.css" rel="stylesheet" type="text/css">
+		<link href="<%=request.getContextPath()%>/css/uploadify.css" rel="stylesheet" type="text/css">
 	</head>
 	<body>
 		<H3>
@@ -31,7 +29,7 @@
 				<p>
 					File:
 					<br />
-					<input type="file" id="upload_file" name="upload_file" />
+					<input class="hidden" type="file" id="attachments" name="attachments" />
 				</p>
 				<p>
 					<input type="submit" value="Save" />
@@ -39,4 +37,13 @@
 			</form>
 		</div>
 	</body>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/js/swfobject.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/js/jquery.uploadify.v2.1.4.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/js/upload.js"></script>
+	<script type="text/javascript">
+	jQuery(document).ready(function () {
+		bindUploadFilePlugin("attachments");
+	});
+	</script>
 </html>

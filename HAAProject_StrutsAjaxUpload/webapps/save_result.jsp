@@ -15,6 +15,15 @@
 			<br />
 			content:
 			<s:property value="content" />
+			<br />
+			attachments:
+		<ul>
+			<s:iterator value="attachments">
+				<li>
+					<s:property value="name" />
+				</li>
+			</s:iterator>
+		</ul>
 		</p>
 	</body>
 </html>
