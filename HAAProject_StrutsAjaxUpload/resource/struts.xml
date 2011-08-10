@@ -13,8 +13,8 @@
 			</interceptor>
 
 			<interceptor-stack name="ajaxuploadStack">
-				<interceptor-ref name="defaultStack" />
 				<interceptor-ref name="ajaxupload" />
+				<interceptor-ref name="defaultStack" />
 			</interceptor-stack>
 
 			<interceptor-stack name="validationStack">

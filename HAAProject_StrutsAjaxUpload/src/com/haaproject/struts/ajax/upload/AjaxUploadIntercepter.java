@@ -32,7 +32,11 @@ public class AjaxUploadIntercepter extends AbstractInterceptor {
 	public String intercept(ActionInvocation invocation) throws Exception {
 		ActionContext ac = invocation.getInvocationContext();
 		HttpServletRequest request = (HttpServletRequest) ac.get(ServletActionContext.HTTP_REQUEST);
-
+		Enumeration parameterNames = request.getParameterNames();
+		while (parameterNames.hasMoreElements()) {
+			String elem = (String) parameterNames.nextElement();
+			System.out.println(elem);
+		}
 		try {
 			List<String> ajaxFileNames = findAjaxFileUploadParameters(request);
 			if (ajaxFileNames != null && ajaxFileNames.size() > 0) {

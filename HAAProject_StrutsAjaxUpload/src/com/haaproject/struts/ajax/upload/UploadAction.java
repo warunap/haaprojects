@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
@@ -20,6 +22,8 @@ import com.opensymphony.xwork2.ActionSupport;
  */
 public class UploadAction extends ActionSupport {
 
+	private static Map<String, String> globalFileMap = new HashMap<String, String>();
+
 	private String fileId;
 	private String fileName;
 
@@ -29,20 +33,33 @@ public class UploadAction extends ActionSupport {
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
 		fileName = ajaxFileFileName;
+		String sessionid = ServletActionContext.getRequest().getSession().getId();
 		if (ajaxFile != null) {
-			File destFile = new File(AjaxUploadConfig.getUploadDir() + ajaxFileFileName);
+			File destFile = new File(AjaxUploadConfig.getUploadDir() + sessionid + "_" + ajaxFileFileName);
 			if (destFile.exists()) {
 				FileUtils.forceDelete(destFile);
 			}
 			FileUtils.moveFile(ajaxFile, destFile);
 			fileId = UUID.randomUUID().toString().replace("-", "");
-			Map<String, Object> session = ActionContext.getContext().getSession();
-			Map<String, String> fileMap = (Map<String, String>) session.get(AjaxUploadConfig.SESSION_FILE_MAP_KEY);
-			if (fileMap == null) {
-				fileMap = new HashMap<String, String>();
-				session.put(AjaxUploadConfig.SESSION_FILE_MAP_KEY, fileMap);
+			globalFileMap.put(fileId, destFile.getName());
+		}
+		return SUCCESS;
+	}
+
+	@SuppressWarnings("unchecked")
+	public String recordToSession() throws Exception {
+		if (StringUtils.isNotEmpty(fileId)) {
+			String filePath = globalFileMap.get(fileId);
+			if (StringUtils.isNotEmpty(filePath)) {
+				Map<String, Object> session = ActionContext.getContext().getSession();
+				Map<String, String> fileMap = (Map<String, String>) session.get(AjaxUploadConfig.SESSION_FILE_MAP_KEY);
+				if (fileMap == null) {
+					fileMap = new HashMap<String, String>();
+					session.put(AjaxUploadConfig.SESSION_FILE_MAP_KEY, fileMap);
+				}
+				fileMap.put(fileId, filePath);
 			}
-			fileMap.put(fileId, destFile.getName());
+			globalFileMap.remove(fileId);
 		}
 
 		return SUCCESS;
@@ -71,4 +88,13 @@ public class UploadAction extends ActionSupport {
 	public String getFileName() {
 		return fileName;
 	}
+
+	public void setFileId(String fileId) {
+		this.fileId = fileId;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
 }

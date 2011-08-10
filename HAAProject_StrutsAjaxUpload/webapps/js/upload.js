@@ -1,7 +1,8 @@
 
 var _UPLOADER = context_path + "/js/uploadify.swf";
-var _UPLOAD_SCRIPT = context_path + "/upload.do";
-var _DELETE_SCRIPT = context_path + "/delete.do";
+var _UPLOAD_SCRIPT = context_path + "/ajaxupload/upload.do";
+var _DELETE_SCRIPT = context_path + "/ajaxupload/delete.do";
+var _RECORD2SESSION_SCRIPT = context_path + "/ajaxupload/recordToSession.do";
 var _CANCEL_IMAGE = context_path + "/images/cancel.png";
 var _FILE_NAME_PREFIX = "ajaxupload_";
 var _AJAX_FILE_NAME = "ajaxFile";
@@ -21,9 +22,11 @@ function bindUploadFilePlugin(uploadid) {
 	setting["multi"] = true;
 	setting["removeCompleted"] = false;
 	setting["fileDataName"] = _AJAX_FILE_NAME;
+	setting["buttonText"] = "UPLOAD";
 	setting["onComplete"] = function (event, ID, fileObj, response) {
 		var name = _FILE_NAME_PREFIX + fileInputDom.attr("name");
 		var fileId = jQuery(response).find("id").text();
+		jQuery.ajax({"url":_RECORD2SESSION_SCRIPT, "method":"POST", "data":{"fileId":fileId}});
 		var container = jQuery("#" + jQuery(event.target).attr("id") + ID);
 		jQuery("<input class='ufile' type='hidden'/>").attr("name", name).val(fileId).appendTo(container);
 	};

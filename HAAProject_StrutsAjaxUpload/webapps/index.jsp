@@ -15,7 +15,7 @@
 			Ajax Upload
 		</H3>
 		<div>
-			<form action="save.do" method="post">
+			<form action="<%=request.getContextPath()%>/ajaxupload/save.do" method="post">
 				<p>
 					Subject:
 					<br />
