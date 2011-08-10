@@ -3,6 +3,7 @@
 <struts>
 	<package name="common" extends="default" namespace="/ajaxupload">
 		<action name="upload" class="com.haaproject.struts.ajax.upload.UploadAction">
+			<param name="uploadDir">d:\\ajaxupload\\</param>
 			<result name="success" type="dispatcher">/ajaxupload/upload_result.jsp</result>
 		</action>
 		<action name="recordToSession" class="com.haaproject.struts.ajax.upload.UploadAction" method="recordToSession">

@@ -1,5 +1,4 @@
 /**
- * Created By: Comwave Project Team
  * Created Date: Aug 8, 2011 5:44:39 PM
  */
 package com.haaproject.struts.ajax.upload;

@@ -1,5 +1,4 @@
 /**
- * Created By: Comwave Project Team
  * Created Date: Aug 8, 2011 5:44:39 PM
  */
 package com.haaproject.struts.ajax.upload;
@@ -12,7 +11,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 /**
@@ -30,20 +28,18 @@ public class DeleteAction extends ActionSupport {
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
 		LOG.info("delete file:" + fileId);
-		Map<String, Object> session = ActionContext.getContext().getSession();
-		Map<String, String> fileMap = (Map<String, String>) session.get(AjaxUploadConfig.SESSION_FILE_MAP_KEY);
-		if (fileMap != null) {
-			String filePath = fileMap.get(fileId);
-			if (StringUtils.isNotEmpty(filePath)) {
-				File file = new File(filePath);
-				fileName = file.getName();
-				if (file.exists()) {
-					FileUtils.forceDelete(file);
-				} else {
-					LOG.warn(filePath + " not exists!");
-				}
-				fileMap.remove(fileId);
+
+		Map<String, String> fileMap = AjaxUploadUitl.getSessionFileMap();
+		String filePath = fileMap.get(fileId);
+		if (StringUtils.isNotEmpty(filePath)) {
+			File file = new File(filePath);
+			fileName = file.getName();
+			if (file.exists()) {
+				FileUtils.forceDelete(file);
+			} else {
+				LOG.warn(filePath + " not exists!");
 			}
+			fileMap.remove(fileId);
 		}
 
 		resultCode = "S";
