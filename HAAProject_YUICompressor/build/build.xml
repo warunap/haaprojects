@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<project name="HAA_YUICompressor" basedir="../">
+	<property file="build/build.properties" />
+	
+	<target name="load.properties.dev">
+		<property name="js.preprocess.switches" value="-P -DDEBUG_VERSION=1" />
+		<property name="js.compressor.switches" value="--nomunge --line-break" />
+	</target>
+
+	<target name="load.properties.prod">
+		<property name="js.preprocess.switches" value="-P -DDEBUG_VERSION=0" />
+		<property name="js.compressor.switches" value="" />
+	</target>
+	
+	<target name="_war_export">
+
+	</target>
+
+	<target name="js.concatenate">
+		<concat destfile="${webapp.dir}/js/tool.js" outputencoding="${encode}">
+			<filelist dir="${webapp.dir}/devjs" files="default.js,encode.js" />
+			<filelist dir="${webapp.dir}/devjs" files="xmlHttpRequest.js" />
+		</concat>
+	</target>
+
+	<target name="js.preprocess" depends="js.concatenate">
+		<apply executable="cpp" dest="${webapp.dir}/js">
+			<fileset dir="${build.dir}/concatenated" includes="tool.js" />
+			<arg line="${js.preprocess.switches}" />
+			<srcfile />
+			<targetfile />
+			<mapper type="identity" />
+		</apply>
+	</target>
+
+	<target name="js.minify" depends="js.preprocess">
+		<apply executable="java" parallel="false">
+			<fileset dir="." includes="tool.js" />
+			<arg line="-jar" />
+			<arg path="yuicompressor.jar" />
+			<srcfile />
+			<arg line="-o" />
+			<mapper type="glob" from="*.js" to="*-min.js" />
+			<targetfile />
+		</apply>
+	</target>
+
+</project>
