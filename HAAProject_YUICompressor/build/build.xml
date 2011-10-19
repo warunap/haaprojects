@@ -1,7 +1,16 @@
 <?xml version="1.0"?>
 <project name="HAA_YUICompressor" basedir="../">
 	<property file="build/build.properties" />
-	
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="${maven.local.dir}/ant-contrib/ant-contrib/1.0b3/ant-contrib-1.0b3.jar" />
+		</classpath>
+	</taskdef>
+	<property name="export.dir" value="build/export" />
+	<property name="js.concatenate.dir" value="${export.dir}/js/concatenate" />
+	<property name="js.preprocess.dir" value="${export.dir}/js/preprocess" />
+	<property name="js.minify.dir" value="${export.dir}/js/minify" />
+
 	<target name="load.properties.dev">
 		<property name="js.preprocess.switches" value="-P -DDEBUG_VERSION=1" />
 		<property name="js.compressor.switches" value="--nomunge --line-break" />
@@ -11,21 +20,42 @@
 		<property name="js.preprocess.switches" value="-P -DDEBUG_VERSION=0" />
 		<property name="js.compressor.switches" value="" />
 	</target>
-	
+
+	<target name="initial.export.dir">
+		<mkdir dir="${js.concatenate.dir}" />
+		<mkdir dir="${js.preprocess.dir}" />
+		<mkdir dir="${js.minify.dir}" />
+	</target>
+
+	<target name="clear.export.dir">
+		<delete dir="${export.dir}" />
+	</target>
+
 	<target name="_war_export">
 
 	</target>
 
-	<target name="js.concatenate">
-		<concat destfile="${webapp.dir}/js/tool.js" outputencoding="${encode}">
+	<target name="js.compress.tool.js">
+		<var name="js.concatenate.filelist" value="${webapp.dir}/devjs/default.js,${webapp.dir}/devjs/encode.js,${webapp.dir}/devjs/xmlHttpRequest.js" />
+		<var name="js.concatenate.name" value="tool.js" />
+		<if>
+			<equals arg1="${js.concatenate.name}" arg2="tool.js" />
+			<then>
+				<echo>null</echo>
+			</then>
+		</if>
+	</target>
+
+	<target name="js.concatenate" depends="initial.export.dir">
+		<concat destfile="${js.concatenate.dir}/${js.concatenate.name}" outputencoding="${encode}">
 			<filelist dir="${webapp.dir}/devjs" files="default.js,encode.js" />
 			<filelist dir="${webapp.dir}/devjs" files="xmlHttpRequest.js" />
 		</concat>
 	</target>
 
 	<target name="js.preprocess" depends="js.concatenate">
-		<apply executable="cpp" dest="${webapp.dir}/js">
-			<fileset dir="${build.dir}/concatenated" includes="tool.js" />
+		<apply executable="cpp" dest="${js.preprocess.dir}">
+			<fileset dir="${js.concatenate.dir}" includes="*.js" />
 			<arg line="${js.preprocess.switches}" />
 			<srcfile />
 			<targetfile />
@@ -35,14 +65,17 @@
 
 	<target name="js.minify" depends="js.preprocess">
 		<apply executable="java" parallel="false">
-			<fileset dir="." includes="tool.js" />
+			<fileset dir="${js.preprocess.dir}" includes="*.js" />
 			<arg line="-jar" />
-			<arg path="yuicompressor.jar" />
+			<arg path="${yui.compressor.path}" />
 			<srcfile />
 			<arg line="-o" />
-			<mapper type="glob" from="*.js" to="*-min.js" />
+			<mapper type="glob" from="*.js" to="${js.minify.dir}/*-min.js" />
 			<targetfile />
 		</apply>
 	</target>
 
+	<target name="js.min">
+
+	</target>
 </project>
