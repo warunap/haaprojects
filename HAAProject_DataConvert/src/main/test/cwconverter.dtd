@@ -1,0 +1,48 @@
+<!-- 
+Author:Geln Yang 
+  Date:2008-10-24
+
+Data Convert Configuration Definition
+-->
+<!ELEMENT component (component|line)+ >
+<!ATTLIST component name CDATA #REQUIRED>
+<!ATTLIST component className CDATA "java.util.HashMap">
+<!ATTLIST component occurs CDATA #IMPLIED>
+<!ATTLIST component batched (true|false) "true">
+<!ATTLIST component charset CDATA "UTF-8">
+<!ATTLIST component hasLineFlag (true|false) "true">
+<!ATTLIST component lineSize CDATA #IMPLIED>
+
+<!ELEMENT line (property*)>
+
+<!ATTLIST line name CDATA #REQUIRED>
+<!ATTLIST line startKey CDATA #IMPLIED>
+<!ATTLIST line hasStartKey (true|false) "true">
+<!ATTLIST line split CDATA #IMPLIED>
+<!ATTLIST line className CDATA "java.util.HashMap">
+<!ATTLIST line fixed (true|false) "true">
+<!ATTLIST line length CDATA #IMPLIED>
+<!ATTLIST line occurs CDATA #IMPLIED>
+<!ATTLIST line ignoreMore (true|false) "false">
+<!ATTLIST line trans (true|false) "false">
+
+<!ELEMENT property EMPTY>
+
+<!ATTLIST property name CDATA #REQUIRED>
+<!ATTLIST property desc CDATA #REQUIRED>
+<!ATTLIST property length CDATA #IMPLIED>
+<!ATTLIST property maxLength CDATA #IMPLIED>
+<!ATTLIST property align (left|right) "left">
+<!ATTLIST property type CDATA "String">
+<!ATTLIST property format CDATA #IMPLIED>
+<!ATTLIST property precision CDATA #IMPLIED>
+<!ATTLIST property scale CDATA #IMPLIED>
+<!ATTLIST property pattern CDATA #IMPLIED>
+<!ATTLIST property defValue CDATA #IMPLIED>
+<!ATTLIST property needRadixPoint (false|true) "false">
+<!ATTLIST property needFillZero (false|true) "false">
+<!ATTLIST property settled (false|true) "false">
+<!ATTLIST property optional (false|true) "false">
+<!ATTLIST property trim (false|true) "false">
+<!ATTLIST property start CDATA #IMPLIED>
+<!ATTLIST property end CDATA #IMPLIED>
