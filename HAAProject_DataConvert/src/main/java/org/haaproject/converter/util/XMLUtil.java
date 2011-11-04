@@ -20,6 +20,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 /**
  * @Author Eric Yang
  * @version 1.0
@@ -49,6 +53,17 @@ public final class XMLUtil {
 		} catch (Exception e) {
 			throw new TransformerException(e);
 		}
+	}
+
+	public static Element getFirstElementChild(Element element) {
+		NodeList childNodes = element.getChildNodes();
+		for (int i = 0; i < childNodes.getLength(); i++) {
+			Node node = childNodes.item(i);
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+				return (Element) node;
+			}
+		}
+		return null;
 	}
 
 }

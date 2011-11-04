@@ -1,19 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE component SYSTEM "cwconverter.dtd">
-<component name="root" className="java.util.HashMap">
-	<line name="header" hasStartKey="true" startKey="01" className="java.util.HashMap" fixed="false" split="," occurs="1">
-		<property desc="" name="key" length="100" trim="true" />
-		<property desc="" name="title" length="100" trim="true" />
-	</line>
-	<component name="details" className="java.util.ArrayList">
-		<line name="item" hasStartKey="true" startKey="02" className="java.util.HashMap" fixed="false" split="," occurs="&#43;">
+<converter>
+	<component name="root" className="java.util.HashMap">
+		<line name="header" hasStartKey="true" startKey="01" className="java.util.HashMap" fixed="false" split="," occurs="1">
 			<property desc="" name="key" length="100" trim="true" />
-			<property desc="" name="name" length="100" trim="true" />
-			<property desc="" name="data" length="100" trim="true" optional="true" />
+			<property desc="" name="title" length="100" trim="true" />
+		</line>
+		<component name="details" className="java.util.ArrayList">
+			<line name="item" hasStartKey="true" startKey="02" className="java.util.HashMap" fixed="false" split="," occurs="&#43;">
+				<property desc="" name="key" length="100" trim="true" />
+				<property desc="" name="name" length="100" trim="true" />
+				<property desc="" name="data" length="100" trim="true" optional="true" />
+			</line>
+		</component>
+		<line name="footer" hasStartKey="true" startKey="03" className="java.util.HashMap" fixed="false" split="," occurs="1">
+			<property desc="" name="key" length="100" trim="true" />
+			<property desc="" name="comment" length="100" trim="true" />
 		</line>
 	</component>
-	<line name="footer" hasStartKey="true" startKey="03" className="java.util.HashMap" fixed="false" split="," occurs="1">
-		<property desc="" name="key" length="100" trim="true" />
-		<property desc="" name="comment" length="100" trim="true" />
-	</line>
-</component>
+</converter>

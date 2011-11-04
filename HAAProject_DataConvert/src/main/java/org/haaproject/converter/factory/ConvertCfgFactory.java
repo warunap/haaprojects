@@ -28,6 +28,7 @@ import org.haaproject.converter.dom.Line;
 import org.haaproject.converter.dom.Property;
 import org.haaproject.converter.exception.CfgException;
 import org.haaproject.converter.util.OgnlUtil;
+import org.haaproject.converter.util.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -52,16 +53,16 @@ public class ConvertCfgFactory {
 
 	private static final String _NODE_Property = "property";
 
-	private static Map<String, Component> components = new HashMap<String, Component>();
+	private static Map<String, Converter> converters = new HashMap<String, Converter>();
 
-	private static Map<String, Component> pathComponents = new HashMap<String, Component>();
+	private static Map<String, Converter> pathConverters = new HashMap<String, Converter>();
 
-	public static Component getComponent(String key) {
-		return components.get(key);
+	public static Converter getConverter(String key) {
+		return converters.get(key);
 	}
 
-	public static Component load(String confPath) throws CfgException {
-		Component comp = pathComponents.get(confPath);
+	public static Converter load(String confPath) throws CfgException {
+		Converter comp = pathConverters.get(confPath);
 		if (comp != null)
 			return comp;
 
@@ -89,16 +90,16 @@ public class ConvertCfgFactory {
 
 			Element docElement = document.getDocumentElement();
 
-			Component component = parseComponent(docElement);
-			components.put(component.getName(), component);
-			pathComponents.put(confPath, component);
-			return component;
+			Converter converter = parseConverter(docElement);
+			converters.put(converter.getName(), converter);
+			pathConverters.put(confPath, converter);
+			return converter;
 		} catch (Exception e) {
 			throw new CfgException(e);
 		}
 	}
 
-	public static Component loadFromContent(String content) throws CfgException {
+	public static Converter loadFromContent(String content) throws CfgException {
 
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -119,16 +120,17 @@ public class ConvertCfgFactory {
 
 			Element docElement = document.getDocumentElement();
 
-			Component component = parseComponent(docElement);
-			components.put(component.getName(), component);
-			return component;
+			Converter converter = parseConverter(docElement);
+			converters.put(converter.getName(), converter);
+			return converter;
 		} catch (Exception e) {
 			throw new CfgException(e);
 		}
 	}
 
-	private static Component parseComponent(Element element) throws OgnlException, CfgException {
+	private static Converter parseConverter(Element element) throws OgnlException, CfgException {
 		Converter converter = new Converter();
+		parseAttribute(element, "charset", converter);
 		String batched = element.getAttribute("batched");
 		if (StringUtils.isNotBlank(batched)) {
 			converter.setBatched(Boolean.valueOf(batched));
@@ -148,13 +150,17 @@ public class ConvertCfgFactory {
 			throw new CfgException("component line size must be great than 0!");
 		}
 
-		Component component = new Component();
+		element = XMLUtil.getFirstElementChild(element); // get root Component
+		Component component = parseComponent(element);
 		component.setConverter(converter);
 		converter.setComponent(component);
+		return converter;
+	}
 
+	private static Component parseComponent(Element element) throws OgnlException, CfgException {
+		Component component = new Component();
 		parseAttribute(element, "name", component);
 		parseAttribute(element, "className", component);
-		parseAttribute(element, "charset", component);
 
 		String occurs = element.getAttribute("occurs");
 		if (StringUtils.isNotBlank(occurs)) {

@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 import ognl.OgnlException;
 
 import org.haaproject.converter.dom.Component;
+import org.haaproject.converter.dom.Converter;
 import org.haaproject.converter.exception.BuildException;
 import org.haaproject.converter.exception.CfgException;
 import org.haaproject.converter.exception.ParseException;
@@ -23,7 +24,8 @@ import org.haaproject.converter.util.OgnlUtil;
 public class TestConverter extends TestCase {
 
 	public void testParse() throws IOException, CfgException, ParseException, OgnlException {
-		Component component = ConvertCfgFactory.load("/config/test.xml");
+		Converter converter = ConvertCfgFactory.load("/config/test.xml");
+		Component component = converter.getComponent();
 		InputStream stream = TestConverter.class.getResourceAsStream("/data/test.dat");
 		BatchReader reader = BatchReaderFactory.streamReader(stream, "UTF-8", 100, component);
 		Object object = ConverterUtil.batchParse(component, reader);

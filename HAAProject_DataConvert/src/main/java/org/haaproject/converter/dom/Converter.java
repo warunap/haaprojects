@@ -4,7 +4,6 @@
  */
 package org.haaproject.converter.dom;
 
-
 /**
  * @author Geln Yang
  * @version 1.0
@@ -16,6 +15,8 @@ public class Converter {
 
 	/** data charset */
 	private String charset = DEFAULT_CHARSET;
+
+	private String name;
 
 	/** whether process batched */
 	private boolean batched = true;
@@ -66,5 +67,13 @@ public class Converter {
 
 	public void setLineSize(int lineSize) {
 		this.lineSize = lineSize;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }
