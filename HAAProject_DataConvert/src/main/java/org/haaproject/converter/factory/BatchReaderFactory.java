@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 
 import org.haaproject.converter.dom.Component;
+import org.haaproject.converter.dom.Converter;
 import org.haaproject.converter.reader.BatchReader;
 import org.haaproject.converter.reader.BatchStreamReader;
 
@@ -93,9 +94,10 @@ public class BatchReaderFactory {
 		return batchReader;
 	}
 
-	public static BatchReader streamReader(InputStream inputStream, String charset, long batchSize, Component component)
-			throws IOException {
-		return streamReader(inputStream, charset, batchSize, component.getConverter().isHasLineFlag(), component
-				.getConverter().getLineSize());
+	public static BatchReader streamReader(InputStream inputStream, Converter converter) throws IOException {
+		BatchReader streamReader = streamReader(inputStream, converter.getCharset(), converter.getBatchSize(),
+				converter.isHasLineFlag(), converter.getLineSize());
+		streamReader.setConverter(converter);
+		return streamReader;
 	}
 }

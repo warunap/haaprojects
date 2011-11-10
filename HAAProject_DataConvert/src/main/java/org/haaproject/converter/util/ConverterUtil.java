@@ -136,12 +136,12 @@ public final class ConverterUtil implements Serializable {
 	/**
 	 * NOTICE:The batch reader can't be closed.
 	 */
-	public static Object batchParse(Component component, BatchReader batchReader) throws ParseException {
+	public static Object batchParse(BatchReader batchReader) throws ParseException {
 		try {
 			List<String> list = batchReader.readBatch();
 			if (list == null || list.size() <= 0)
 				return null;
-			Object obj = parse(component, list);
+			Object obj = parse(batchReader.getConverter().getComponent(), batchReader.getReadStatus(), list);
 			return obj;
 		} catch (ParseException e) {
 
@@ -151,10 +151,10 @@ public final class ConverterUtil implements Serializable {
 		}
 	}
 
-	public static Object parse(Component component, List<String> contentList) throws ParseException {
-		ReadStatus index = new ReadStatus();
+	private static Object parse(Component component, ReadStatus readStatus, List<String> contentList)
+			throws ParseException {
 		Map<String, Object> result = new HashMap<String, Object>();
-		parseComponet(component, contentList, index, result, component.getConverter().isBatched());
+		parseComponet(component, contentList, readStatus, result, component.getConverter().isBatched());
 		return result.get(component.getName());
 	}
 

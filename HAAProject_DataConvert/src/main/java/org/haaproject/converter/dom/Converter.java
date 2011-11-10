@@ -12,6 +12,7 @@ public class Converter {
 
 	public static final String SCHEMA_BASE = "http://www.comwave.com.cn/schema/converter/";
 	public static final String DEFAULT_CHARSET = "UTF-8";
+	public static final int DEFAULT_BATCH_SIZE = 100;
 
 	/** data charset */
 	private String charset = DEFAULT_CHARSET;
@@ -26,6 +27,9 @@ public class Converter {
 
 	/** used to cut line from data just when {@link #hasLineFlag}==false */
 	private int lineSize = 0;
+
+	/** the size of lines to batch parse */
+	private int batchSize = DEFAULT_BATCH_SIZE;
 
 	protected Component component;
 
@@ -75,5 +79,13 @@ public class Converter {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public int getBatchSize() {
+		return batchSize;
+	}
+
+	public void setBatchSize(int batchSize) {
+		this.batchSize = batchSize;
 	}
 }

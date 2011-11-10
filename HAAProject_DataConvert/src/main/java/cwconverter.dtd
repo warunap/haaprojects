@@ -6,6 +6,7 @@ Data Convert Configuration Definition
 -->
 <!ELEMENT converter (component)>
 <!ATTLIST converter batched (true|false) "true">
+<!ATTLIST converter batchSize CDATA  "100">
 <!ATTLIST converter charset CDATA "UTF-8">
 <!ATTLIST converter hasLineFlag (true|false) "true">
 

@@ -1,5 +1,7 @@
 package org.haaproject.converter.reader;
 
+import org.haaproject.converter.dom.Container;
+
 /**
  * @author Geln Yang
  * @version 1.0
@@ -7,7 +9,10 @@ package org.haaproject.converter.reader;
 public class ReadStatus {
 
 	private int batchCount = 0;
+
 	public int lineNum = 0;
+
+	private Container fromContainer;
 
 	public int getBatchCount() {
 		return batchCount;
@@ -27,6 +32,14 @@ public class ReadStatus {
 
 	public void setLineNum(int lineNum) {
 		this.lineNum = lineNum;
+	}
+
+	public Container getFromContainer() {
+		return fromContainer;
+	}
+
+	public void setFromContainer(Container fromContainer) {
+		this.fromContainer = fromContainer;
 	}
 
 }

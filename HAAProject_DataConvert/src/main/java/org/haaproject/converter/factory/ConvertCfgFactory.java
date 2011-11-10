@@ -53,6 +53,8 @@ public class ConvertCfgFactory {
 
 	private static final String _NODE_Property = "property";
 
+	private static final Object NOTSET_VAL = "_NOSET_VAL_";
+
 	private static Map<String, Converter> converters = new HashMap<String, Converter>();
 
 	private static Map<String, Converter> pathConverters = new HashMap<String, Converter>();
@@ -130,21 +132,11 @@ public class ConvertCfgFactory {
 
 	private static Converter parseConverter(Element element) throws OgnlException, CfgException {
 		Converter converter = new Converter();
-		parseAttribute(element, "charset", converter);
-		String batched = element.getAttribute("batched");
-		if (StringUtils.isNotBlank(batched)) {
-			converter.setBatched(Boolean.valueOf(batched));
-		}
-
-		String hasLineFlag = element.getAttribute("hasLineFlag");
-		if (StringUtils.isNotBlank(hasLineFlag)) {
-			converter.setHasLineFlag(Boolean.valueOf(hasLineFlag));
-		}
-
-		String lineSize = element.getAttribute("lineSize");
-		if (StringUtils.isNotBlank(lineSize)) {
-			converter.setLineSize(Integer.parseInt(lineSize));
-		}
+		parseAttribute(element, "charset", converter, Converter.DEFAULT_CHARSET);
+		parseAttribute(element, "batchSize", converter, Converter.DEFAULT_BATCH_SIZE);
+		parseAttribute(element, "batched", converter, false);
+		parseAttribute(element, "hasLineFlag", converter, false);
+		parseOptionalAttribute(element, "lineSize", converter);
 
 		if (!converter.isHasLineFlag() && converter.getLineSize() <= 0) {
 			throw new CfgException("component line size must be great than 0!");
@@ -159,8 +151,8 @@ public class ConvertCfgFactory {
 
 	private static Component parseComponent(Element element) throws OgnlException, CfgException {
 		Component component = new Component();
-		parseAttribute(element, "name", component);
-		parseAttribute(element, "className", component);
+		parseAttribute(element, "name", component, null);
+		parseAttribute(element, "className", component, null);
 
 		String occurs = element.getAttribute("occurs");
 		if (StringUtils.isNotBlank(occurs)) {
@@ -194,48 +186,23 @@ public class ConvertCfgFactory {
 		Line line = new Line();
 		parseAttribute(element, "name", line);
 		parseAttribute(element, "className", line);
-		parseAttribute(element, "startKey", line);
-		parseAttribute(element, "split", line);
-		parseAttribute(element, "trans", line);
-
-		String trans = element.getAttribute("trans");
-		if (StringUtils.isNotBlank(trans)) {
-			line.setTrans(Boolean.valueOf(trans));
-		}
-
-		String length = element.getAttribute("length");
-		if (StringUtils.isNotBlank(length))
-			line.setLength(Integer.valueOf(length));
-
-		String fixed = element.getAttribute("fixed");
-		if (StringUtils.isNotBlank(fixed))
-			line.setFixed(Boolean.valueOf(fixed));
-
-		String hasStartKey = element.getAttribute("hasStartKey");
-		if (StringUtils.isNotBlank(hasStartKey))
-			line.setHasStartKey(Boolean.valueOf(hasStartKey));
+		parseAttribute(element, "trans", line, false);
+		parseOptionalAttribute(element, "startKey", line);
+		parseOptionalAttribute(element, "split", line);
+		parseOptionalAttribute(element, "length", line);
+		parseOptionalAttribute(element, "fixed", line);
+		parseOptionalAttribute(element, "hasStartKey", line);
+		parseAttribute(element, "trans", line, false);
+		parseAttribute(element, "ignoreMore", line, false);
 
 		String occurs = element.getAttribute("occurs");
 		if (StringUtils.isNotBlank(occurs)) {
 			if (occurs.length() != 1 || "1?+*".indexOf(occurs) == -1) {
-				throw new CfgException("showType must equal to '1',or '?',or '+',or '*'!");
+				throw new CfgException("The value of attribute occurs must equal to '1',or '?',or '+',or '*'!");
 			}
 			line.setOccurs(occurs);
 		}
 
-		String needTrans = element.getAttribute("trans");
-		if (StringUtils.isNotBlank(needTrans)) {
-			line.setTrans(Boolean.valueOf(needTrans));
-		} else {
-			line.setTrans(false);
-		}
-
-		String ignoreMore = element.getAttribute("ignoreMore");
-		if (StringUtils.isNotBlank(ignoreMore)) {
-			line.setIgnoreMore(Boolean.valueOf(ignoreMore));
-		} else {
-			line.setIgnoreMore(false);
-		}
 		NodeList childNodes = element.getChildNodes();
 		if (childNodes != null && childNodes.getLength() > 0) {
 			for (int i = 0, nodeSize = childNodes.getLength(); i < nodeSize; i++) {
@@ -251,84 +218,57 @@ public class ConvertCfgFactory {
 		return line;
 	}
 
-	private static Property parseFields(Element element) throws OgnlException {
+	private static Property parseFields(Element element) throws OgnlException, CfgException {
 		Property field = new Property();
 
 		parseAttribute(element, "name", field);
-		parseAttribute(element, "desc", field);
-		parseAttribute(element, "type", field);
+		parseAttribute(element, "type", field, Property.TYPE_STRING);
+		parseAttribute(element, "align", field, Property.LEFT);
 
-		String align = element.getAttribute("align");
-		if (StringUtils.isNotBlank(align))
-			field.setAlign(align);
-
-		String start = element.getAttribute("start");
-		if (StringUtils.isNotBlank(start))
-			field.setStart(Integer.valueOf(start));
-
-		String end = element.getAttribute("end");
-		if (StringUtils.isNotBlank(end))
-			field.setEnd(Integer.valueOf(end));
-
-		String index = element.getAttribute("index");
-		if (StringUtils.isNotBlank(index))
-			field.setIndex(Integer.valueOf(index));
-
-		String length = element.getAttribute("length");
-		if (StringUtils.isNotBlank(length))
-			field.setLength(Integer.valueOf(length));
-
-		String maxLength = element.getAttribute("maxLength");
-		if (StringUtils.isNotBlank(maxLength))
-			field.setMaxLength(Integer.valueOf(maxLength));
-
-		String pattern = element.getAttribute("pattern");
-		if (StringUtils.isNotBlank(pattern))
-			field.setPattern(pattern);
-
-		String precision = element.getAttribute("precision");
-		if (StringUtils.isNotBlank(precision))
-			field.setPrecision(Integer.valueOf(precision));
-
-		String scale = element.getAttribute("scale");
-		if (StringUtils.isNotBlank(scale))
-			field.setScale(Integer.valueOf(scale));
-
-		String needFillZero = element.getAttribute("needFillZero");
-		if (StringUtils.isNotBlank(needFillZero))
-			field.setNeedFillZero(Boolean.valueOf(needFillZero));
-
-		String needRadixPoint = element.getAttribute("needRadixPoint");
-		if (StringUtils.isNotBlank(needRadixPoint))
-			field.setNeedRadixPoint(Boolean.valueOf(needRadixPoint));
-
-		String format = element.getAttribute("format");
-		if (StringUtils.isNotBlank(format))
-			field.setFormat(format);
-
-		String optional = element.getAttribute("optional");
-		if (StringUtils.isNotBlank(optional))
-			field.setOptional(Boolean.valueOf(optional));
-
-		String trim = element.getAttribute("trim");
-		if (StringUtils.isNotBlank(optional))
-			field.setTrim(Boolean.valueOf(trim));
-
-		String defValue = element.getAttribute("defValue");
-		if (StringUtils.isNotBlank(defValue))
-			field.setDefValue(defValue);
-
-		String desc = element.getAttribute("desc");
-		if (StringUtils.isNotBlank(desc))
-			field.setDesc(desc);
+		parseOptionalAttribute(element, "start", field);
+		parseOptionalAttribute(element, "end", field);
+		parseOptionalAttribute(element, "index", field);
+		parseOptionalAttribute(element, "length", field);
+		parseOptionalAttribute(element, "maxLength", field);
+		parseOptionalAttribute(element, "pattern", field);
+		parseOptionalAttribute(element, "precision", field);
+		parseOptionalAttribute(element, "scale", field);
+		parseOptionalAttribute(element, "needFillZero", field);
+		parseOptionalAttribute(element, "needRadixPoint", field);
+		parseOptionalAttribute(element, "format", field);
+		parseOptionalAttribute(element, "optional", field);
+		parseOptionalAttribute(element, "trim", field);
+		parseOptionalAttribute(element, "defValue", field);
+		parseOptionalAttribute(element, "desc", field);
 
 		return field;
-
 	}
 
-	private static void parseAttribute(Element element, String name, Object obj) throws OgnlException {
+	private static void parseAttribute(Element element, String name, Object obj) throws OgnlException, CfgException {
+		parseAttribute(element, name, obj, null);
+	}
+
+	private static void parseOptionalAttribute(Element element, String name, Object obj) throws OgnlException,
+			CfgException {
+		parseAttribute(element, name, obj, NOTSET_VAL);
+	}
+
+	private static void parseAttribute(Element element, String name, Object obj, Object defautlVal)
+			throws OgnlException, CfgException {
 		String value = element.getAttribute(name);
-		OgnlUtil.setValue(name, obj, value);
+		if (StringUtils.isEmpty(value)) {
+			if (defautlVal == null) {
+				throw new CfgException("No attribute " + name);
+			}
+			if (NOTSET_VAL.equals(defautlVal.toString())) {
+				return;
+			}
+			value = defautlVal.toString();
+		}
+		if ("true".equals(value) || "false".equals(value)) {
+			OgnlUtil.setValue(name, obj, Boolean.valueOf(value));
+		} else {
+			OgnlUtil.setValue(name, obj, value);
+		}
 	}
-
 }

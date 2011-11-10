@@ -9,6 +9,7 @@ import java.io.Serializable;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.haaproject.converter.dom.Converter;
 
 /**
  * @author Geln Yang
@@ -28,6 +29,10 @@ public class ConvertReader implements Serializable {
 	protected int lineSize = 0;
 
 	protected boolean end = false;
+
+	protected Converter converter;
+
+	private ReadStatus readStatus;
 
 	public ConvertReader() {
 	}
@@ -130,4 +135,20 @@ public class ConvertReader implements Serializable {
 		BufferedReader reader = new BufferedReader(inr);
 		return reader;
 	}
+
+	public Converter getConverter() {
+		return converter;
+	}
+
+	public void setConverter(Converter converter) {
+		this.converter = converter;
+	}
+
+	public ReadStatus getReadStatus() {
+		if (readStatus == null) {
+			readStatus = new ReadStatus();
+		}
+		return readStatus;
+	}
+
 }

@@ -44,7 +44,7 @@ public class Property implements Serializable {
 	/** field name */
 	private String name;
 
-	/** property Chinese description */
+	/** property description */
 	private String desc;
 
 	// ------------fields for parse------------------

@@ -25,10 +25,9 @@ public class TestConverter extends TestCase {
 
 	public void testParse() throws IOException, CfgException, ParseException, OgnlException {
 		Converter converter = ConvertCfgFactory.load("/config/test.xml");
-		Component component = converter.getComponent();
 		InputStream stream = TestConverter.class.getResourceAsStream("/data/test.dat");
-		BatchReader reader = BatchReaderFactory.streamReader(stream, "UTF-8", 100, component);
-		Object object = ConverterUtil.batchParse(component, reader);
+		BatchReader reader = BatchReaderFactory.streamReader(stream, converter);
+		Object object = ConverterUtil.batchParse(reader);
 		assertNotNull(object);
 		Object value = OgnlUtil.getValue("footer.comment", object);
 		assertEquals("the_comment", value);
@@ -43,6 +42,7 @@ public class TestConverter extends TestCase {
 		value = OgnlUtil.getValue("details[1].data", object);
 		assertEquals("data2", value);
 
+		Component component = converter.getComponent();
 		try {
 			String obj2xml = ConverterUtil.obj2xml(object, component);
 			System.out.println(obj2xml);
