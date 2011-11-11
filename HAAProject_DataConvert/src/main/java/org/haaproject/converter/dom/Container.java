@@ -52,6 +52,8 @@ public abstract class Container implements Serializable {
 	 * This field is used when batch reading.
 	 */
 	private int readFlag = FLAG_UNREAD;
+	
+	private Container next;
 
 	private Converter converter;
 
@@ -149,6 +151,14 @@ public abstract class Container implements Serializable {
 
 	public void setClassName(String className) {
 		this.className = className;
+	}
+
+	public Container getNext() {
+		return next;
+	}
+
+	public void setNext(Container next) {
+		this.next = next;
 	}
 
 }

@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -23,6 +24,7 @@ import ognl.OgnlException;
 
 import org.apache.commons.lang.StringUtils;
 import org.haaproject.converter.dom.Component;
+import org.haaproject.converter.dom.Container;
 import org.haaproject.converter.dom.Converter;
 import org.haaproject.converter.dom.Line;
 import org.haaproject.converter.dom.Property;
@@ -93,12 +95,40 @@ public class ConvertCfgFactory {
 			Element docElement = document.getDocumentElement();
 
 			Converter converter = parseConverter(docElement);
+
+			setContainerNext(converter.getComponent());
+
 			converters.put(converter.getName(), converter);
 			pathConverters.put(confPath, converter);
 			return converter;
 		} catch (Exception e) {
 			throw new CfgException(e);
 		}
+	}
+
+	private static void setContainerNext(Component component) {
+		List<Container> children = component.getChildren();
+		if (children.size() > 1) {
+			for (int i = 0; i < children.size() - 1; i++) {
+				Container c1 = children.get(i);
+				Container c2 = children.get(i + 1);
+				c1.setNext(c2);
+			}
+
+			Container last = children.get(children.size() - 1);
+			Container parent = last.getParent();
+			if (parent != null) {
+				last.setNext(parent.getNext());
+			}
+
+			for (int i = 0; i < children.size(); i++) {
+				Container c = children.get(i);
+				if (c instanceof Component) {
+					setContainerNext((Component) c);
+				}
+			}
+		}
+
 	}
 
 	public static Converter loadFromContent(String content) throws CfgException {
