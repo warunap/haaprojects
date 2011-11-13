@@ -42,8 +42,8 @@ public class ConvertReader implements Serializable {
 	}
 
 	/**
-	 * if has line flag, invoke the orignal readLine() function. Otherwise, all content is in the same line, read a
-	 * fragment conent with the line size.<br>
+	 * if has line flag, invoke the orignal readLine() function. Otherwise, all
+	 * content is in the same line, read a fragment conent with the line size.<br>
 	 * when has not line flag, replace all chars '\r' and '\r' with ''.
 	 */
 	protected String readBufferLine() throws IOException {
@@ -147,6 +147,7 @@ public class ConvertReader implements Serializable {
 	public ReadStatus getReadStatus() {
 		if (readStatus == null) {
 			readStatus = new ReadStatus();
+			readStatus.setConverter(converter);
 		}
 		return readStatus;
 	}

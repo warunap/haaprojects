@@ -1,11 +1,8 @@
 /**
- * $Revision: 1.3 $
- * $Author: geln_yang $
- * $Date: 2011/09/02 13:14:51 $
- *
- * Author: Eric Yang
- * Date  : May 31, 2010 7:27:57 PM
- *
+ * $Revision: 1.3 $ $Author: geln_yang $ $Date: 2011/09/02 13:14:51 $
+ * 
+ * Author: Eric Yang Date : May 31, 2010 7:27:57 PM
+ * 
  */
 package org.haaproject.converter.reader;
 
@@ -16,7 +13,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.haaproject.converter.processor.Processor;
-
 
 /**
  * @Author Eric Yang
@@ -134,8 +130,10 @@ public class BatchReader extends ConvertReader {
 				list.add(line);
 			}
 		});
-		if (list.size() == 0)
+		getReadStatus().setBatchContent(list);
+		if (list.size() == 0) {
 			return null;
+		}
 		return list;
 	}
 

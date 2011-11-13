@@ -1,11 +1,8 @@
 /**
- * $Revision: 1.10 $
- * $Author: geln_yang $
- * $Date: 2011/08/31 18:05:15 $
- *
- * Author: Eric Yang
- * Date  : Jul 25, 2009 11:15:04 AM
- *
+ * $Revision: 1.10 $ $Author: geln_yang $ $Date: 2011/08/31 18:05:15 $
+ * 
+ * Author: Eric Yang Date : Jul 25, 2009 11:15:04 AM
+ * 
  */
 package org.haaproject.converter.factory;
 
@@ -76,7 +73,8 @@ public class ConvertCfgFactory {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			if (DTD_FILE_PATH != null) {
 				builder.setEntityResolver(new EntityResolver() {
-					public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+					public InputSource resolveEntity(String publicId, String systemId) throws SAXException,
+							IOException {
 						InputStream dtd_stream = ConvertCfgFactory.class.getResourceAsStream(DTD_FILE_PATH);
 						return new InputSource(dtd_stream);
 					}
@@ -106,6 +104,10 @@ public class ConvertCfgFactory {
 		}
 	}
 
+	/**
+	 * Set the next object for the same level.The next object of the last one is
+	 * null in the same level.
+	 */
 	private static void setContainerNext(Component component) {
 		List<Container> children = component.getChildren();
 		if (children.size() > 1) {
@@ -113,12 +115,6 @@ public class ConvertCfgFactory {
 				Container c1 = children.get(i);
 				Container c2 = children.get(i + 1);
 				c1.setNext(c2);
-			}
-
-			Container last = children.get(children.size() - 1);
-			Container parent = last.getParent();
-			if (parent != null) {
-				last.setNext(parent.getNext());
 			}
 
 			for (int i = 0; i < children.size(); i++) {
@@ -139,7 +135,8 @@ public class ConvertCfgFactory {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			if (DTD_FILE_PATH != null) {
 				builder.setEntityResolver(new EntityResolver() {
-					public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+					public InputSource resolveEntity(String publicId, String systemId) throws SAXException,
+							IOException {
 						InputStream dtd_stream = this.getClass().getResourceAsStream(DTD_FILE_PATH);
 						return new InputSource(dtd_stream);
 					}
@@ -274,7 +271,8 @@ public class ConvertCfgFactory {
 		return field;
 	}
 
-	private static void parseAttribute(Element element, String name, Object obj) throws OgnlException, CfgException {
+	private static void parseAttribute(Element element, String name, Object obj) throws OgnlException,
+			CfgException {
 		parseAttribute(element, name, obj, null);
 	}
 

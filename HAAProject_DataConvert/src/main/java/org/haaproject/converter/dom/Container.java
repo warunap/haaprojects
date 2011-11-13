@@ -1,11 +1,8 @@
 /**
- * $Revision: 1.7 $
- * $Author: geln_yang $
- * $Date: 2011/09/06 12:51:17 $
- *
- * Author: Eric Yang
- * Date  : May 21, 2010 11:02:32 AM
- *
+ * $Revision: 1.7 $ $Author: geln_yang $ $Date: 2011/09/06 12:51:17 $
+ * 
+ * Author: Eric Yang Date : May 21, 2010 11:02:32 AM
+ * 
  */
 package org.haaproject.converter.dom;
 
@@ -45,6 +42,7 @@ public abstract class Container implements Serializable {
 	protected String occurs = "1";
 
 	protected Container parent;
+
 	/**
 	 * The flag of read.<br>
 	 * <li>0:unread</li>
@@ -52,14 +50,14 @@ public abstract class Container implements Serializable {
 	 * This field is used when batch reading.
 	 */
 	private int readFlag = FLAG_UNREAD;
-	
+
 	private Container next;
 
 	private Converter converter;
 
 	public Converter getConverter() {
 		if (converter == null && parent != null) {
-			return parent.getConverter();
+			converter = parent.getConverter();
 		}
 		return converter;
 	}
@@ -80,7 +78,7 @@ public abstract class Container implements Serializable {
 		}
 	}
 
-	public abstract boolean isBelongToMe(String firstLineContent);
+	public abstract boolean isBelongToMe(String lineContent);
 
 	public String getNamespace() {
 		if (parent != null)
@@ -117,6 +115,13 @@ public abstract class Container implements Serializable {
 	/** whether read */
 	public boolean isRead() {
 		return readFlag == FLAG_READ;
+	}
+
+	public String getConvertName() {
+		if (parent != null) {
+			return parent.getConvertName() + "_" + name;
+		}
+		return name;
 	}
 
 	/* ========================================== */

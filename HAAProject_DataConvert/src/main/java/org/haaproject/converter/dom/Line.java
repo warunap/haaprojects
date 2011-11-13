@@ -1,11 +1,8 @@
 /**
- * $Revision: 1.20 $
- * $Author: geln_yang $
- * $Date: 2011/09/06 12:51:17 $
- *
- * Author: Eric Yang
- * Date  : Jul 25, 2009 11:16:53 AM
- *
+ * $Revision: 1.20 $ $Author: geln_yang $ $Date: 2011/09/06 12:51:17 $
+ * 
+ * Author: Eric Yang Date : Jul 25, 2009 11:16:53 AM
+ * 
  */
 package org.haaproject.converter.dom;
 
@@ -35,7 +32,8 @@ public class Line extends Container {
 
 	/**
 	 * The start key of the line,default to blank <br>
-	 * if the start key is like "(regex_pattern)",use the regex pattern to match the line content
+	 * if the start key is like "(regex_pattern)",use the regex pattern to match
+	 * the line content
 	 */
 	private String startKey = "";
 
@@ -90,11 +88,14 @@ public class Line extends Container {
 		return buffer.toString();
 	}
 
-	@SuppressWarnings("unchecked")
 	public Object parse(String content, int lineNo) throws ParseException {
+		Object obj = newDataInstance();
+		parse(obj, content, lineNo);
+		return obj;
+	}
+
+	public void parse(Object obj, String content, int lineNo) throws ParseException {
 		try {
-			Class objClass = Class.forName(className);
-			Object obj = objClass.newInstance();
 			if (hasStartKey) {
 				if (!isBelongToMe(content)) {
 					throw new ParseException("[line:" + lineNo
@@ -141,7 +142,6 @@ public class Line extends Container {
 				Object val = field.parse(fieldValues[i], lineNo);
 				OgnlUtil.setValue(field.getName(), obj, val);
 			}
-			return obj;
 		} catch (Exception e) {
 			throw new ParseException(e.getMessage(), e);
 		}
@@ -202,7 +202,8 @@ public class Line extends Container {
 						if (!Utils.containFailEncodeChar(content)
 								|| content.getBytes(line.getConverter().getCharset()).length < line.getLength()) {
 							throw new ParseException("Unexpected length! expect line[length:" + line.getLength()
-									+ "]!\r\ncontent[length:" + line.translate(content).length() + "]\r\n" + content);
+									+ "]!\r\ncontent[length:" + line.translate(content).length() + "]\r\n"
+									+ content);
 						}
 					}
 				} catch (UnsupportedEncodingException e) {

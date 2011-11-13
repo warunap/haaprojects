@@ -1,11 +1,8 @@
 /**
- * $Revision: 1.9 $
- * $Author: geln_yang $
- * $Date: 2011/09/06 12:51:17 $
- *
- * Author: Eric Yang
- * Date  : May 19, 2010 5:17:32 PM
- *
+ * $Revision: 1.9 $ $Author: geln_yang $ $Date: 2011/09/06 12:51:17 $
+ * 
+ * Author: Eric Yang Date : May 19, 2010 5:17:32 PM
+ * 
  */
 package org.haaproject.converter.dom;
 
@@ -23,16 +20,13 @@ public class Component extends Container {
 
 	/* ========================================== */
 
-	public boolean isBelongToMe(String firstLineContent) {
+	public boolean isBelongToMe(String lineContent) {
 		for (int i = 0; i < children.size(); i++) {
 			Container c = children.get(i);
-			boolean belongToMe = c.isBelongToMe(firstLineContent);
-			if (c.isShowOnce() || c.isShowMany())
-				return belongToMe;
-			else if (belongToMe)
+			if (c.isBelongToMe(lineContent))
 				return true;
 		}
-		return true;
+		return false;
 	}
 
 	public void addComponent(Container child) {
