@@ -55,19 +55,32 @@ public class ReadStatus {
 		return getDataObject(container);
 	}
 
-	private Object getDataObject(Container c) throws ParseException {
-		Object obj = dataObjectMap.get(c.getConvertName());
+	public Object getDataObject(Container c) throws ParseException {
+		Object parentObj = rootData;
+		if (c.getParent() != null) {
+			parentObj = getDataObject(c.getParent());
+		}
+		Object obj = null;
+		if (!(parentObj instanceof List)) {
+			obj = dataObjectMap.get(c.getConvertName());
+		}
+
 		if (obj == null) {
 			obj = c.newDataInstance();
-			Object parentObj = rootData;
-			if (c.getParent() != null) {
-				parentObj = getDataObject(c.getParent());
-			}
 			ParseUtil.setValue(c.getName(), parentObj, obj);
-
 			dataObjectMap.put(c.getConvertName(), obj);
 		}
 		return obj;
+	}
+
+	public void setDataObject(Container c, Object obj) throws ParseException {
+		Object parentObj = rootData;
+		if (c.getParent() != null) {
+			parentObj = getDataObject(c.getParent());
+		}
+
+		ParseUtil.setValue(c.getName(), parentObj, obj);
+		dataObjectMap.put(c.getConvertName(), obj);
 	}
 
 	public void increaseBatchCount() {

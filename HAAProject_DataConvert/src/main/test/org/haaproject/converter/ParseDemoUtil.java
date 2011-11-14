@@ -51,12 +51,7 @@ public class ParseDemoUtil {
 
 		Container next = container.getNext();
 		if (next != null) {
-			while (next != null) {
-				/*same level*/
-				readStatus.setContainer(next);
-				parseOnce(readStatus);
-				next = next.getNext();
-			}
+			parseFrom(readStatus, next);
 		}
 
 		parseParent(readStatus, container);
@@ -69,9 +64,8 @@ public class ParseDemoUtil {
 
 		Component parent = (Component) container.getParent();
 		if (parent != null) {
-			/*if the last one,try to re-parse from parent if parent's SHOW-MANY.*/
-			if ((parent.isShowMany() || parent.isShowNoneMany())
-					&& parent.isBelongToMe(readStatus.getCurrBatchLine())) {
+			/* if the last one,try to re-parse from parent if parent's SHOW-MANY. */
+			if ((parent.isShowMany() || parent.isShowNoneMany()) && parent.isBelongToMe(readStatus.getCurrBatchLine())) {
 				readStatus.setContainer(parent);// start parse from parent
 				parse(readStatus);
 			} else if (parent.getNext() != null) {
@@ -83,30 +77,44 @@ public class ParseDemoUtil {
 	}
 
 	private static void parseOnce(ReadStatus readStatus) throws ParseException {
-		Container container = readStatus.getContainer();
-		if (container instanceof Line) {
-			Line line = (Line) container;
-			parseLine(readStatus, line);
-		} else if (container instanceof Component) {
-			Component component = (Component) container;
-			parseComponet(readStatus, component);
-		}
+		Container c = readStatus.getContainer();
+		parseOnceContainer(readStatus, c);
+	}
 
+	private static void parseFrom(ReadStatus readStatus, Container c) throws ParseException {
+		parseOnceContainer(readStatus, c);
+		Container next = c.getNext();
+		if (next != null) {
+			while (next != null && !readStatus.isBatchOver()) {
+				parseOnceContainer(readStatus, next);
+				next = next.getNext();
+			}
+		}
+	}
+
+	private static void parseOnceContainer(ReadStatus readStatus, Container c) throws ParseException {
+		readStatus.setContainer(c);
+		if (c instanceof Line) {
+			parseLine(readStatus, (Line) c);
+		} else if (c instanceof Component) {
+			parseComponet(readStatus, (Component) c);
+		}
 	}
 
 	private static void parseComponet(ReadStatus readStatus, Component component) throws ParseException {
 		String currBatchLine = readStatus.getCurrBatchLine();
 		if (!component.isBelongToMe(currBatchLine)) {
 			if (component.isShowMany() || component.isShowOnce())
-				throw new ParseException("[index:" + readStatus.lineNum()
-						+ "] Unexpected line! expect line!\r\n[line:" + currBatchLine + "]");
+				throw new ParseException("[index:" + readStatus.lineNum() + "] Unexpected line! expect line!\r\n[line:"
+						+ currBatchLine + "]");
 			else {
 				return;
 			}
 		}
 
-		/*if the last one,try to re-parse from parent if it's SHOW-MANY.*/
+		/* if the last one,try to re-parse from parent if it's SHOW-MANY. */
 		if ((component.isShowMany() || component.isShowNoneMany())) {
+			
 			while (component.isBelongToMe(currBatchLine)) {
 				parseOnceComponent(readStatus, component);
 				if (readStatus.isBatchOver()) {
@@ -122,12 +130,7 @@ public class ParseDemoUtil {
 	private static void parseOnceComponent(ReadStatus readStatus, Component component) throws ParseException {
 		Container container = component.getChildren().get(0);
 		readStatus.setContainer(container);
-		if (container instanceof Component) {
-			parseComponet(readStatus, (Component) container);
-		} else if (container instanceof Line) {
-			parseLine(readStatus, (Line) container);
-		}
-
+		parseFrom(readStatus, container);
 	}
 
 	private static void parseLine(ReadStatus readStatus, Line line) throws ParseException {
@@ -143,9 +146,8 @@ public class ParseDemoUtil {
 		String lineContent = readStatus.getCurrBatchLine();
 		if (!line.isBelongToMe(lineContent)) {
 			if (line.isShowMany() || line.isShowOnce())
-				throw new ParseException("[index:" + readStatus.lineNum()
-						+ "] Unexpected line! expect line[startKey:" + line.getStartKey() + "]!\r\n[line:"
-						+ lineContent + "]");
+				throw new ParseException("[index:" + readStatus.lineNum() + "] Unexpected line! expect line[startKey:"
+						+ line.getStartKey() + "]!\r\n[line:" + lineContent + "]");
 			else {
 				return;
 			}
