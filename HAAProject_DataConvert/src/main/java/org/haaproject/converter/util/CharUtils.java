@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  * @author Eric Yang
  * @version 1.0
  */
-public class Utils {
+public class CharUtils {
 
 	private static final String DEFAULT_SPLITTER = ",";
 	private static final String FAIL_ENCODE_REPLACEMENT = "\uFFFD";

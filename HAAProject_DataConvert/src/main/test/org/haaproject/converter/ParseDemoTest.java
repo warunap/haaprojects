@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import junit.framework.TestCase;
-
 import ognl.OgnlException;
 
 import org.haaproject.converter.dom.Component;
@@ -15,8 +14,9 @@ import org.haaproject.converter.exception.ParseException;
 import org.haaproject.converter.factory.BatchReaderFactory;
 import org.haaproject.converter.factory.ConvertCfgFactory;
 import org.haaproject.converter.reader.BatchReader;
-import org.haaproject.converter.util.ConverterUtil;
+import org.haaproject.converter.util.BuildUtil;
 import org.haaproject.converter.util.OgnlUtil;
+import org.haaproject.converter.util.XMLUtil;
 
 public class ParseDemoTest extends TestCase {
 
@@ -41,14 +41,14 @@ public class ParseDemoTest extends TestCase {
 
 		Component component = converter.getComponent();
 		try {
-			String obj2xml = ConverterUtil.obj2xml(object, component);
+			String obj2xml = BuildUtil.obj2xml(object, component);
 			System.out.println(obj2xml);
 		} catch (BuildException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
 
-		StringBuffer schema = ConverterUtil.component2schema(component);
+		StringBuffer schema = XMLUtil.component2schema(component);
 		System.out.println(schema);
 	}
 }

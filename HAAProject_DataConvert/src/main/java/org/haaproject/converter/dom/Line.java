@@ -15,7 +15,7 @@ import java.util.Map;
 import org.haaproject.converter.exception.BuildException;
 import org.haaproject.converter.exception.ParseException;
 import org.haaproject.converter.util.OgnlUtil;
-import org.haaproject.converter.util.Utils;
+import org.haaproject.converter.util.CharUtils;
 
 import ognl.OgnlException;
 
@@ -187,7 +187,7 @@ public class Line extends Container {
 	}
 
 	public String translate(String content) {
-		return Utils.addChar2SBCCase(content, TRANSLATE_CHAR);
+		return CharUtils.addChar2SBCCase(content, TRANSLATE_CHAR);
 	}
 
 	public void validateLength(String content) throws ParseException {
@@ -199,7 +199,7 @@ public class Line extends Container {
 			if (line.isTrans()) {
 				try {
 					if (line.getLength() != line.translate(content).length()) {
-						if (!Utils.containFailEncodeChar(content)
+						if (!CharUtils.containFailEncodeChar(content)
 								|| content.getBytes(line.getConverter().getCharset()).length < line.getLength()) {
 							throw new ParseException("Unexpected length! expect line[length:" + line.getLength()
 									+ "]!\r\ncontent[length:" + line.translate(content).length() + "]\r\n"

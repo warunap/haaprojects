@@ -14,8 +14,10 @@ import org.haaproject.converter.exception.ParseException;
 import org.haaproject.converter.factory.BatchReaderFactory;
 import org.haaproject.converter.factory.ConvertCfgFactory;
 import org.haaproject.converter.reader.BatchReader;
-import org.haaproject.converter.util.ConverterUtil;
+import org.haaproject.converter.util.BuildUtil;
 import org.haaproject.converter.util.OgnlUtil;
+import org.haaproject.converter.util.ParseUtil;
+import org.haaproject.converter.util.XMLUtil;
 
 /**
  * @Author Eric Yang
@@ -27,7 +29,7 @@ public class TestConverter extends TestCase {
 		Converter converter = ConvertCfgFactory.load("/config/test.xml");
 		InputStream stream = TestConverter.class.getResourceAsStream("/data/test.dat");
 		BatchReader reader = BatchReaderFactory.streamReader(stream, converter);
-		Object object = ConverterUtil.batchParse(reader);
+		Object object = ParseUtil.batchParse(reader);
 		assertNotNull(object);
 		Object value = OgnlUtil.getValue("footer.comment", object);
 		assertEquals("the_comment", value);
@@ -44,14 +46,14 @@ public class TestConverter extends TestCase {
 
 		Component component = converter.getComponent();
 		try {
-			String obj2xml = ConverterUtil.obj2xml(object, component);
+			String obj2xml = BuildUtil.obj2xml(object, component);
 			System.out.println(obj2xml);
 		} catch (BuildException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
 
-		StringBuffer schema = ConverterUtil.component2schema(component);
+		StringBuffer schema = XMLUtil.component2schema(component);
 		System.out.println(schema);
 	}
 

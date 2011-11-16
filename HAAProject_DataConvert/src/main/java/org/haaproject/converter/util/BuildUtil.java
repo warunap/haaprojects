@@ -9,6 +9,17 @@
  */
 package org.haaproject.converter.util;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import ognl.OgnlException;
+
+import org.haaproject.converter.dom.Component;
+import org.haaproject.converter.dom.Container;
+import org.haaproject.converter.dom.Line;
+import org.haaproject.converter.dom.Property;
+import org.haaproject.converter.exception.BuildException;
 
 /**
  * @author Eric Yang
@@ -19,6 +30,93 @@ public class BuildUtil {
 	public static final String LEFT = "left";
 
 	public static final String RIGHT = "right";
+
+	public static String obj2xml(Object obj, Component component) throws OgnlException, BuildException {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		buffer.append(renderComponent(obj, component));
+		return buffer.toString();
+	}
+
+	@SuppressWarnings("unchecked")
+	private static StringBuffer renderComponent(Object obj, Component component) throws OgnlException, BuildException {
+		StringBuffer buffer = new StringBuffer();
+		if (component.isShowOnce() || component.isShowNoneOnce())
+			buffer.append(renderOnceComponent(obj, component));
+		else {
+			if (!(obj instanceof Collection)) {
+				throw new BuildException("Expect a Collection result for component[" + component.getName() + "]!");
+			}
+			Collection collection = (Collection) obj;
+			for (Iterator item = collection.iterator(); item.hasNext();) {
+				Object childObject = (Object) item.next();
+				buffer.append(renderOnceComponent(childObject, component));
+			}
+		}
+		return buffer;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static StringBuffer renderOnceComponent(Object obj, Component component) throws OgnlException,
+			BuildException {
+		StringBuffer buffer = new StringBuffer();
+		String name = component.getName();
+		buffer.append("<" + name + " xmlns=\"" + component.getNamespace() + "\">");
+		List<Container> children = component.getChildren();
+		for (int i = 0; i < children.size(); i++) {
+			Container child = children.get(i);
+			Object childObj;
+			if (obj instanceof List)
+				childObj = obj;
+			else
+				childObj = OgnlUtil.getValue(child.getName(), obj);
+			if (childObj == null)
+				continue;
+
+			if (child instanceof Line) {
+				Line line = (Line) child;
+				buffer.append(renderLine(childObj, line));
+			} else if (child instanceof Component) {
+				Component c = (Component) child;
+				buffer.append(renderComponent(childObj, c));
+			}
+		}
+		buffer.append("</" + name + ">");
+		return buffer;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static StringBuffer renderLine(Object obj, Line line) throws OgnlException, BuildException {
+		StringBuffer buffer = new StringBuffer();
+		if (line.isShowNoneOnce() || line.isShowOnce()) {
+			buffer.append(renderSingleLine(obj, line));
+		} else {
+			List<Object> objects = (List<Object>) obj;
+			for (int i = 0; i < objects.size(); i++) {
+				Object object = objects.get(i);
+				if (object == null)
+					System.out.println();
+				buffer.append(renderSingleLine(object, line));
+			}
+		}
+		return buffer;
+	}
+
+	private static StringBuffer renderSingleLine(Object obj, Line line) throws OgnlException, BuildException {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("<" + line.getName() + ">");
+		List<Property> properties = line.getProperties();
+		for (int i = 0; i < properties.size(); i++) {
+			Property property = properties.get(i);
+			Object value = OgnlUtil.getValue(property.getName(), obj);
+			String v = property.readableBuild(value);
+			buffer.append("<" + property.getName() + ">");
+			buffer.append(v);
+			buffer.append("</" + property.getName() + ">");
+		}
+		buffer.append("</" + line.getName() + ">");
+		return buffer;
+	}
 
 	public static String rightTrim(String s) {
 		if (s == null || s.trim().length() == 0)
