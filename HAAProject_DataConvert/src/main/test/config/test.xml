@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE component SYSTEM "cwconverter.dtd">
-<converter>
+<!DOCTYPE converter SYSTEM "haaconverter.dtd">
+<converter name="test">
 	<component name="root" className="java.util.HashMap">
 		<line name="header" hasStartKey="true" startKey="01" className="java.util.HashMap" fixed="false" split="," occurs="1">
 			<property desc="" name="key" length="100" trim="true" />

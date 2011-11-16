@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE converter SYSTEM "haaconverter.dtd">
+<converter name="stockData" charset="GB2312">
+	<component name="root" className="java.util.HashMap">
+		<line name="header" hasStartKey="false" className="java.util.HashMap" fixed="false" split="," occurs="once">
+			<property name="date" length="10" trim="true" />
+			<property name="code" length="10" trim="true" />
+			<property name="name" length="50" trim="true" />
+			<property name="closingPrice" length="100" trim="true" />
+			<property name="highestPrice" length="100" trim="true" />
+			<property name="lowestPrice" length="100" trim="true" />
+			<property name="openingPrice" length="100" trim="true" />
+			<property name="preClosingPrice" length="100" trim="true" />
+			<property name="changeAmount" length="100" trim="true" />
+			<property name="changePercent" length="100" trim="true" />
+			<property name="handsRate" length="100" trim="true" />
+			<property name="tradeCount" length="100" trim="true" />
+			<property name="tradeAmount" length="100" trim="true" />
+			<property name="totalMarketValue" length="100" trim="true" />
+			<property name="currentMarketValue" length="100" trim="true" />
+		</line>
+		<component name="details" className="java.util.ArrayList">
+			<line name="item" hasStartKey="false" className="java.util.HashMap" fixed="false" split="," occurs="many" tableName="STOCK_DATA">
+				<property name="date" length="10" trim="true" />
+				<property name="code" length="10" trim="true" />
+				<property name="name" length="50" trim="true" />
+				<property name="closingPrice" precision="12" scale="4" needRadixPoint="true" />
+				<property name="highestPrice" precision="12" scale="4" needRadixPoint="true" />
+				<property name="lowestPrice" precision="12" scale="4" needRadixPoint="true" />
+				<property name="openingPrice" precision="12" scale="4" needRadixPoint="true" />
+				<property name="preClosingPrice" precision="12" scale="4" needRadixPoint="true" />
+				<property name="changeAmount" precision="12" scale="4" needRadixPoint="true" />
+				<property name="changePercent" precision="12" scale="4" needRadixPoint="true" />
+				<property name="handsRate" precision="12" scale="4" needRadixPoint="true" />
+				<property name="tradeCount" precision="20" scale="3" needRadixPoint="true" />
+				<property name="tradeAmount" precision="20" scale="3" needRadixPoint="true" />
+				<property name="totalMarketValue" precision="20" scale="3" needRadixPoint="true" />
+				<property name="currentMarketValue" precision="20" scale="3" needRadixPoint="true" />
+			</line>
+		</component>
+	</component>
+</converter>

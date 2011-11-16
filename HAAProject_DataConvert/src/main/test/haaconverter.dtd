@@ -5,6 +5,7 @@ Author:Geln Yang
 Data Convert Configuration Definition
 -->
 <!ELEMENT converter (component)>
+<!ATTLIST converter name CDATA #REQUIRED>
 <!ATTLIST converter batched (true|false) "true">
 <!ATTLIST converter batchSize CDATA  "100">
 <!ATTLIST converter charset CDATA "UTF-8">
@@ -13,7 +14,7 @@ Data Convert Configuration Definition
 <!ELEMENT component (component|line)+ >
 <!ATTLIST component name CDATA #REQUIRED>
 <!ATTLIST component className CDATA "java.util.HashMap">
-<!ATTLIST component occurs CDATA #IMPLIED>
+<!ATTLIST component occurs (once|none_once|many|none_many) "none_many">
 <!ATTLIST component lineSize CDATA #IMPLIED>
 
 <!ELEMENT line (property*)>
@@ -25,14 +26,15 @@ Data Convert Configuration Definition
 <!ATTLIST line className CDATA "java.util.HashMap">
 <!ATTLIST line fixed (true|false) "true">
 <!ATTLIST line length CDATA #IMPLIED>
-<!ATTLIST line occurs CDATA #IMPLIED>
+<!ATTLIST line occurs (once|none_once|many|none_many) "none_many">
 <!ATTLIST line ignoreMore (true|false) "false">
 <!ATTLIST line trans (true|false) "false">
+<!ATTLIST line tableName CDATA #IMPLIED>
 
 <!ELEMENT property EMPTY>
 
 <!ATTLIST property name CDATA #REQUIRED>
-<!ATTLIST property desc CDATA #REQUIRED>
+<!ATTLIST property desc CDATA #IMPLIED>
 <!ATTLIST property length CDATA #IMPLIED>
 <!ATTLIST property maxLength CDATA #IMPLIED>
 <!ATTLIST property align (left|right) "left">

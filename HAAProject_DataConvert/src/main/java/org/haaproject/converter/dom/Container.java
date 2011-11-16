@@ -14,13 +14,13 @@ import java.io.Serializable;
  */
 public abstract class Container implements Serializable {
 
-	public static final String OCCURS_ONCE = "1";
+	public static final String OCCURS_ONCE = "once";
 
-	public static final String OCCURS_NONE_ONCE = "?";
+	public static final String OCCURS_NONE_ONCE = "none_once";
 
-	public static final String OCCURS_MANY = "+";
+	public static final String OCCURS_MANY = "many";
 
-	public static final String OCCURS_NONE_MANY = "*";
+	public static final String OCCURS_NONE_MANY = "none_many";
 
 	private static final int FLAG_READ = 1;
 

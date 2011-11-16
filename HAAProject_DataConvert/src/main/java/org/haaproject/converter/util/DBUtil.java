@@ -18,7 +18,7 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-public class TMXUtil {
+public class DBUtil {
 	private static final String COMMA = ",";
 
 	private static final String BATCH_ID_NAME = "batchIndentityId";

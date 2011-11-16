@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
  */
 public class ConvertCfgFactory {
 
-	private static final String DTD_FILE_PATH = "/cwconverter.dtd";
+	private static final String DTD_FILE_PATH = "/haaconverter.dtd";
 
 	private static final String _NODE_COMPONENT = "component";
 
@@ -73,8 +73,7 @@ public class ConvertCfgFactory {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			if (DTD_FILE_PATH != null) {
 				builder.setEntityResolver(new EntityResolver() {
-					public InputSource resolveEntity(String publicId, String systemId) throws SAXException,
-							IOException {
+					public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
 						InputStream dtd_stream = ConvertCfgFactory.class.getResourceAsStream(DTD_FILE_PATH);
 						return new InputSource(dtd_stream);
 					}
@@ -105,8 +104,7 @@ public class ConvertCfgFactory {
 	}
 
 	/**
-	 * Set the next object for the same level.The next object of the last one is
-	 * null in the same level.
+	 * Set the next object for the same level.The next object of the last one is null in the same level.
 	 */
 	private static void setContainerNext(Component component) {
 		List<Container> children = component.getChildren();
@@ -135,8 +133,7 @@ public class ConvertCfgFactory {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			if (DTD_FILE_PATH != null) {
 				builder.setEntityResolver(new EntityResolver() {
-					public InputSource resolveEntity(String publicId, String systemId) throws SAXException,
-							IOException {
+					public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
 						InputStream dtd_stream = this.getClass().getResourceAsStream(DTD_FILE_PATH);
 						return new InputSource(dtd_stream);
 					}
@@ -183,8 +180,9 @@ public class ConvertCfgFactory {
 
 		String occurs = element.getAttribute("occurs");
 		if (StringUtils.isNotBlank(occurs)) {
-			if (occurs.length() != 1 || "1?+*".indexOf(occurs) == -1) {
-				throw new CfgException("showType must equal to '1',or '?',or '+',or '*'!");
+			if (!(Container.OCCURS_MANY.equals(occurs) || Container.OCCURS_NONE_MANY.equals(occurs)
+					|| Container.OCCURS_ONCE.equals(occurs) || Container.OCCURS_NONE_ONCE.equals(occurs))) {
+				throw new CfgException("Wrong showType!");
 			}
 			component.setOccurs(occurs);
 		}
@@ -224,8 +222,9 @@ public class ConvertCfgFactory {
 
 		String occurs = element.getAttribute("occurs");
 		if (StringUtils.isNotBlank(occurs)) {
-			if (occurs.length() != 1 || "1?+*".indexOf(occurs) == -1) {
-				throw new CfgException("The value of attribute occurs must equal to '1',or '?',or '+',or '*'!");
+			if (!(Container.OCCURS_MANY.equals(occurs) || Container.OCCURS_NONE_MANY.equals(occurs)
+					|| Container.OCCURS_ONCE.equals(occurs) || Container.OCCURS_NONE_ONCE.equals(occurs))) {
+				throw new CfgException("Wrong showType!");
 			}
 			line.setOccurs(occurs);
 		}
@@ -271,8 +270,7 @@ public class ConvertCfgFactory {
 		return field;
 	}
 
-	private static void parseAttribute(Element element, String name, Object obj) throws OgnlException,
-			CfgException {
+	private static void parseAttribute(Element element, String name, Object obj) throws OgnlException, CfgException {
 		parseAttribute(element, name, obj, null);
 	}
 
