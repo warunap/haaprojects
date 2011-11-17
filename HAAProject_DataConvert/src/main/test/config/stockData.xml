@@ -21,7 +21,7 @@
 		</line>
 		<component name="details" className="java.util.ArrayList">
 			<line name="item" hasStartKey="false" className="java.util.HashMap" fixed="false" split="," occurs="many" tableName="STOCK_DATA">
-				<property name="date" length="10" trim="true" />
+				<property name="date" type="Date" format="yyyy-MM-dd" />
 				<property name="code" length="10" trim="true" />
 				<property name="name" length="50" trim="true" />
 				<property name="closingPrice" precision="12" scale="4" needRadixPoint="true" />

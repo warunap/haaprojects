@@ -1,11 +1,8 @@
 /**
- * $Revision: 1.17 $
- * $Author: geln_yang $
- * $Date: 2011/09/06 12:51:17 $
- *
- * Author: Eric Yang
- * Date  : Jul 25, 2009 11:16:38 AM
- *
+ * $Revision: 1.17 $ $Author: geln_yang $ $Date: 2011/09/06 12:51:17 $
+ * 
+ * Author: Eric Yang Date : Jul 25, 2009 11:16:38 AM
+ * 
  */
 package org.haaproject.converter.dom;
 
@@ -57,7 +54,10 @@ public class Property implements Serializable {
 	/** the index number of the fields in one line */
 	private int index;
 
-	/** when the line is unfixed,the length of the value is dynamic,the "maxLength" defines the max length of the value */
+	/**
+	 * when the line is unfixed,the length of the value is dynamic,the
+	 * "maxLength" defines the max length of the value
+	 */
 	private int maxLength;
 
 	/** the pattern to validate the value */
@@ -76,16 +76,25 @@ public class Property implements Serializable {
 	/** field format,used when the field type is big_decimal or date */
 	private String format;
 
-	/** field precision,used when the field type is big_decimal or integer or long */
+	/**
+	 * field precision,used when the field type is big_decimal or integer or
+	 * long
+	 */
 	private int precision;
 
 	/** field precision,used when the field type is big_decimal */
 	private int scale;
 
-	/** whether need fill with radix point,used when the field type is big_decimal */
+	/**
+	 * whether need fill with radix point,used when the field type is
+	 * big_decimal
+	 */
 	private boolean needRadixPoint = false;
 
-	/** whether need fill zero before,used when the field type is big_decimal or integer or long */
+	/**
+	 * whether need fill zero before,used when the field type is big_decimal or
+	 * integer or long
+	 */
 	private boolean needFillZero = false;
 
 	/** the default value of the field */
@@ -168,8 +177,12 @@ public class Property implements Serializable {
 	}
 
 	public Object parse(String value, int lineNo) throws org.haaproject.converter.exception.ParseException {
-		if (StringUtils.isBlank(value) && optional) {
-			return value;
+		if (StringUtils.isEmpty(value) && optional) {
+			if (defValue != null) {
+				value = defValue;
+			} else {
+				return value;
+			}
 		}
 
 		if (StringUtils.isBlank(pattern)
@@ -220,8 +233,8 @@ public class Property implements Serializable {
 				sb = new StringBuffer("[line:").append(lineNo).append("][field:").append(name).append("][value:")
 						.append(val).append("] does not match [pattern:").append(pattern).append("]");
 			else
-				sb = new StringBuffer("[line:").append(lineNo).append("][value:").append(val).append("][").append(desc)
-						.append("] does not match [pattern:").append(pattern).append("]");
+				sb = new StringBuffer("[line:").append(lineNo).append("][value:").append(val).append("][").append(
+						desc).append("] does not match [pattern:").append(pattern).append("]");
 			throw new org.haaproject.converter.exception.ParseException(sb.toString());
 		}
 	}
