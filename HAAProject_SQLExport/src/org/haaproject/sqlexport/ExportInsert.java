@@ -22,6 +22,7 @@ public class ExportInsert {
 		String userName = args[2];
 		String password = args[3];
 		String tableName = args[4];
+		String querySql = args[5];
 		String outputFilePath = "./" + tableName + ".sql";
 
 		System.out.println(driverName);
@@ -29,12 +30,13 @@ public class ExportInsert {
 		System.out.println(userName);
 		System.out.println(password);
 		System.out.println(tableName);
+		System.out.println(querySql);
 		System.out.println(outputFilePath);
 
 		Class.forName(driverName).newInstance();
 		Connection myConn = DriverManager.getConnection(linkUrl, userName, password);
 		Statement myStmt = myConn.createStatement();
-		ResultSet rs = myStmt.executeQuery("select * from " + tableName);
+		ResultSet rs = myStmt.executeQuery(querySql);
 		ResultSetMetaData rmeta = rs.getMetaData();
 		int numColumns = rmeta.getColumnCount();
 		System.out.println("numColumns = " + numColumns);
