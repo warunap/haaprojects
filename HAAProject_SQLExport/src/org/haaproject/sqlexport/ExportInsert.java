@@ -39,9 +39,8 @@ public class ExportInsert {
 		ResultSet rs = myStmt.executeQuery(querySql);
 		ResultSetMetaData rmeta = rs.getMetaData();
 		int numColumns = rmeta.getColumnCount();
-		System.out.println("numColumns = " + numColumns);
-
-		// console output
+		System.out.println("column count: " + numColumns);
+		System.out.println("-------------------------------------");
 		for (int i = 1; i <= numColumns; i++) {
 			if (i < numColumns) {
 				System.out.print(rmeta.getColumnName(i) + " , ");
@@ -49,17 +48,20 @@ public class ExportInsert {
 				System.out.println(rmeta.getColumnName(i));
 			}
 		}
+		System.out.println("-------------------------------------");
 
-		String insertPrefix = "INSERT INTO [" + tableName.toUpperCase() + "] (";
+		String insertSqlPrefix = "INSERT INTO " + tableName.toUpperCase() + " (";
 		for (int i = 1; i <= numColumns; i++) {
-			insertPrefix += rmeta.getColumnName(i) + ",";
+			insertSqlPrefix += rmeta.getColumnName(i) + ",";
 		}
-		insertPrefix = insertPrefix.substring(0, insertPrefix.length() - 1) + ") ";
+		insertSqlPrefix = insertSqlPrefix.substring(0, insertSqlPrefix.length() - 1) + ") VALUES(";
 
 		// output data
 		StringBuffer buffer = new StringBuffer();
+		int count = 0;
 		while (rs.next()) {
-			buffer.append(insertPrefix + " VALUES(");
+			count++;
+			buffer.append(insertSqlPrefix);
 			for (int i = 1; i <= numColumns; i++) {
 				String data = rs.getString(i);
 				if (data != null) {
@@ -78,13 +80,17 @@ public class ExportInsert {
 			}
 		}
 
+		System.out.println("Record count: " + count);
+		System.out.println("start to write into file ... ");
 		FileWriter fileWriter = new FileWriter(outputFilePath);
 		fileWriter.write(buffer.toString());
 		fileWriter.flush();
 		fileWriter.close();
-		System.out.println("output file : " + outputFilePath);
+		System.out.println("end to write into file ... ");
 		rs.close();
 		myStmt.close();
 		myConn.close();
+		System.out.println("------------------------");
+		System.out.println("over");
 	}
 }
