@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://haa.org/search/soap/wsdl"
+	xmlns:types="http://haa.org/search/soap/api" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://haa.org/search/soap/wsdl">
+	<types>
+		<xs:schema xmlns="http://haa.org/search/soap/api" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified"
+			elementFormDefault="qualified" targetNamespace="http://haa.org/search/soap/api">
+			<xs:element name="root">
+				<xs:complexType />
+			</xs:element>
+
+			<xs:complexType name="User">
+				<xs:sequence>
+					<xs:element name="username" type="xs:string" />
+					<xs:element name="password" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="SearchData">
+				<xs:sequence>
+					<xs:element name="name" type="xs:string" />
+					<xs:element name="code" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+
+
+			<xs:complexType name="OUTMSG">
+				<xs:sequence>
+					<xs:element name="code" type="xs:string" />
+					<xs:element name="message" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+
+		</xs:schema>
+	</types>
+	<message name="SearchRequest">
+		<part name="user" type="types:User" />
+		<part name="data" type="types:SearchData" />
+	</message>
+	<message name="SearchResponse">
+		<part name="result" type="xsd:string" />
+		<part name="value" type="xsd:string" />
+	</message>
+
+	<portType name="SearchPortType">
+		<operation name="search">
+			<input message="tns:SearchRequest" />
+			<output message="tns:SearchResponse" />
+		</operation>
+	</portType>
+
+	<binding name="SearchBinding" type="tns:SearchPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="search">
+			<soap:operation soapAction="login" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+
+	<service name="SearchService">
+		<port binding="tns:SearchBinding" name="SearchServicePort">
+			<soap:address location="http://localhost:9080/axis/services/SearchService" />
+		</port>
+	</service>
+</definitions>

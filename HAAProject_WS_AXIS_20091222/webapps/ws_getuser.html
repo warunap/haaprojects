@@ -1,0 +1,46 @@
+<html>
+	<head>
+		<script type="text/javascript" src="js/jquery.js">
+</script>
+		<script type="text/javascript" src="js/base.js">
+</script>
+		<script type="text/javascript" src="js/ws.js">
+</script>
+		<script type="text/javascript">
+function invoke() {
+
+	var soapData = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:wsdl=\"http://comwave.com/bpm/soap/wsdl\" xmlns:soap=\"http://comwave.com/bpm/soap\">   <soapenv:Header/>   <soapenv:Body>      <wsdl:getUser>         <userAuth>            <soap:username>swadmin</soap:username>            <soap:password></soap:password>         </userAuth>         <username>c001</username>      </wsdl:getUser>   </soapenv:Body></soapenv:Envelope>";
+	var callback = function(transport) {
+		try {
+			var xml = $(transport).text();
+			alert(xml);
+		} catch (e) {
+			alert(e);
+		}
+	};
+	$.ajax( {
+		type : "POST",
+		url : "/axis/services/getUserService",
+		contentType : "application/xml",
+		processData : false,
+		data : soapData,
+		beforeSend : function(xhr) {
+			xhr.setRequestHeader("Content-Type", "application/xml");
+			xhr.setRequestHeader("SOAPAction", "getUser");
+		},
+		success : callback
+	});
+}
+</script>
+	</head>
+	<body>
+		<input value="Invoke the Web Service" type="button" onclick="invoke()" />
+		<div id="container">
+			Result:
+			<div id="result">
+			</div>
+			<div id="soap">
+			</div>
+		</div>
+	</body>
+</html>

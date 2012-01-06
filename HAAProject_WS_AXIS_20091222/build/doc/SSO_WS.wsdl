@@ -1,0 +1,1276 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://comwave.com/bpm/soap/wsdl" xmlns:types="http://comwave.com/bpm/soap"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://comwave.com/bpm/soap/wsdl">
+	<types>
+		<xs:schema xmlns="http://comwave.com/bpm/soap" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified"
+			elementFormDefault="qualified" targetNamespace="http://comwave.com/bpm/soap">
+			<xs:complexType name="UserAuth">
+				<xs:sequence>
+					<xs:element name="hostname" type="xs:string" />
+					<xs:element name="nodename" type="xs:string" />
+					<xs:element name="tcp" type="xs:int" />
+					<xs:element name="director" type="xs:boolean" />
+					<xs:element name="username" type="xs:string" />
+					<xs:element name="password" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="OutMessage">
+				<xs:sequence>
+					<xs:element name="code" type="xs:string" />
+					<xs:element name="text" type="xs:string" minOccurs="0" nillable="true" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="Procedure">
+				<xs:sequence>
+					<xs:element name="name" type="xs:string" />
+					<xs:element name="description" type="xs:string" />
+					<xs:element name="majorVersion" type="xs:int" />
+					<xs:element name="minorVersion" type="xs:int" />
+					<xs:element name="startStepName" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="Step">
+				<xs:sequence>
+					<xs:element name="procName" type="xs:string" />
+					<xs:element name="stepName" type="xs:string" />
+					<xs:element name="stepDesc" type="xs:string" />
+					<xs:element name="variables" type="xs:string" minOccurs="0" nillable="true" />
+					<xs:element name="subCallStepNames" type="xs:string" minOccurs="0" nillable="true" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="StepVariable">
+				<xs:sequence>
+					<xs:element name="name" type="xs:string" />
+					<xs:element name="category" type="xs:string" />
+					<xs:element name="type" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="Field">
+				<xs:sequence>
+					<xs:element name="name" type="xs:string" />
+					<xs:element name="value" type="xs:string" />
+					<xs:element name="type" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="SortField">
+				<xs:sequence>
+					<xs:element name="fieldName" type="xs:string" />
+					<xs:element name="isAsc" type="xs:boolean" />
+					<xs:element name="sortType" type="xs:int" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="WorkItem">
+				<xs:sequence>
+					<xs:element name="caseNumber" type="xs:string" />
+					<xs:element name="description" type="xs:string" />
+					<xs:element name="stepName" type="xs:string" />
+					<xs:element name="startedBy" type="xs:string" />
+					<xs:element name="caseFields" type="FieldArray" minOccurs="0" nillable="true" />
+					<xs:element name="stepDescription" type="xs:string" />
+					<xs:element name="tag" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="AuditTrail">
+				<xs:sequence>
+					<xs:element name="user" type="xs:string" />
+					<xs:element name="desc" type="xs:string" />
+					<xs:element name="action" type="xs:string" />
+					<xs:element name="date" type="xs:dateTime" />
+					<xs:element name="outstanding" type="xs:boolean" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="User">
+				<xs:sequence>
+					<xs:element name="name" type="xs:string" />
+					<xs:element name="menuName" type="xs:string" />
+					<xs:element name="fwdPermission" type="xs:string" />
+					<xs:element name="groupNames" type="StringArray" minOccurs="0" nillable="true" />
+					<xs:element name="supervisors" type="StringArray" minOccurs="0" nillable="true" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="Group">
+				<xs:sequence>
+					<xs:element name="name" type="xs:string" />
+					<xs:element name="members" type="StringArray" minOccurs="0" nillable="true" />
+					<xs:element name="supervisors" type="StringArray" minOccurs="0" nillable="true" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="Participant">
+				<xs:sequence>
+					<xs:element name="QName" type="xs:string" />
+					<xs:element name="participant" type="xs:string" />
+					<xs:element name="startDate" type="xs:dateTime" minOccurs="0" nillable="true" />
+					<xs:element name="endDate" type="xs:dateTime" minOccurs="0" nillable="true" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="StepArray">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0" name="step" type="Step" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="StepVariableArray">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0" name="stepVariable" type="StepVariable" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="FieldArray">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0" name="field" type="Field" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="StringArray">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0" name="String" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="SortFieldArray">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0" name="sortField" type="SortField" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="WorkItemArray">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0" name="workItem" type="WorkItem" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="AuditTrailArray">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0" name="auditTrail" type="AuditTrail" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="UserArray">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0" name="user" type="User" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="GroupsArray">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0" name="group" type="Group" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="ParticipantArray">
+				<xs:sequence>
+					<xs:element maxOccurs="unbounded" minOccurs="0" name="participant" type="Participant" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<!-- =======================request complexType================================================================================== -->
+			<xs:complexType name="getUserRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="username" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="getProcedureRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="procName" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="getAllNormalStepsRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="procName" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="getNormalStepVariablesRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="procName" type="xs:string" />
+					<xs:element name="stepName" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="startCaseRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="procName" type="xs:string" />
+					<xs:element name="caseDesc" type="xs:string" />
+					<xs:element name="startStepName" type="xs:string" />
+					<xs:element name="releaseFirstStep" type="xs:boolean" />
+					<xs:element name="fields" type="FieldArray" minOccurs="0" nillable="true" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="closeCaseRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="procName" type="xs:string" />
+					<xs:element name="caseNum" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="getAllWorkQNamesRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="getWorkItemsRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="workQName" type="xs:string" />
+					<xs:element name="procNames" type="StringArray" />
+					<xs:element name="sortFields" type="SortFieldArray" minOccurs="0" nillable="true" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="getWorkItemByTagRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="workItemTag" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="getAuditTrailsRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="procName" type="xs:string" />
+					<xs:element name="caseNum" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="keepWorkItemRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="workItemTag" type="xs:string" />
+					<xs:element name="fields" type="FieldArray" minOccurs="0" nillable="true" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="releaseWorkItemRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="workItemTag" type="xs:string" />
+					<xs:element name="fields" type="FieldArray" minOccurs="0" nillable="true" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="forwardWorkItemRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="workItemTag" type="xs:string" />
+					<xs:element name="destWorkQName" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="getAllUsersRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="createUserRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="user" type="User" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="updateUserRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="user" type="User" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="deleteUserRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="username" type="xsd:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="setUserSupervisorRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="username" type="xsd:string" />
+					<xs:element name="supervisors" type="StringArray" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="getAllGroupsRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="getGroupRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="groupName" type="xsd:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="createGroupRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="groupName" type="xsd:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="deleteGroupRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="groupName" type="xsd:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="addUserToGroupRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="groupName" type="xsd:string" />
+					<xs:element name="userName" type="xsd:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="removeUserFromGroupRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="groupName" type="xsd:string" />
+					<xs:element name="userName" type="xsd:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="setGroupSupervisorRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="groupName" type="xsd:string" />
+					<xs:element name="supervisors" type="StringArray" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="getParticipantsRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="userName" type="xsd:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="addParticipantRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="userName" type="xsd:string" />
+					<xs:element name="participant" type="xsd:string" />
+					<xs:element name="startDate" type="xsd:dateTime" />
+					<xs:element name="endDate" type="xsd:dateTime" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="removeParticipantRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+					<xs:element name="userName" type="xsd:string" />
+					<xs:element name="participant" type="xsd:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="moveSysInfoRequest">
+				<xs:sequence>
+					<xs:element name="userAuth" type="UserAuth" />
+				</xs:sequence>
+			</xs:complexType>
+			<!--
+		======================================================================================================================== -->
+
+			<xs:complexType name="getParticipantsResponse">
+				<xs:sequence>
+					<xs:element name="OutMessage" type="OutMessage" />
+					<xs:element name="participants" type="ParticipantArray" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="getGroupResponse">
+				<xs:sequence>
+					<xs:element name="OutMessage" type="OutMessage" />
+					<xs:element name="group" type="Group" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="getAllGroupsResponse">
+				<xs:sequence>
+					<xs:element name="OutMessage" type="OutMessage" />
+					<xs:element name="groups" type="GroupsArray" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="getAllUsersResponse">
+				<xs:sequence>
+					<xs:element name="OutMessage" type="OutMessage" />
+					<xs:element name="users" type="UserArray" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="getUserResponse">
+				<xs:sequence>
+					<xs:element name="OutMessage" type="OutMessage" />
+					<xs:element name="user" type="User" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="getAuditTrailsResponse">
+				<xs:sequence>
+					<xs:element name="OutMessage" type="OutMessage" />
+					<xs:element name="auditTrails" type="AuditTrailArray" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="getWorkItemByTagResponse">
+				<xs:sequence>
+					<xs:element name="OutMessage" type="OutMessage" />
+					<xs:element name="workItem" type="WorkItem" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="getWorkItemsResponse">
+				<xs:sequence>
+					<xs:element name="OutMessage" type="OutMessage" />
+					<xs:element name="workItems" type="WorkItemArray" minOccurs="0" nillable="true" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="getAllWorkQNamesResponse">
+				<xs:sequence>
+					<xs:element name="OutMessage" type="OutMessage" />
+					<xs:element name="workQNames" type="StringArray" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="getProcedureResponse">
+				<xs:sequence>
+					<xs:element name="OutMessage" type="OutMessage" />
+					<xs:element name="procedure" type="Procedure" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="getAllNormalStepsResponse">
+				<xs:sequence>
+					<xs:element name="OutMessage" type="OutMessage" />
+					<xs:element name="steps" type="StepArray" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="getNormalStepVariablesResponse">
+				<xs:sequence>
+					<xs:element name="OutMessage" type="OutMessage" />
+					<xs:element name="stepVariables" type="StepVariableArray" />
+				</xs:sequence>
+			</xs:complexType>
+
+			<xs:complexType name="startCaseResponse">
+				<xs:sequence>
+					<xs:element name="OutMessage" type="OutMessage" />
+					<xs:element name="caseNum" type="xsd:string" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:schema>
+
+	</types>
+
+	<!--
+		========================================================================================================================
+		getAllowedTransFuncs startCase getWorkItemList getWorkItemListByFuncCode getCaseFieldsByCaseGUID getCaseFieldByCaseGUID
+		getAuditTrailsByCaseGUID setCaseFieldsByCaseGUID sendWorkItem
+		=======================================================================================================================================
+	-->
+	<message name="getProcedureRequest">
+		<part name="request" type="types:getProcedureRequest" />
+	</message>
+	<message name="getProcedureResponse">
+		<part name="response" type="types:getProcedureResponse" />
+	</message>
+
+	<message name="getAllNormalStepsRequest">
+		<part name="request" type="types:getAllNormalStepsRequest" />
+	</message>
+	<message name="getAllNormalStepsResponse">
+		<part name="response" type="types:getAllNormalStepsResponse" />
+	</message>
+	<message name="getNormalStepVariablesRequest">
+		<part name="request" type="types:getNormalStepVariablesRequest" />
+	</message>
+	<message name="getNormalStepVariablesResponse">
+		<part name="response" type="types:getNormalStepVariablesResponse" />
+	</message>
+
+	<message name="startCaseRequest">
+		<part name="request" type="types:startCaseRequest" />
+	</message>
+	<message name="startCaseResponse">
+		<part name="response" type="types:startCaseResponse" />
+	</message>
+	<message name="closeCaseRequest">
+		<part name="request" type="types:closeCaseRequest" />
+	</message>
+	<message name="closeCaseResponse">
+		<part name="OutMessage" type="types:OutMessage" />
+	</message>
+	<message name="getAllWorkQNamesRequest">
+		<part name="request" type="types:getAllWorkQNamesRequest" />
+	</message>
+	<message name="getAllWorkQNamesResponse">
+		<part name="response" type="types:getAllWorkQNamesResponse" />
+	</message>
+	<message name="getWorkItemsRequest">
+		<part name="request" type="types:getWorkItemsRequest" />
+	</message>
+	<message name="getWorkItemsResponse">
+		<part name="response" type="types:getWorkItemsResponse" />
+	</message>
+	<message name="getWorkItemByTagRequest">
+		<part name="request" type="types:getWorkItemByTagRequest" />
+	</message>
+	<message name="getWorkItemByTagResponse">
+		<part name="response" type="types:getWorkItemByTagResponse" />
+	</message>
+	<message name="getAuditTrailsRequest">
+		<part name="request" type="types:getAuditTrailsRequest" />
+	</message>
+	<message name="getAuditTrailsResponse">
+		<part name="response" type="types:getAuditTrailsResponse" />
+	</message>
+	<message name="keepWorkItemRequest">
+		<part name="request" type="types:keepWorkItemRequest" />
+	</message>
+	<message name="keepWorkItemResponse">
+		<part name="OutMessage" type="types:OutMessage" />
+	</message>
+	<message name="releaseWorkItemRequest">
+		<part name="request" type="types:releaseWorkItemRequest" />
+	</message>
+	<message name="releaseWorkItemResponse">
+		<part name="OutMessage" type="types:OutMessage" />
+	</message>
+	<message name="forwardWorkItemRequest">
+		<part name="request" type="types:forwardWorkItemRequest" />
+	</message>
+	<message name="forwardWorkItemResponse">
+		<part name="OutMessage" type="types:OutMessage" />
+	</message>
+	<message name="getAllUsersRequest">
+		<part name="request" type="types:getAllUsersRequest" />
+	</message>
+	<message name="getAllUsersResponse">
+		<part name="response" type="types:getAllUsersResponse" />
+	</message>
+	<message name="getUserRequest">
+		<part name="request" type="types:getUserRequest" />
+	</message>
+	<message name="getUserResponse">
+		<part name="response" type="types:getUserResponse" />
+	</message>
+	<message name="createUserRequest">
+		<part name="request" type="types:createUserRequest" />
+	</message>
+	<message name="createUserResponse">
+		<part name="OutMessage" type="types:OutMessage" />
+	</message>
+	<message name="updateUserRequest">
+		<part name="request" type="types:updateUserRequest" />
+	</message>
+	<message name="updateUserResponse">
+		<part name="OutMessage" type="types:OutMessage" />
+	</message>
+	<message name="deleteUserRequest">
+		<part name="request" type="types:deleteUserRequest" />
+	</message>
+	<message name="deleteUserResponse">
+		<part name="OutMessage" type="types:OutMessage" />
+	</message>
+	<message name="setUserSupervisorRequest">
+		<part name="request" type="types:setUserSupervisorRequest" />
+	</message>
+	<message name="setUserSupervisorResponse">
+		<part name="OutMessage" type="types:OutMessage" />
+	</message>
+	<message name="getAllGroupsRequest">
+		<part name="request" type="types:getAllGroupsRequest" />
+	</message>
+	<message name="getAllGroupsResponse">
+		<part name="response" type="types:getAllGroupsResponse" />
+	</message>
+	<message name="getGroupRequest">
+		<part name="request" type="types:getGroupRequest" />
+	</message>
+	<message name="getGroupResponse">
+		<part name="response" type="types:getGroupResponse" />
+	</message>
+	<message name="createGroupRequest">
+		<part name="request" type="types:createGroupRequest" />
+	</message>
+	<message name="createGroupResponse">
+		<part name="OutMessage" type="types:OutMessage" />
+	</message>
+	<message name="deleteGroupRequest">
+		<part name="request" type="types:deleteGroupRequest" />
+	</message>
+	<message name="deleteGroupResponse">
+		<part name="OutMessage" type="types:OutMessage" />
+	</message>
+	<message name="addUserToGroupRequest">
+		<part name="request" type="types:addUserToGroupRequest" />
+	</message>
+	<message name="addUserToGroupResponse">
+		<part name="OutMessage" type="types:OutMessage" />
+	</message>
+	<message name="removeUserFromGroupRequest">
+		<part name="request" type="types:removeUserFromGroupRequest" />
+	</message>
+	<message name="removeUserFromGroupResponse">
+		<part name="OutMessage" type="types:OutMessage" />
+	</message>
+	<message name="setGroupSupervisorRequest">
+		<part name="request" type="types:setGroupSupervisorRequest" />
+	</message>
+	<message name="setGroupSupervisorResponse">
+		<part name="OutMessage" type="types:OutMessage" />
+	</message>
+	<message name="getParticipantsRequest">
+		<part name="request" type="types:getParticipantsRequest" />
+	</message>
+	<message name="getParticipantsResponse">
+		<part name="response" type="types:getParticipantsResponse" />
+	</message>
+	<message name="addParticipantRequest">
+		<part name="request" type="types:addParticipantRequest" />
+	</message>
+	<message name="addParticipantResponse">
+		<part name="OutMessage" type="types:OutMessage" />
+	</message>
+	<message name="removeParticipantRequest">
+		<part name="request" type="types:removeParticipantRequest" />
+	</message>
+	<message name="removeParticipantResponse">
+		<part name="OutMessage" type="types:OutMessage" />
+	</message>
+	<message name="moveSysInfoRequest">
+		<part name="request" type="types:moveSysInfoRequest" />
+	</message>
+	<message name="moveSysInfoResponse">
+		<part name="OutMessage" type="types:OutMessage" />
+	</message>
+	<!-- =========portType============================================================================== -->
+	<portType name="getProcedurePortType">
+		<operation name="getProcedure">
+			<input message="tns:getProcedureRequest" />
+			<output message="tns:getProcedureResponse" />
+		</operation>
+	</portType>
+	<portType name="getAllNormalStepsPortType">
+		<operation name="getAllNormalSteps">
+			<input message="tns:getAllNormalStepsRequest" />
+			<output message="tns:getAllNormalStepsResponse" />
+		</operation>
+	</portType>
+	<portType name="getNormalStepVariablesPortType">
+		<operation name="getNormalStepVariables">
+			<input message="tns:getNormalStepVariablesRequest" />
+			<output message="tns:getNormalStepVariablesResponse" />
+		</operation>
+	</portType>
+	<portType name="startCasePortType">
+		<operation name="startCase">
+			<input message="tns:startCaseRequest" />
+			<output message="tns:startCaseResponse" />
+		</operation>
+	</portType>
+	<portType name="closeCasePortType">
+		<operation name="closeCase">
+			<input message="tns:closeCaseRequest" />
+			<output message="tns:closeCaseResponse" />
+		</operation>
+	</portType>
+	<portType name="getAllWorkQNamesPortType">
+		<operation name="getAllWorkQNames">
+			<input message="tns:getAllWorkQNamesRequest" />
+			<output message="tns:getAllWorkQNamesResponse" />
+		</operation>
+	</portType>
+	<portType name="getWorkItemsPortType">
+		<operation name="getWorkItems">
+			<input message="tns:getWorkItemsRequest" />
+			<output message="tns:getWorkItemsResponse" />
+		</operation>
+	</portType>
+	<portType name="getWorkItemByTagPortType">
+		<operation name="getWorkItemByTag">
+			<input message="tns:getWorkItemByTagRequest" />
+			<output message="tns:getWorkItemByTagResponse" />
+		</operation>
+	</portType>
+	<portType name="getAuditTrailsPortType">
+		<operation name="getAuditTrails">
+			<input message="tns:getAuditTrailsRequest" />
+			<output message="tns:getAuditTrailsResponse" />
+		</operation>
+	</portType>
+	<portType name="keepWorkItemPortType">
+		<operation name="keepWorkItem">
+			<input message="tns:keepWorkItemRequest" />
+			<output message="tns:keepWorkItemResponse" />
+		</operation>
+	</portType>
+	<portType name="releaseWorkItemPortType">
+		<operation name="releaseWorkItem">
+			<input message="tns:releaseWorkItemRequest" />
+			<output message="tns:releaseWorkItemResponse" />
+		</operation>
+	</portType>
+	<portType name="forwardWorkItemPortType">
+		<operation name="forwardWorkItem">
+			<input message="tns:forwardWorkItemRequest" />
+			<output message="tns:forwardWorkItemResponse" />
+		</operation>
+	</portType>
+	<portType name="getAllUsersPortType">
+		<operation name="getAllUsers">
+			<input message="tns:getAllUsersRequest" />
+			<output message="tns:getAllUsersResponse" />
+		</operation>
+	</portType>
+	<portType name="getUserPortType">
+		<operation name="getUser">
+			<input message="tns:getUserRequest" />
+			<output message="tns:getUserResponse" />
+		</operation>
+	</portType>
+	<portType name="createUserPortType">
+		<operation name="createUser">
+			<input message="tns:createUserRequest" />
+			<output message="tns:createUserResponse" />
+		</operation>
+	</portType>
+	<portType name="updateUserPortType">
+		<operation name="updateUser">
+			<input message="tns:updateUserRequest" />
+			<output message="tns:updateUserResponse" />
+		</operation>
+	</portType>
+	<portType name="deleteUserPortType">
+		<operation name="deleteUser">
+			<input message="tns:deleteUserRequest" />
+			<output message="tns:deleteUserResponse" />
+		</operation>
+	</portType>
+	<portType name="setUserSupervisorPortType">
+		<operation name="setUserSupervisor">
+			<input message="tns:setUserSupervisorRequest" />
+			<output message="tns:setUserSupervisorResponse" />
+		</operation>
+	</portType>
+	<portType name="getAllGroupsPortType">
+		<operation name="getAllGroups">
+			<input message="tns:getAllGroupsRequest" />
+			<output message="tns:getAllGroupsResponse" />
+		</operation>
+	</portType>
+	<portType name="getGroupPortType">
+		<operation name="getGroup">
+			<input message="tns:getGroupRequest" />
+			<output message="tns:getGroupResponse" />
+		</operation>
+	</portType>
+	<portType name="createGroupPortType">
+		<operation name="createGroup">
+			<input message="tns:createGroupRequest" />
+			<output message="tns:createGroupResponse" />
+		</operation>
+	</portType>
+	<portType name="deleteGroupPortType">
+		<operation name="deleteGroup">
+			<input message="tns:deleteGroupRequest" />
+			<output message="tns:deleteGroupResponse" />
+		</operation>
+	</portType>
+	<portType name="addUserToGroupPortType">
+		<operation name="addUserToGroup">
+			<input message="tns:addUserToGroupRequest" />
+			<output message="tns:addUserToGroupResponse" />
+		</operation>
+	</portType>
+	<portType name="removeUserFromGroupPortType">
+		<operation name="removeUserFromGroup">
+			<input message="tns:removeUserFromGroupRequest" />
+			<output message="tns:removeUserFromGroupResponse" />
+		</operation>
+	</portType>
+	<portType name="setGroupSupervisorPortType">
+		<operation name="setGroupSupervisor">
+			<input message="tns:setGroupSupervisorRequest" />
+			<output message="tns:setGroupSupervisorResponse" />
+		</operation>
+	</portType>
+	<portType name="getParticipantsPortType">
+		<operation name="getParticipants">
+			<input message="tns:getParticipantsRequest" />
+			<output message="tns:getParticipantsResponse" />
+		</operation>
+	</portType>
+	<portType name="addParticipantPortType">
+		<operation name="addParticipant">
+			<input message="tns:addParticipantRequest" />
+			<output message="tns:addParticipantResponse" />
+		</operation>
+	</portType>
+	<portType name="removeParticipantPortType">
+		<operation name="removeParticipant">
+			<input message="tns:removeParticipantRequest" />
+			<output message="tns:removeParticipantResponse" />
+		</operation>
+	</portType>
+	<portType name="moveSysInfoPortType">
+		<operation name="moveSysInfo">
+			<input message="tns:moveSysInfoRequest" />
+			<output message="tns:moveSysInfoResponse" />
+		</operation>
+	</portType>
+	<binding name="getProcedureBinding" type="tns:getProcedurePortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="getProcedure">
+			<soap:operation soapAction="getProcedure" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="getAllNormalStepsBinding" type="tns:getAllNormalStepsPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="getAllNormalSteps">
+			<soap:operation soapAction="getAllNormalSteps" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="getNormalStepVariablesBinding" type="tns:getNormalStepVariablesPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="getNormalStepVariables">
+			<soap:operation soapAction="getNormalStepVariables" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+
+	<binding name="startCaseBinding" type="tns:startCasePortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="startCase">
+			<soap:operation soapAction="startCase" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="closeCaseBinding" type="tns:closeCasePortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="closeCase">
+			<soap:operation soapAction="closeCase" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="getAllWorkQNamesBinding" type="tns:getAllWorkQNamesPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="getAllWorkQNames">
+			<soap:operation soapAction="getAllWorkQNames" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="getWorkItemsBinding" type="tns:getWorkItemsPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="getWorkItems">
+			<soap:operation soapAction="getWorkItems" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="getWorkItemByTagBinding" type="tns:getWorkItemByTagPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="getWorkItemByTag">
+			<soap:operation soapAction="getWorkItemByTag" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="getAuditTrailsBinding" type="tns:getAuditTrailsPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="getAuditTrails">
+			<soap:operation soapAction="getAuditTrails" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="keepWorkItemBinding" type="tns:keepWorkItemPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="keepWorkItem">
+			<soap:operation soapAction="keepWorkItem" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="forwardWorkItemBinding" type="tns:forwardWorkItemPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="forwardWorkItem">
+			<soap:operation soapAction="forwardWorkItem" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="getAllUsersBinding" type="tns:getAllUsersPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="getAllUsers">
+			<soap:operation soapAction="getAllUsers" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="getUserBinding" type="tns:getUserPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="getUser">
+			<soap:operation soapAction="getUser" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="createUserBinding" type="tns:createUserPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="createUser">
+			<soap:operation soapAction="createUser" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="updateUserBinding" type="tns:updateUserPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="updateUser">
+			<soap:operation soapAction="updateUser" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="deleteUserBinding" type="tns:deleteUserPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="deleteUser">
+			<soap:operation soapAction="deleteUser" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="setUserSupervisorBinding" type="tns:setUserSupervisorPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="setUserSupervisor">
+			<soap:operation soapAction="setUserSupervisor" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="getAllGroupsBinding" type="tns:getAllGroupsPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="getAllGroups">
+			<soap:operation soapAction="getAllGroups" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="getGroupBinding" type="tns:getGroupPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="getGroup">
+			<soap:operation soapAction="getGroup" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="createGroupBinding" type="tns:createGroupPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="createGroup">
+			<soap:operation soapAction="createGroup" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="deleteGroupBinding" type="tns:deleteGroupPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="deleteGroup">
+			<soap:operation soapAction="deleteGroup" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="addUserToGroupBinding" type="tns:addUserToGroupPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="addUserToGroup">
+			<soap:operation soapAction="addUserToGroup" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="removeUserFromGroupBinding" type="tns:removeUserFromGroupPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="removeUserFromGroup">
+			<soap:operation soapAction="removeUserFromGroup" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="setGroupSupervisorBinding" type="tns:setGroupSupervisorPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="setGroupSupervisor">
+			<soap:operation soapAction="setGroupSupervisor" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="getParticipantsBinding" type="tns:getParticipantsPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="getParticipants">
+			<soap:operation soapAction="getParticipants" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="addParticipantBinding" type="tns:addParticipantPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="addParticipant">
+			<soap:operation soapAction="addParticipant" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="removeParticipantBinding" type="tns:removeParticipantPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="removeParticipant">
+			<soap:operation soapAction="removeParticipant" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="moveSysInfoBinding" type="tns:moveSysInfoPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="moveSysInfo">
+			<soap:operation soapAction="moveSysInfo" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="releaseWorkItemBinding" type="tns:releaseWorkItemPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="releaseWorkItem">
+			<soap:operation soapAction="releaseWorkItem" style="document" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<service name="SSOService">
+		<port binding="tns:getProcedureBinding" name="getProcedureServicePort">
+			<soap:address location="http://localhost:9080/axis/services/getProcedureService" />
+		</port>
+		<port binding="tns:getAllNormalStepsBinding" name="getAllNormalStepsServicePort">
+			<soap:address location="http://localhost:9080/axis/services/getAllNormalStepsService" />
+		</port>
+		<port binding="tns:getNormalStepVariablesBinding" name="getNormalStepVariablesServicePort">
+			<soap:address location="http://localhost:9080/axis/services/getNormalStepVariablesService" />
+		</port>
+		<port binding="tns:startCaseBinding" name="startCaseServicePort">
+			<soap:address location="http://localhost:9080/axis/services/startCaseService" />
+		</port>
+		<port binding="tns:closeCaseBinding" name="closeCaseServicePort">
+			<soap:address location="http://localhost:9080/axis/services/closeCaseService" />
+		</port>
+		<port binding="tns:getAllWorkQNamesBinding" name="getAllWorkQNamesServicePort">
+			<soap:address location="http://localhost:9080/axis/services/getAllWorkQNamesService" />
+		</port>
+		<port binding="tns:getWorkItemsBinding" name="getWorkItemsServicePort">
+			<soap:address location="http://localhost:9080/axis/services/getWorkItemsService" />
+		</port>
+		<port binding="tns:getWorkItemByTagBinding" name="getWorkItemByTagServicePort">
+			<soap:address location="http://localhost:9080/axis/services/getWorkItemByTagService" />
+		</port>
+		<port binding="tns:getAuditTrailsBinding" name="getAuditTrailsServicePort">
+			<soap:address location="http://localhost:9080/axis/services/getAuditTrailsService" />
+		</port>
+		<port binding="tns:keepWorkItemBinding" name="keepWorkItemServicePort">
+			<soap:address location="http://localhost:9080/axis/services/keepWorkItemService" />
+		</port>
+		<port binding="tns:releaseWorkItemBinding" name="releaseWorkItemServicePort">
+			<soap:address location="http://localhost:9080/axis/services/releaseWorkItemService" />
+		</port>
+		<port binding="tns:forwardWorkItemBinding" name="forwardWorkItemServicePort">
+			<soap:address location="http://localhost:9080/axis/services/forwardWorkItemService" />
+		</port>
+		<port binding="tns:getAllUsersBinding" name="getAllUsersServicePort">
+			<soap:address location="http://localhost:9080/axis/services/getAllUsersService" />
+		</port>
+		<port binding="tns:getUserBinding" name="getUserServicePort">
+			<soap:address location="http://localhost:9080/axis/services/getUserService" />
+		</port>
+		<port binding="tns:createUserBinding" name="createUserServicePort">
+			<soap:address location="http://localhost:9080/axis/services/createUserService" />
+		</port>
+		<port binding="tns:updateUserBinding" name="updateUserServicePort">
+			<soap:address location="http://localhost:9080/axis/services/updateUserService" />
+		</port>
+		<port binding="tns:deleteUserBinding" name="deleteUserServicePort">
+			<soap:address location="http://localhost:9080/axis/services/deleteUserService" />
+		</port>
+		<port binding="tns:setUserSupervisorBinding" name="setUserSupervisorServicePort">
+			<soap:address location="http://localhost:9080/axis/services/setUserSupervisorService" />
+		</port>
+		<port binding="tns:getAllGroupsBinding" name="getAllGroupsServicePort">
+			<soap:address location="http://localhost:9080/axis/services/getAllGroupsService" />
+		</port>
+		<port binding="tns:getGroupBinding" name="getGroupServicePort">
+			<soap:address location="http://localhost:9080/axis/services/getGroupService" />
+		</port>
+		<port binding="tns:createGroupBinding" name="createGroupServicePort">
+			<soap:address location="http://localhost:9080/axis/services/createGroupService" />
+		</port>
+		<port binding="tns:deleteGroupBinding" name="deleteGroupServicePort">
+			<soap:address location="http://localhost:9080/axis/services/deleteGroupService" />
+		</port>
+		<port binding="tns:addUserToGroupBinding" name="addUserToGroupServicePort">
+			<soap:address location="http://localhost:9080/axis/services/addUserToGroupService" />
+		</port>
+		<port binding="tns:removeUserFromGroupBinding" name="removeUserFromGroupServicePort">
+			<soap:address location="http://localhost:9080/axis/services/removeUserFromGroupService" />
+		</port>
+		<port binding="tns:setGroupSupervisorBinding" name="setGroupSupervisorServicePort">
+			<soap:address location="http://localhost:9080/axis/services/setGroupSupervisorService" />
+		</port>
+		<port binding="tns:getParticipantsBinding" name="getParticipantsServicePort">
+			<soap:address location="http://localhost:9080/axis/services/getParticipantsService" />
+		</port>
+		<port binding="tns:addParticipantBinding" name="addParticipantServicePort">
+			<soap:address location="http://localhost:9080/axis/services/addParticipantService" />
+		</port>
+		<port binding="tns:removeParticipantBinding" name="removeParticipantServicePort">
+			<soap:address location="http://localhost:9080/axis/services/removeParticipantService" />
+		</port>
+		<port binding="tns:moveSysInfoBinding" name="moveSysInfoServicePort">
+			<soap:address location="http://localhost:9080/axis/services/moveSysInfoService" />
+		</port>
+	</service>
+</definitions>

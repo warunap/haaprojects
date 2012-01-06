@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project name="test" default="wsdl2java" basedir=".">
+
+	<path id="axis.classpath">
+		<fileset dir="..\webapps\WEB-INF\lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	<taskdef resource="axis-tasks.properties"
+		classpathref="axis.classpath" />
+
+	<target name="build.make" />
+
+	<target name="wsdl2java" depends="build.make">
+		<axis-wsdl2java output="client" verbose="true" serverside="true"
+			url="../webapps/wsdl/test/TCB_FLOW_WS.wsdl" noimports="true">
+		</axis-wsdl2java>
+	</target>
+
+	<target name="wsdl2java_searchtest" depends="build.make">
+		<axis-wsdl2java output="client" verbose="true" serverside="true"
+			url="../webapps/wsdl/test/WSDL_Search.wsdl" noimports="true">
+		</axis-wsdl2java>
+	</target>
+
+	<target name="docs.wsdl"
+		description="generates wsdl based on the existing web services">
+		<mkdir dir="wsdl/html" />
+
+		<xslt basedir="doc" destdir="wsdl/html" extension=".html"
+			style="wsdl_viewer.xsl">
+		</xslt>
+
+	</target>
+
+</project>

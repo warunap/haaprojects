@@ -1,0 +1,628 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+	<handler type="java:org.apache.axis.handlers.http.URLMapper" name="URLMapper" />
+	<service name="hello" provider="java:RPC">
+		<parameter name="className" value="c4j.haa.ws.HelloService" />
+		<parameter name="allowedMethods" value="getHello" />
+		<!-- Application,Session,Scope -->
+		<parameter name="scope" value="Application" />
+	</service>
+
+	<service name="zhello" provider="java:RPC">
+		<parameter name="className" value="c4j.haa.ws.ZHelloService" />
+		<parameter name="allowedMethods" value="hello,问好" />
+		<!-- Application,Session,Scope -->
+		<parameter name="scope" value="Application" />
+	</service>
+
+	<!-- Services from StockQuoteService WSDL service -->
+	<service name="getCaseFieldService" provider="java:RPC" style="rpc" use="literal">
+		<parameter name="wsdlTargetNamespace" value="http://tcb.com/flow/soap/wsdl" />
+		<parameter name="wsdlServiceElement" value="FlowService" />
+		<parameter name="schemaQualified" value="http://tcb.com/flow/soap" />
+		<parameter name="wsdlServicePort" value="getCaseFieldService" />
+		<parameter name="className" value="com.tcb.flow.soap.wsdl.GetCaseFieldBindingImpl" />
+		<parameter name="wsdlPortType" value="getCaseFieldPortType" />
+		<parameter name="typeMappingVersion" value="1.2" />
+		<operation name="getCaseField" qname="getCaseField" soapAction="getCaseField">
+			<parameter qname="userAuth" type="tns:UserAuth" xmlns:tns="http://tcb.com/flow/soap" />
+			<parameter qname="workItemTag" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema" />
+			<parameter qname="fieldName" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema" />
+			<parameter qname="field" type="tns:Field" xmlns:tns="http://tcb.com/flow/soap" mode="OUT" />
+			<parameter qname="OutMessage" type="tns:OutMessage" xmlns:tns="http://tcb.com/flow/soap" mode="OUT" />
+		</operation>
+		<parameter name="allowedMethods" value="getCaseField" />
+
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrailGroup" type="java:com.tcb.flow.soap.AuditTrail[]"
+			innerType="cmp-ns:AuditTrail" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFunc" type="java:com.tcb.flow.soap.TransFunc"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:CaseInfo" type="java:com.tcb.flow.soap.CaseInfo"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:OutMessage" type="java:com.tcb.flow.soap.OutMessage"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItem" type="java:com.tcb.flow.soap.WorkItem"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:workItemOperationType"
+			type="java:com.tcb.flow.soap.WorkItemOperationType" serializer="org.apache.axis.encoding.ser.EnumSerializerFactory"
+			deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFuncGroup" type="java:com.tcb.flow.soap.TransFunc[]"
+			innerType="cmp-ns:TransFunc" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrail" type="java:com.tcb.flow.soap.AuditTrail"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:FieldGroup" type="java:com.tcb.flow.soap.Field[]"
+			innerType="cmp-ns:Field" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItemGroup" type="java:com.tcb.flow.soap.WorkItem[]"
+			innerType="cmp-ns:WorkItem" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:Field" type="java:com.tcb.flow.soap.Field"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:UserAuth" type="java:com.tcb.flow.soap.UserAuth"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+	</service>
+	<service name="getWorkItemListService" provider="java:RPC" style="rpc" use="literal">
+		<parameter name="wsdlTargetNamespace" value="http://tcb.com/flow/soap/wsdl" />
+		<parameter name="wsdlServiceElement" value="FlowService" />
+		<parameter name="schemaQualified" value="http://tcb.com/flow/soap" />
+		<parameter name="wsdlServicePort" value="getWorkItemListService" />
+		<parameter name="className" value="com.tcb.flow.soap.wsdl.GetWorkItemListBindingImpl" />
+		<parameter name="wsdlPortType" value="getWorkItemListPortType" />
+		<parameter name="typeMappingVersion" value="1.2" />
+		<operation name="getWorkItemList" qname="getWorkItemList" soapAction="getWorkItemList">
+			<parameter qname="userAuth" type="tns:UserAuth" xmlns:tns="http://tcb.com/flow/soap" />
+			<parameter qname="workitems" type="tns:WorkItemGroup" xmlns:tns="http://tcb.com/flow/soap" mode="OUT" itemQName="itns:workItem"
+				xmlns:itns="http://tcb.com/flow/soap" />
+			<parameter qname="OutMessage" type="tns:OutMessage" xmlns:tns="http://tcb.com/flow/soap" mode="OUT" />
+		</operation>
+		<parameter name="allowedMethods" value="getWorkItemList" />
+
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrailGroup" type="java:com.tcb.flow.soap.AuditTrail[]"
+			innerType="cmp-ns:AuditTrail" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFunc" type="java:com.tcb.flow.soap.TransFunc"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:CaseInfo" type="java:com.tcb.flow.soap.CaseInfo"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:OutMessage" type="java:com.tcb.flow.soap.OutMessage"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItem" type="java:com.tcb.flow.soap.WorkItem"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:workItemOperationType"
+			type="java:com.tcb.flow.soap.WorkItemOperationType" serializer="org.apache.axis.encoding.ser.EnumSerializerFactory"
+			deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFuncGroup" type="java:com.tcb.flow.soap.TransFunc[]"
+			innerType="cmp-ns:TransFunc" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrail" type="java:com.tcb.flow.soap.AuditTrail"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:FieldGroup" type="java:com.tcb.flow.soap.Field[]"
+			innerType="cmp-ns:Field" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItemGroup" type="java:com.tcb.flow.soap.WorkItem[]"
+			innerType="cmp-ns:WorkItem" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:Field" type="java:com.tcb.flow.soap.Field"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:UserAuth" type="java:com.tcb.flow.soap.UserAuth"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+	</service>
+	<service name="getCaseStatusService" provider="java:RPC" style="rpc" use="literal">
+		<parameter name="wsdlTargetNamespace" value="http://tcb.com/flow/soap/wsdl" />
+		<parameter name="wsdlServiceElement" value="FlowService" />
+		<parameter name="schemaQualified" value="http://tcb.com/flow/soap" />
+		<parameter name="wsdlServicePort" value="getCaseStatusService" />
+		<parameter name="className" value="com.tcb.flow.soap.wsdl.GetCaseStatusBindingImpl" />
+		<parameter name="wsdlPortType" value="getCaseStatusPortType" />
+		<parameter name="typeMappingVersion" value="1.2" />
+		<operation name="getCaseStatus" qname="getCaseStatus" soapAction="getCaseStatus">
+			<parameter qname="userAuth" type="tns:UserAuth" xmlns:tns="http://tcb.com/flow/soap" />
+			<parameter qname="caseGUID" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema" />
+			<parameter qname="caseInfo" type="tns:CaseInfo" xmlns:tns="http://tcb.com/flow/soap" mode="OUT" />
+			<parameter qname="OutMessage" type="tns:OutMessage" xmlns:tns="http://tcb.com/flow/soap" mode="OUT" />
+		</operation>
+		<parameter name="allowedMethods" value="getCaseStatus" />
+
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrailGroup" type="java:com.tcb.flow.soap.AuditTrail[]"
+			innerType="cmp-ns:AuditTrail" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFunc" type="java:com.tcb.flow.soap.TransFunc"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:CaseInfo" type="java:com.tcb.flow.soap.CaseInfo"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:OutMessage" type="java:com.tcb.flow.soap.OutMessage"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItem" type="java:com.tcb.flow.soap.WorkItem"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:workItemOperationType"
+			type="java:com.tcb.flow.soap.WorkItemOperationType" serializer="org.apache.axis.encoding.ser.EnumSerializerFactory"
+			deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFuncGroup" type="java:com.tcb.flow.soap.TransFunc[]"
+			innerType="cmp-ns:TransFunc" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrail" type="java:com.tcb.flow.soap.AuditTrail"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:FieldGroup" type="java:com.tcb.flow.soap.Field[]"
+			innerType="cmp-ns:Field" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItemGroup" type="java:com.tcb.flow.soap.WorkItem[]"
+			innerType="cmp-ns:WorkItem" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:Field" type="java:com.tcb.flow.soap.Field"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:UserAuth" type="java:com.tcb.flow.soap.UserAuth"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+	</service>
+	<service name="sendWorkItemService" provider="java:RPC" style="rpc" use="literal">
+		<parameter name="wsdlTargetNamespace" value="http://tcb.com/flow/soap/wsdl" />
+		<parameter name="wsdlServiceElement" value="FlowService" />
+		<parameter name="schemaQualified" value="http://tcb.com/flow/soap" />
+		<parameter name="wsdlServicePort" value="sendWorkItemService" />
+		<parameter name="className" value="com.tcb.flow.soap.wsdl.SendWorkItemBindingImpl" />
+		<parameter name="wsdlPortType" value="sendWorkItemPortType" />
+		<parameter name="typeMappingVersion" value="1.2" />
+		<operation name="sendWorkItem" qname="sendWorkItem" soapAction="sendWorkItem">
+			<parameter qname="userAuth" type="tns:UserAuth" xmlns:tns="http://tcb.com/flow/soap" />
+			<parameter qname="workItemTag" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema" />
+			<parameter qname="action" type="tns:workItemOperationType" xmlns:tns="http://tcb.com/flow/soap" />
+			<parameter qname="fields" type="tns:FieldGroup" xmlns:tns="http://tcb.com/flow/soap" itemQName="itns:field"
+				xmlns:itns="http://tcb.com/flow/soap" />
+			<parameter qname="success" type="tns:boolean" xmlns:tns="http://www.w3.org/2001/XMLSchema" mode="OUT" />
+			<parameter qname="OutMessage" type="tns:OutMessage" xmlns:tns="http://tcb.com/flow/soap" mode="OUT" />
+		</operation>
+		<parameter name="allowedMethods" value="sendWorkItem" />
+
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrailGroup" type="java:com.tcb.flow.soap.AuditTrail[]"
+			innerType="cmp-ns:AuditTrail" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFunc" type="java:com.tcb.flow.soap.TransFunc"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:CaseInfo" type="java:com.tcb.flow.soap.CaseInfo"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:OutMessage" type="java:com.tcb.flow.soap.OutMessage"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItem" type="java:com.tcb.flow.soap.WorkItem"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:workItemOperationType"
+			type="java:com.tcb.flow.soap.WorkItemOperationType" serializer="org.apache.axis.encoding.ser.EnumSerializerFactory"
+			deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFuncGroup" type="java:com.tcb.flow.soap.TransFunc[]"
+			innerType="cmp-ns:TransFunc" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrail" type="java:com.tcb.flow.soap.AuditTrail"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:FieldGroup" type="java:com.tcb.flow.soap.Field[]"
+			innerType="cmp-ns:Field" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItemGroup" type="java:com.tcb.flow.soap.WorkItem[]"
+			innerType="cmp-ns:WorkItem" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:Field" type="java:com.tcb.flow.soap.Field"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:UserAuth" type="java:com.tcb.flow.soap.UserAuth"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+	</service>
+	<service name="getCaseFieldsService" provider="java:RPC" style="rpc" use="literal">
+		<parameter name="wsdlTargetNamespace" value="http://tcb.com/flow/soap/wsdl" />
+		<parameter name="wsdlServiceElement" value="FlowService" />
+		<parameter name="schemaQualified" value="http://tcb.com/flow/soap" />
+		<parameter name="wsdlServicePort" value="getCaseFieldsService" />
+		<parameter name="className" value="com.tcb.flow.soap.wsdl.GetCaseFieldsBindingImpl" />
+		<parameter name="wsdlPortType" value="getCaseFieldsPortType" />
+		<parameter name="typeMappingVersion" value="1.2" />
+		<operation name="getCaseFields" qname="getCaseFields" soapAction="getCaseFields">
+			<parameter qname="userAuth" type="tns:UserAuth" xmlns:tns="http://tcb.com/flow/soap" />
+			<parameter qname="workItemTag" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema" />
+			<parameter qname="fields" type="tns:FieldGroup" xmlns:tns="http://tcb.com/flow/soap" mode="OUT" itemQName="itns:field"
+				xmlns:itns="http://tcb.com/flow/soap" />
+			<parameter qname="OutMessage" type="tns:OutMessage" xmlns:tns="http://tcb.com/flow/soap" mode="OUT" />
+		</operation>
+		<parameter name="allowedMethods" value="getCaseFields" />
+
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrailGroup" type="java:com.tcb.flow.soap.AuditTrail[]"
+			innerType="cmp-ns:AuditTrail" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFunc" type="java:com.tcb.flow.soap.TransFunc"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:CaseInfo" type="java:com.tcb.flow.soap.CaseInfo"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:OutMessage" type="java:com.tcb.flow.soap.OutMessage"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItem" type="java:com.tcb.flow.soap.WorkItem"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:workItemOperationType"
+			type="java:com.tcb.flow.soap.WorkItemOperationType" serializer="org.apache.axis.encoding.ser.EnumSerializerFactory"
+			deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFuncGroup" type="java:com.tcb.flow.soap.TransFunc[]"
+			innerType="cmp-ns:TransFunc" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrail" type="java:com.tcb.flow.soap.AuditTrail"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:FieldGroup" type="java:com.tcb.flow.soap.Field[]"
+			innerType="cmp-ns:Field" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItemGroup" type="java:com.tcb.flow.soap.WorkItem[]"
+			innerType="cmp-ns:WorkItem" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:Field" type="java:com.tcb.flow.soap.Field"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:UserAuth" type="java:com.tcb.flow.soap.UserAuth"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+	</service>
+	<service name="getWorkItemListByFuncCodeService" provider="java:RPC" style="rpc" use="literal">
+		<parameter name="wsdlTargetNamespace" value="http://tcb.com/flow/soap/wsdl" />
+		<parameter name="wsdlServiceElement" value="FlowService" />
+		<parameter name="schemaQualified" value="http://tcb.com/flow/soap" />
+		<parameter name="wsdlServicePort" value="getWorkItemListByFuncCodeService" />
+		<parameter name="className" value="com.tcb.flow.soap.wsdl.GetWorkItemListByFuncCodeBindingImpl" />
+		<parameter name="wsdlPortType" value="getWorkItemListByFuncCodePortType" />
+		<parameter name="typeMappingVersion" value="1.2" />
+		<operation name="getWorkItemListByFuncCode" qname="getWorkItemListByFuncCode" soapAction="getWorkItemListByFuncCode">
+			<parameter qname="userAuth" type="tns:UserAuth" xmlns:tns="http://tcb.com/flow/soap" />
+			<parameter qname="funcCode" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema" />
+			<parameter qname="workItems" type="tns:WorkItemGroup" xmlns:tns="http://tcb.com/flow/soap" mode="OUT" itemQName="itns:workItem"
+				xmlns:itns="http://tcb.com/flow/soap" />
+			<parameter qname="OutMessage" type="tns:OutMessage" xmlns:tns="http://tcb.com/flow/soap" mode="OUT" />
+		</operation>
+		<parameter name="allowedMethods" value="getWorkItemListByFuncCode" />
+
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrailGroup" type="java:com.tcb.flow.soap.AuditTrail[]"
+			innerType="cmp-ns:AuditTrail" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFunc" type="java:com.tcb.flow.soap.TransFunc"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:CaseInfo" type="java:com.tcb.flow.soap.CaseInfo"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:OutMessage" type="java:com.tcb.flow.soap.OutMessage"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItem" type="java:com.tcb.flow.soap.WorkItem"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:workItemOperationType"
+			type="java:com.tcb.flow.soap.WorkItemOperationType" serializer="org.apache.axis.encoding.ser.EnumSerializerFactory"
+			deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFuncGroup" type="java:com.tcb.flow.soap.TransFunc[]"
+			innerType="cmp-ns:TransFunc" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrail" type="java:com.tcb.flow.soap.AuditTrail"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:FieldGroup" type="java:com.tcb.flow.soap.Field[]"
+			innerType="cmp-ns:Field" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItemGroup" type="java:com.tcb.flow.soap.WorkItem[]"
+			innerType="cmp-ns:WorkItem" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:Field" type="java:com.tcb.flow.soap.Field"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:UserAuth" type="java:com.tcb.flow.soap.UserAuth"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+	</service>
+	<service name="getAuditTrailsByCaseGUIDService" provider="java:RPC" style="rpc" use="literal">
+		<parameter name="wsdlTargetNamespace" value="http://tcb.com/flow/soap/wsdl" />
+		<parameter name="wsdlServiceElement" value="FlowService" />
+		<parameter name="schemaQualified" value="http://tcb.com/flow/soap" />
+		<parameter name="wsdlServicePort" value="getAuditTrailsByCaseGUIDService" />
+		<parameter name="className" value="com.tcb.flow.soap.wsdl.GetAuditTrailsByCaseGUIDBindingImpl" />
+		<parameter name="wsdlPortType" value="getAuditTrailsByCaseGUIDPortType" />
+		<parameter name="typeMappingVersion" value="1.2" />
+		<operation name="getAuditTrailsByCaseGUID" qname="getAuditTrailsByCaseGUID" soapAction="getAuditTrailsByCaseGUID">
+			<parameter qname="userAuth" type="tns:UserAuth" xmlns:tns="http://tcb.com/flow/soap" />
+			<parameter qname="caseGUID" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema" />
+			<parameter qname="auditTrails" type="tns:AuditTrailGroup" xmlns:tns="http://tcb.com/flow/soap" mode="OUT"
+				itemQName="itns:auditTrail" xmlns:itns="http://tcb.com/flow/soap" />
+			<parameter qname="OutMessage" type="tns:OutMessage" xmlns:tns="http://tcb.com/flow/soap" mode="OUT" />
+		</operation>
+		<parameter name="allowedMethods" value="getAuditTrailsByCaseGUID" />
+
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrailGroup" type="java:com.tcb.flow.soap.AuditTrail[]"
+			innerType="cmp-ns:AuditTrail" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFunc" type="java:com.tcb.flow.soap.TransFunc"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:CaseInfo" type="java:com.tcb.flow.soap.CaseInfo"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:OutMessage" type="java:com.tcb.flow.soap.OutMessage"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItem" type="java:com.tcb.flow.soap.WorkItem"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:workItemOperationType"
+			type="java:com.tcb.flow.soap.WorkItemOperationType" serializer="org.apache.axis.encoding.ser.EnumSerializerFactory"
+			deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFuncGroup" type="java:com.tcb.flow.soap.TransFunc[]"
+			innerType="cmp-ns:TransFunc" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrail" type="java:com.tcb.flow.soap.AuditTrail"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:FieldGroup" type="java:com.tcb.flow.soap.Field[]"
+			innerType="cmp-ns:Field" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItemGroup" type="java:com.tcb.flow.soap.WorkItem[]"
+			innerType="cmp-ns:WorkItem" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:Field" type="java:com.tcb.flow.soap.Field"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:UserAuth" type="java:com.tcb.flow.soap.UserAuth"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+	</service>
+	<service name="getAllowedTransFuncsService" provider="java:RPC" style="rpc" use="literal">
+		<parameter name="wsdlTargetNamespace" value="http://tcb.com/flow/soap/wsdl" />
+		<parameter name="wsdlServiceElement" value="FlowService" />
+		<parameter name="schemaQualified" value="http://tcb.com/flow/soap" />
+		<parameter name="wsdlServicePort" value="getAllowedTransFuncsService" />
+		<parameter name="className" value="com.tcb.flow.soap.wsdl.GetAllowedTransFuncsBindingImpl" />
+		<parameter name="wsdlPortType" value="getAllowedTransFuncsPortType" />
+		<parameter name="typeMappingVersion" value="1.2" />
+		<operation name="getAllowedTransFuncs" qname="getAllowedTransFuncs" soapAction="getAllowedTransFuncs">
+			<parameter qname="userAuth" type="tns:UserAuth" xmlns:tns="http://tcb.com/flow/soap" />
+			<parameter qname="funcCode" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema" />
+			<parameter qname="transFuncs" type="tns:TransFuncGroup" xmlns:tns="http://tcb.com/flow/soap" mode="OUT"
+				itemQName="itns:transFunc" xmlns:itns="http://tcb.com/flow/soap" />
+			<parameter qname="OutMessage" type="tns:OutMessage" xmlns:tns="http://tcb.com/flow/soap" mode="OUT" />
+		</operation>
+		<parameter name="allowedMethods" value="getAllowedTransFuncs" />
+
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrailGroup" type="java:com.tcb.flow.soap.AuditTrail[]"
+			innerType="cmp-ns:AuditTrail" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFunc" type="java:com.tcb.flow.soap.TransFunc"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:CaseInfo" type="java:com.tcb.flow.soap.CaseInfo"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:OutMessage" type="java:com.tcb.flow.soap.OutMessage"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItem" type="java:com.tcb.flow.soap.WorkItem"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:workItemOperationType"
+			type="java:com.tcb.flow.soap.WorkItemOperationType" serializer="org.apache.axis.encoding.ser.EnumSerializerFactory"
+			deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFuncGroup" type="java:com.tcb.flow.soap.TransFunc[]"
+			innerType="cmp-ns:TransFunc" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrail" type="java:com.tcb.flow.soap.AuditTrail"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:FieldGroup" type="java:com.tcb.flow.soap.Field[]"
+			innerType="cmp-ns:Field" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItemGroup" type="java:com.tcb.flow.soap.WorkItem[]"
+			innerType="cmp-ns:WorkItem" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:Field" type="java:com.tcb.flow.soap.Field"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:UserAuth" type="java:com.tcb.flow.soap.UserAuth"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+	</service>
+	<service name="setCaseFieldsService" provider="java:RPC" style="rpc" use="literal">
+		<parameter name="wsdlTargetNamespace" value="http://tcb.com/flow/soap/wsdl" />
+		<parameter name="wsdlServiceElement" value="FlowService" />
+		<parameter name="schemaQualified" value="http://tcb.com/flow/soap" />
+		<parameter name="wsdlServicePort" value="setCaseFieldsService" />
+		<parameter name="className" value="com.tcb.flow.soap.wsdl.SetCaseFieldsBindingImpl" />
+		<parameter name="wsdlPortType" value="setCaseFieldsPortType" />
+		<parameter name="typeMappingVersion" value="1.2" />
+		<operation name="setCaseFields" qname="setCaseFields" soapAction="setCaseFields">
+			<parameter qname="userAuth" type="tns:UserAuth" xmlns:tns="http://tcb.com/flow/soap" />
+			<parameter qname="workItemTag" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema" />
+			<parameter qname="fields" type="tns:FieldGroup" xmlns:tns="http://tcb.com/flow/soap" itemQName="itns:field"
+				xmlns:itns="http://tcb.com/flow/soap" />
+			<parameter qname="success" type="tns:boolean" xmlns:tns="http://www.w3.org/2001/XMLSchema" mode="OUT" />
+			<parameter qname="outMessage" type="tns:OutMessage" xmlns:tns="http://tcb.com/flow/soap" mode="OUT" />
+		</operation>
+		<parameter name="allowedMethods" value="setCaseFields" />
+
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrailGroup" type="java:com.tcb.flow.soap.AuditTrail[]"
+			innerType="cmp-ns:AuditTrail" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFunc" type="java:com.tcb.flow.soap.TransFunc"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:CaseInfo" type="java:com.tcb.flow.soap.CaseInfo"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:OutMessage" type="java:com.tcb.flow.soap.OutMessage"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItem" type="java:com.tcb.flow.soap.WorkItem"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:workItemOperationType"
+			type="java:com.tcb.flow.soap.WorkItemOperationType" serializer="org.apache.axis.encoding.ser.EnumSerializerFactory"
+			deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFuncGroup" type="java:com.tcb.flow.soap.TransFunc[]"
+			innerType="cmp-ns:TransFunc" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrail" type="java:com.tcb.flow.soap.AuditTrail"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:FieldGroup" type="java:com.tcb.flow.soap.Field[]"
+			innerType="cmp-ns:Field" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItemGroup" type="java:com.tcb.flow.soap.WorkItem[]"
+			innerType="cmp-ns:WorkItem" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:Field" type="java:com.tcb.flow.soap.Field"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:UserAuth" type="java:com.tcb.flow.soap.UserAuth"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+	</service>
+	<service name="getCaseFieldsByCaseGUIDService" provider="java:RPC" style="rpc" use="literal">
+		<parameter name="wsdlTargetNamespace" value="http://tcb.com/flow/soap/wsdl" />
+		<parameter name="wsdlServiceElement" value="FlowService" />
+		<parameter name="schemaQualified" value="http://tcb.com/flow/soap" />
+		<parameter name="wsdlServicePort" value="getCaseFieldsByCaseGUIDService" />
+		<parameter name="className" value="com.tcb.flow.soap.wsdl.GetCaseFieldsByCaseGUIDBindingImpl" />
+		<parameter name="wsdlPortType" value="getCaseFieldsByCaseGUIDPortType" />
+		<parameter name="typeMappingVersion" value="1.2" />
+		<operation name="getCaseFieldsByCaseGUID" qname="getCaseFieldsByCaseGUID" soapAction="getCaseFieldsByCaseGUID">
+			<parameter qname="userAuth" type="tns:UserAuth" xmlns:tns="http://tcb.com/flow/soap" />
+			<parameter qname="caseGUID" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema" />
+			<parameter qname="fields" type="tns:FieldGroup" xmlns:tns="http://tcb.com/flow/soap" mode="OUT" itemQName="itns:field"
+				xmlns:itns="http://tcb.com/flow/soap" />
+			<parameter qname="OutMessage" type="tns:OutMessage" xmlns:tns="http://tcb.com/flow/soap" mode="OUT" />
+		</operation>
+		<parameter name="allowedMethods" value="getCaseFieldsByCaseGUID" />
+
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrailGroup" type="java:com.tcb.flow.soap.AuditTrail[]"
+			innerType="cmp-ns:AuditTrail" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFunc" type="java:com.tcb.flow.soap.TransFunc"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:CaseInfo" type="java:com.tcb.flow.soap.CaseInfo"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:OutMessage" type="java:com.tcb.flow.soap.OutMessage"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItem" type="java:com.tcb.flow.soap.WorkItem"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:workItemOperationType"
+			type="java:com.tcb.flow.soap.WorkItemOperationType" serializer="org.apache.axis.encoding.ser.EnumSerializerFactory"
+			deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFuncGroup" type="java:com.tcb.flow.soap.TransFunc[]"
+			innerType="cmp-ns:TransFunc" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrail" type="java:com.tcb.flow.soap.AuditTrail"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:FieldGroup" type="java:com.tcb.flow.soap.Field[]"
+			innerType="cmp-ns:Field" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItemGroup" type="java:com.tcb.flow.soap.WorkItem[]"
+			innerType="cmp-ns:WorkItem" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:Field" type="java:com.tcb.flow.soap.Field"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:UserAuth" type="java:com.tcb.flow.soap.UserAuth"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+	</service>
+	<service name="startCaseService" provider="java:RPC" style="rpc" use="literal">
+		<parameter name="wsdlTargetNamespace" value="http://tcb.com/flow/soap/wsdl" />
+		<parameter name="wsdlServiceElement" value="FlowService" />
+		<parameter name="schemaQualified" value="http://tcb.com/flow/soap" />
+		<parameter name="wsdlServicePort" value="startCaseService" />
+		<parameter name="className" value="com.tcb.flow.soap.wsdl.StartCaseBindingImpl" />
+		<parameter name="wsdlPortType" value="startCasePortType" />
+		<parameter name="typeMappingVersion" value="1.2" />
+		<operation name="startCase" qname="startCase" soapAction="startCase">
+			<parameter qname="userAuth" type="tns:UserAuth" xmlns:tns="http://tcb.com/flow/soap" />
+			<parameter qname="funcCode" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema" />
+			<parameter qname="caseDesc" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema" />
+			<parameter qname="fields" type="tns:FieldGroup" xmlns:tns="http://tcb.com/flow/soap" itemQName="itns:field"
+				xmlns:itns="http://tcb.com/flow/soap" />
+			<parameter qname="caseNum" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema" mode="OUT" />
+			<parameter qname="OutMessage" type="tns:OutMessage" xmlns:tns="http://tcb.com/flow/soap" mode="OUT" />
+		</operation>
+		<parameter name="allowedMethods" value="startCase" />
+
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrailGroup" type="java:com.tcb.flow.soap.AuditTrail[]"
+			innerType="cmp-ns:AuditTrail" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFunc" type="java:com.tcb.flow.soap.TransFunc"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:CaseInfo" type="java:com.tcb.flow.soap.CaseInfo"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:OutMessage" type="java:com.tcb.flow.soap.OutMessage"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItem" type="java:com.tcb.flow.soap.WorkItem"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:workItemOperationType"
+			type="java:com.tcb.flow.soap.WorkItemOperationType" serializer="org.apache.axis.encoding.ser.EnumSerializerFactory"
+			deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFuncGroup" type="java:com.tcb.flow.soap.TransFunc[]"
+			innerType="cmp-ns:TransFunc" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrail" type="java:com.tcb.flow.soap.AuditTrail"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:FieldGroup" type="java:com.tcb.flow.soap.Field[]"
+			innerType="cmp-ns:Field" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItemGroup" type="java:com.tcb.flow.soap.WorkItem[]"
+			innerType="cmp-ns:WorkItem" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:Field" type="java:com.tcb.flow.soap.Field"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:UserAuth" type="java:com.tcb.flow.soap.UserAuth"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+	</service>
+	<service name="getCaseFieldByCaseGUIDService" provider="java:RPC" style="rpc" use="literal">
+		<parameter name="wsdlTargetNamespace" value="http://tcb.com/flow/soap/wsdl" />
+		<parameter name="wsdlServiceElement" value="FlowService" />
+		<parameter name="schemaQualified" value="http://tcb.com/flow/soap" />
+		<parameter name="wsdlServicePort" value="getCaseFieldByCaseGUIDService" />
+		<parameter name="className" value="com.tcb.flow.soap.wsdl.GetCaseFieldByCaseGUIDBindingImpl" />
+		<parameter name="wsdlPortType" value="getCaseFieldByCaseGUIDPortType" />
+		<parameter name="typeMappingVersion" value="1.2" />
+		<operation name="getCaseFieldByCaseGUID" qname="getCaseFieldByCaseGUID" soapAction="getCaseFieldByCaseGUID">
+			<parameter qname="userAuth" type="tns:UserAuth" xmlns:tns="http://tcb.com/flow/soap" />
+			<parameter qname="caseGUID" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema" />
+			<parameter qname="fieldName" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema" />
+			<parameter qname="field" type="tns:Field" xmlns:tns="http://tcb.com/flow/soap" mode="OUT" />
+			<parameter qname="OutMessage" type="tns:OutMessage" xmlns:tns="http://tcb.com/flow/soap" mode="OUT" />
+		</operation>
+		<parameter name="allowedMethods" value="getCaseFieldByCaseGUID" />
+
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrailGroup" type="java:com.tcb.flow.soap.AuditTrail[]"
+			innerType="cmp-ns:AuditTrail" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFunc" type="java:com.tcb.flow.soap.TransFunc"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:CaseInfo" type="java:com.tcb.flow.soap.CaseInfo"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:OutMessage" type="java:com.tcb.flow.soap.OutMessage"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItem" type="java:com.tcb.flow.soap.WorkItem"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:workItemOperationType"
+			type="java:com.tcb.flow.soap.WorkItemOperationType" serializer="org.apache.axis.encoding.ser.EnumSerializerFactory"
+			deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:TransFuncGroup" type="java:com.tcb.flow.soap.TransFunc[]"
+			innerType="cmp-ns:TransFunc" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:AuditTrail" type="java:com.tcb.flow.soap.AuditTrail"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:FieldGroup" type="java:com.tcb.flow.soap.Field[]"
+			innerType="cmp-ns:Field" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<arrayMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:WorkItemGroup" type="java:com.tcb.flow.soap.WorkItem[]"
+			innerType="cmp-ns:WorkItem" xmlns:cmp-ns="http://tcb.com/flow/soap" encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:Field" type="java:com.tcb.flow.soap.Field"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+		<typeMapping xmlns:ns="http://tcb.com/flow/soap" qname="ns:UserAuth" type="java:com.tcb.flow.soap.UserAuth"
+			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+			encodingStyle="" />
+	</service>
+
+	<transport name="http">
+		<requestFlow>
+			<handler type="URLMapper" />
+		</requestFlow>
+	</transport>
+</deployment>

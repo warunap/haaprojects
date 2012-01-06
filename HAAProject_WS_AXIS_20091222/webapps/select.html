@@ -1,0 +1,82 @@
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>Select Option Test</title>
+		<script type="text/javascript" src="js/jquery.js"></script>
+		<script>
+		function showCode(){
+			var sel = document.getElementById("codeselect");
+			var val = sel.options[sel.selectedIndex].value;
+			document.getElementById("showcode").innerHTML =val;
+		}
+		$(document).ready(function(){
+			$(".sub").each(
+				function(){
+					var s = $(this);
+					s.html("|- "+s.html());
+				}
+			);
+		});
+		function setPrefix(sel){
+			var s=$(sel);
+			s.find(".sub").each(
+				function(){
+					var s = $(this);
+					var txt =s.html();
+					if(txt.indexOf("|-")==-1)
+						s.html("|- "+txt);
+					s.removeClass("choosed");
+			});
+			s.find("option:selected").each(function(){
+				var s = $(this);
+				var txt =s.html();
+				if(txt.indexOf("|-")!=-1)
+					s.html(txt.substring(3));
+				s.addClass("choosed");
+			});
+		}
+		</script>
+
+		<style>
+.choosed {
+	background: lightgreen;
+}
+</style>
+	</head>
+	<body>
+		<p>
+			Select Option Test
+		</p>
+		<select name="test" class="list" id="codeselect" onchange="javascript:setPrefix(this);showCode();">
+			<option value="A">
+				公安局1
+			</option>
+			<option value="A1" class="sub">
+				分局1
+			</option>
+			<option value="A2" class="sub">
+				分局2
+			</option>
+			<option value="A3" class="sub">
+				分局3
+			</option>
+			<option value="B">
+				公安局2
+			</option>
+			<option value="B1" class="sub">
+				分局1
+			</option>
+			<option value="B2" class="sub">
+				分局2
+			</option>
+			<option value="B3" class="sub">
+				分局3
+			</option>
+		</select>
+		<br />
+		你选择的公安局代码是：<BR />
+		<font id="showcode" style="font-size: 30px;"></font>
+		<BR />
+	</body>
+</html>

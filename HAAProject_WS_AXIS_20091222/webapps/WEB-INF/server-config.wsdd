@@ -15,32 +15,30 @@
 		<parameter name="scope" value="Application" />
 	</service>
 
-	<!-- Services from StockQuoteService WSDL service -->
-
-	<service name="StockQuoteService" provider="java:RPC" style="wrapped" use="literal">
-		<parameter name="wsdlTargetNamespace" value="http://stock.com/schemas/services/stock/wsdl" />
-		<parameter name="wsdlServiceElement" value="StockQuoteService" />
-		<parameter name="schemaQualified" value="http://stock.com/schemas/services/stock" />
-		<parameter name="wsdlServicePort" value="StockQuoteService" />
-		<parameter name="className" value="c4j.haa.ws.StockQuoteService" />
-		<parameter name="wsdlPortType" value="StockQuotePortType" />
+	<!-- Services from SSOService WSDL service -->
+	<service name="SearchService" provider="java:RPC" style="document" use="literal">
+		<parameter name="wsdlTargetNamespace" value="http://haa.org/search/soap/wsdl" />
+		<parameter name="wsdlServiceElement" value="SearchService" />
+		<parameter name="schemaQualified" value="http://haa.org/search/soap/api" />
+		<parameter name="wsdlServicePort" value="SearchServicePort" />
+		<parameter name="className" value="org.haa.search.soap.wsdl.SearchBindingImpl" />
+		<parameter name="wsdlPortType" value="SearchPortType" />
 		<parameter name="typeMappingVersion" value="1.2" />
-		<operation name="getStockQuote" qname="operNS:getStockQuote" xmlns:operNS="http://stock.com/schemas/services/stock"
-			returnQName="retNS:Stock" xmlns:retNS="http://stock.com/schemas/services/stock" returnType="rtns:Stock"
-			xmlns:rtns="http://stock.com/schemas/services/stock" soapAction="getStockQuote">
-			<parameter qname="pns:ticker" xmlns:pns="http://stock.com/schemas/services/stock" type="tns:string"
-				xmlns:tns="http://www.w3.org/2001/XMLSchema" />
+		<operation name="search" qname="search" soapAction="login">
+			<parameter qname="user" type="tns:User" xmlns:tns="http://haa.org/search/soap/api" />
+			<parameter qname="data" type="tns:SearchData" xmlns:tns="http://haa.org/search/soap/api" />
+			<parameter qname="result" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema" mode="OUT" />
+			<parameter qname="value" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema" mode="OUT" />
 		</operation>
-		<parameter name="allowedMethods" value="getStockQuote" />
+		<parameter name="allowedMethods" value="search" />
 
-		<typeMapping xmlns:ns="http://stock.com/schemas/services/stock" qname="ns:Quote" type="java:com.stock.schemas.services.stock.Quote"
+		<typeMapping xmlns:ns="http://haa.org/search/soap/api" qname="ns:SearchData" type="java:org.haa.search.soap.api.SearchData"
 			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
 			encodingStyle="" />
-		<typeMapping xmlns:ns="http://stock.com/schemas/services/stock" qname="ns:Stock" type="java:com.stock.schemas.services.stock.Stock"
+		<typeMapping xmlns:ns="http://haa.org/search/soap/api" qname="ns:User" type="java:org.haa.search.soap.api.User"
 			serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
 			encodingStyle="" />
 	</service>
-
 	<transport name="http">
 		<requestFlow>
 			<handler type="URLMapper" />

@@ -14,5 +14,11 @@
 	<target name="wsdl2java" depends="build.make">
 		<axis-wsdl2java output="client" verbose="true" serverside="true" url="../webapps/wsdl/example/StockQuote.wsdl" noimports="true"></axis-wsdl2java>
 	</target>
+	<target name="wsdl2java_sp_lists" depends="build.make">
+		<axis-wsdl2java output="sp_lists" verbose="true" serverside="true" url="Sp_lists.wsdl" noimports="true"></axis-wsdl2java>
+	</target>
+	<target name="wsdl2java_sp_imaging" depends="build.make">
+		<axis-wsdl2java output="sp_imaging" verbose="true" serverside="true" url="Imaging.wsdl" noimports="true"></axis-wsdl2java>
+	</target>
 
 </project>
