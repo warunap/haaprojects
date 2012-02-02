@@ -55,8 +55,7 @@ public class Property implements Serializable {
 	private int index;
 
 	/**
-	 * when the line is unfixed,the length of the value is dynamic,the
-	 * "maxLength" defines the max length of the value
+	 * when the line is unfixed,the length of the value is dynamic,the "maxLength" defines the max length of the value
 	 */
 	private int maxLength;
 
@@ -77,8 +76,7 @@ public class Property implements Serializable {
 	private String format;
 
 	/**
-	 * field precision,used when the field type is big_decimal or integer or
-	 * long
+	 * field precision,used when the field type is big_decimal or integer or long
 	 */
 	private int precision;
 
@@ -86,14 +84,12 @@ public class Property implements Serializable {
 	private int scale;
 
 	/**
-	 * whether need fill with radix point,used when the field type is
-	 * big_decimal
+	 * whether need fill with radix point,used when the field type is big_decimal
 	 */
 	private boolean needRadixPoint = false;
 
 	/**
-	 * whether need fill zero before,used when the field type is big_decimal or
-	 * integer or long
+	 * whether need fill zero before,used when the field type is big_decimal or integer or long
 	 */
 	private boolean needFillZero = false;
 
@@ -142,10 +138,15 @@ public class Property implements Serializable {
 		} else {
 			stringValue = value.toString();
 			if (TYPE_BIGDECIMAL.equals(type)) {
-				stringValue = value.toString();
-				if (format != null) {
-					double doubleValue = ((BigDecimal) value).doubleValue();
-					stringValue = new DecimalFormat(format).format(doubleValue);
+				if (value instanceof BigDecimal) {
+					/* Avoid unexpected scientific notation value of BigDecimal */
+					BigDecimal v = ((BigDecimal) value);
+					String formatStr = format;
+					if (format == null) {
+						formatStr = BuildUtil.buildNumber("0", v.scale(), v.scale(), true, true);
+					}
+					DecimalFormat decimalFormat = new DecimalFormat(formatStr);
+					stringValue = decimalFormat.format(v.doubleValue());
 				}
 			} else if (TYPE_DATE.equals(type)) {
 				stringValue = value.toString();
@@ -233,8 +234,8 @@ public class Property implements Serializable {
 				sb = new StringBuffer("[line:").append(lineNo).append("][field:").append(name).append("][value:")
 						.append(val).append("] does not match [pattern:").append(pattern).append("]");
 			else
-				sb = new StringBuffer("[line:").append(lineNo).append("][value:").append(val).append("][").append(
-						desc).append("] does not match [pattern:").append(pattern).append("]");
+				sb = new StringBuffer("[line:").append(lineNo).append("][value:").append(val).append("][").append(desc)
+						.append("] does not match [pattern:").append(pattern).append("]");
 			throw new org.haaproject.converter.exception.ParseException(sb.toString());
 		}
 	}
