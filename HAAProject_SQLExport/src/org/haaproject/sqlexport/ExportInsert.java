@@ -3,12 +3,15 @@
  */
 package org.haaproject.sqlexport;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
+
+import org.apache.commons.io.FileUtils;
 
 /**
  * @author Geln Yang
@@ -22,8 +25,9 @@ public class ExportInsert {
 		String userName = args[2];
 		String password = args[3];
 		String tableName = args[4];
-		String querySql = args[5];
-		String outputFilePath = "./" + tableName + ".sql";
+		String saveFileName = args[5];
+		String querySql = args[6];
+		String outputFilePath = "./" + saveFileName + ".sql";
 
 		System.out.println(driverName);
 		System.out.println(linkUrl);
@@ -68,7 +72,7 @@ public class ExportInsert {
 					if (i < numColumns) {
 						buffer.append("'" + data.trim() + "',");
 					} else {
-						buffer.append("'" + rs.getString(i).trim() + "')\r\n");
+						buffer.append("'" + rs.getString(i).trim() + "');\r\n");
 					}
 				} else {
 					if (i < numColumns) {
@@ -82,10 +86,7 @@ public class ExportInsert {
 
 		System.out.println("Record count: " + count);
 		System.out.println("start to write into file ... ");
-		FileWriter fileWriter = new FileWriter(outputFilePath);
-		fileWriter.write(buffer.toString());
-		fileWriter.flush();
-		fileWriter.close();
+		FileUtils.writeStringToFile(new File(outputFilePath), buffer.toString(), "UTF-8");
 		System.out.println("end to write into file ... ");
 		rs.close();
 		myStmt.close();
