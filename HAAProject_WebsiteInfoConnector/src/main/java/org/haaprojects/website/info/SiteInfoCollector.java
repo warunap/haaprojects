@@ -53,6 +53,10 @@ public class SiteInfoCollector {
 
 	public static final String INFOKEY_REGISTRATIONNUM = "RegistrationNumber";
 
+	private static final String REGEX_HTMLTITLE = "<title>([^<>]+)</title>";
+
+	private static final String REGEX_REGISTRATION_NUMBER = ".ICP(备|证)[:：]?\\d+号";
+
 	public static long LOWEST_SPEED = 0;
 
 	static Map<String, List<String>> collectConfigMap = new HashMap<String, List<String>>();
@@ -100,7 +104,6 @@ public class SiteInfoCollector {
 				return null;
 			}
 		};
-
 
 		/* start thread to collect */
 		for (int i = 0; i < THREAD_SIZE; i++) {
@@ -305,21 +308,29 @@ public class SiteInfoCollector {
 		if (speed > LOWEST_SPEED) {
 			LOWEST_SPEED = speed;
 		}
+		String siteName = getFirstMatchItems(content, REGEX_HTMLTITLE, 1);
+		String registrationNum = getFirstMatchItems(content, REGEX_REGISTRATION_NUMBER, 0);
+		String contactPageUrl = getContactPageUrl(host, content);
 
-		String siteName = getFirstMatchItems(content, "<title>([^<>]+)</title>", 1);
-		siteName = siteName.replaceAll("\\s", "");
-		map.put(INFOKEY_SITENAME, siteName);
+		if (StringUtils.isNotBlank(contactPageUrl)) {
+			content = getUrlContent(httpClient, contactPageUrl);
+			map.put(INFOKEY_CONTACEPAGEURL, contactPageUrl);
+			if (StringUtils.isBlank(siteName)) {
+				siteName = getFirstMatchItems(content, REGEX_HTMLTITLE, 1);
+			}
+			if (StringUtils.isBlank(registrationNum)) {
+				registrationNum = getFirstMatchItems(content, REGEX_REGISTRATION_NUMBER, 0);
+			}
+		}
 
-		String registrationNum = getFirstMatchItems(content, ".ICP(备|证)\\d+号", 0);
+		if (StringUtils.isNotBlank(siteName)) {
+			siteName = siteName.replaceAll("\\s", "");
+			map.put(INFOKEY_SITENAME, siteName);
+		}
 		if (StringUtils.isNotBlank(registrationNum)) {
 			map.put(INFOKEY_REGISTRATIONNUM, registrationNum);
 		}
 
-		String contactPageUrl = getContactPageUrl(host, content);
-		if (StringUtils.isNotBlank(contactPageUrl)) {
-			content = getUrlContent(httpClient, contactPageUrl);
-			map.put(INFOKEY_CONTACEPAGEURL, contactPageUrl);
-		}
 		Set<String> keySet = collectConfigMap.keySet();
 		for (String key : keySet) {
 			List<String> list = collectConfigMap.get(key);
@@ -336,6 +347,13 @@ public class SiteInfoCollector {
 	private static String getContactPageUrl(String host, String content) {
 		String regex = "<a[^<>]+href=\"([^<>\"]+)\"[^<>]*>\\s*((联系我们)|(联系方式)|(contact us))\\s*</a>";
 		String contactPageUrl = getFirstMatchItems(content, regex, 1);
+
+		if (StringUtils.isBlank(contactPageUrl)) {
+			regex = "window\\.location\\.href=([^;=\\s]+)";
+			contactPageUrl = getFirstMatchItems(content, regex, 1);
+			contactPageUrl = contactPageUrl.replace("\"", "").replace("\'", "");
+		}
+
 		if (StringUtils.isNotBlank(contactPageUrl)) {
 			if (contactPageUrl.startsWith("http")) {
 				return contactPageUrl;
