@@ -35,12 +35,12 @@ public class SiteInfoCollector {
 
 	private static final Log logger = LogFactory.getLog(SiteInfoCollector.class);
 
-	private static final String INFOKEY_TITLE = "Title";
+	public static final String INFOKEY_TITLE = "Title";
 	public static final String INFOKEY_ADDRESS = "Address";
 	public static final String INFOKEY_PHONE = "Phone";
 	public static final String INFOKEY_EMAIL = "Email";
 	public static final String INFOKEY_CONTACEPAGEURL = "ContactPageUrl";
-	private static final String INFOKEY_ABOUNTUSURL = "AbountUsUrl";
+	public static final String INFOKEY_ABOUNTUSURL = "AbountUsUrl";
 	public static final String INFOKEY_SITENAME = "SiteName";
 	public static final String INFOKEY_LOADTIME = "Speed";
 	public static final String INFOKEY_REGISTRATIONNUM = "RegistrationNumber";
@@ -117,8 +117,6 @@ public class SiteInfoCollector {
 			new Thread() {
 
 				public void run() {
-					String threadId = this.getThreadGroup().getName() + "_" + this.getName();
-					System.out.println(threadId);
 					synchronized (running_thread_lock) {
 						running_thread_count++;
 					}
@@ -182,7 +180,6 @@ public class SiteInfoCollector {
 	}
 
 	private static void writeResult(File file, Map<String, Map<String, String>> dataMap) throws IOException {
-
 		long midTime = (maxLoadTime + minLoadTime) / 2;
 		long lessTime = (midTime + minLoadTime) / 2;
 		long moreTime = (midTime + maxLoadTime) / 2;
@@ -223,7 +220,7 @@ public class SiteInfoCollector {
 			String trStyle = "";
 			if (siteName.indexOf("厦门") != -1 || (registrationNum != null && registrationNum.indexOf("闽") != -1)) {
 				trStyle += "background:lightblue;";
-			} else if (email.indexOf(shorthost) == -1) {
+			} else if (StringUtils.isNotBlank(email) && email.indexOf(shorthost) == -1) {
 				trStyle += "background:lightgreen;";
 			}
 			buffer.append("<tr style='" + trStyle + "'>");
@@ -363,7 +360,7 @@ public class SiteInfoCollector {
 			map.put(INFOKEY_EMAIL, emails);
 		}
 
-		logger.info(map);
+		logger.info(host + ":" + map);
 	}
 
 	private static String getContactPageUrl(String host, String content) {
@@ -415,10 +412,9 @@ public class SiteInfoCollector {
 			FileUtils.writeByteArrayToFile(new File("d:/temp.html"), htmlByts);
 			String content = new String(htmlByts, "utf-8").toLowerCase(); // lower case
 			try {
-				String encode = getFirstMatchItems(content, "<meta\\s+http\\-equiv=\"content\\-type\"\\s+content=\"text/html;\\s+charset=([^<>\" ]+)\"\\s*>", 1);
+				String encode = getFirstMatchItems(content, "<meta\\s+http\\-equiv=\"content\\-type\"\\s+content=\"text/html;\\s+charset=([^<>\" ]+)\"", 1);
 				if (StringUtils.isNotBlank(encode) && !"utf-8".equalsIgnoreCase(encode) && !"utf8".equalsIgnoreCase(encode)) {
 					content = new String(htmlByts, encode).toLowerCase();
-					content = new String(content.getBytes("UTF-8"), "UTF-8"); // must convert to UTF-8 otherwise regext pattern match will fail
 				}
 			} catch (Exception e) {
 				logger.error(e.getMessage());
