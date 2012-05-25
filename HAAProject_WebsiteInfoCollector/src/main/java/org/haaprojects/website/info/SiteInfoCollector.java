@@ -1,10 +1,11 @@
 package org.haaprojects.website.info;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,7 +17,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,8 +25,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.haaprojects.http.HaaHttpClient;
 
@@ -37,41 +35,50 @@ public class SiteInfoCollector {
 
 	private static final Log logger = LogFactory.getLog(SiteInfoCollector.class);
 
+	private static final String INFOKEY_TITLE = "Title";
 	public static final String INFOKEY_ADDRESS = "Address";
-
 	public static final String INFOKEY_PHONE = "Phone";
-
 	public static final String INFOKEY_EMAIL = "Email";
-
 	public static final String INFOKEY_CONTACEPAGEURL = "ContactPageUrl";
-
+	private static final String INFOKEY_ABOUNTUSURL = "AbountUsUrl";
 	public static final String INFOKEY_SITENAME = "SiteName";
-
-	public static final String INFOKEY_SPEED = "SPEED";
-
-	public static final int THREAD_SIZE = 5;
-
+	public static final String INFOKEY_LOADTIME = "Speed";
 	public static final String INFOKEY_REGISTRATIONNUM = "RegistrationNumber";
 
-	private static final String REGEX_HTMLTITLE = "<title>([^<>]+)</title>";
+	public static final int THREAD_SIZE = 5;
+	private static final String KEY_REGEX = "regex";
+	private static final String KEY_REGEXGROUPNUM = "groupnum";
 
-	private static final String REGEX_REGISTRATION_NUMBER = ".ICP(备|证)[:：]?\\d+号";
+	public static long maxLoadTime = 0; // inital to the min
+	public static long minLoadTime = 100; // inital to the max
 
-	public static long LOWEST_SPEED = 0;
-
-	static Map<String, List<String>> collectConfigMap = new HashMap<String, List<String>>();
+	private static Map<String, Map<String, Object>> collectConfigMap = new HashMap<String, Map<String, Object>>();
 
 	private static void addconfig(String key, String regex, int groupNum) {
-		List<String> value = new ArrayList<String>();
-		value.add(regex);
-		value.add(groupNum + "");
+		Map<String, Object> value = new HashMap<String, Object>();
+		value.put(KEY_REGEX, regex);
+		value.put(KEY_REGEXGROUPNUM, groupNum);
 		collectConfigMap.put(key, value);
 	}
 
+	private static String getRegex(String infokey) {
+		Map<String, Object> map = collectConfigMap.get(infokey);
+		return (String) (map == null ? null : map.get(KEY_REGEX));
+	}
+
+	private static int getRegexGroupNum(String infokey) {
+		Map<String, Object> map = collectConfigMap.get(infokey);
+		return Integer.parseInt((String) (map == null ? "0" : map.get(KEY_REGEXGROUPNUM)));
+	}
+
 	static {
-		// addconfig(INFOKEY_ADDRESS, "(地址|address|addr)[：: ]*([^<>\\s]+)", 2);
+		addconfig(INFOKEY_TITLE, "<title>([^<>]+)</title>", 1);
+		addconfig(INFOKEY_REGISTRATIONNUM, ".ICP(备|证)[:：]?\\d+号", 0);
+		addconfig(INFOKEY_ADDRESS, "(地址|address|addr|add)[：: ]?([^<>\\s]+)", 2);
 		addconfig(INFOKEY_PHONE, "((\\d{3,4}-)(\\d{6,11})(-\\d{2,8})?(\\(\\d{2,8}\\))?)|(13\\d{9})", 0);
 		addconfig(INFOKEY_EMAIL, "[a-zA-Z0-9]+[a-zA-Z0-9_\\-\\.]*[a-zA-Z0-9]+@([a-zA-Z0-9]+\\.)+[a-zA-Z]{2,5}", 0);
+		addconfig(INFOKEY_CONTACEPAGEURL, "<a[^<>]+href=\"([^<>\"]+)\"[^<>]*>\\s*((联系我们)|(联系方式)|(contact us))\\s*</a>", 1);
+		addconfig(INFOKEY_ABOUNTUSURL, "<a[^<>]+href=\"([^<>\"']+)\"[^<>]*>\\s*((关于我们)|(about us))\\s*</a>", 1);
 	}
 
 	static String running_thread_lock = "LOCK";
@@ -176,9 +183,9 @@ public class SiteInfoCollector {
 
 	private static void writeResult(File file, Map<String, Map<String, String>> dataMap) throws IOException {
 
-		long midSpeed = LOWEST_SPEED / 2;
-		long goodSpeed = midSpeed / 2;
-		long lowerSpeed = (midSpeed + LOWEST_SPEED) / 2;
+		long midTime = (maxLoadTime + minLoadTime) / 2;
+		long lessTime = (midTime + minLoadTime) / 2;
+		long moreTime = (midTime + maxLoadTime) / 2;
 
 		StringBuffer buffer = new StringBuffer();
 		String time = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
@@ -191,56 +198,61 @@ public class SiteInfoCollector {
 		buffer.append("<th width='200'>HOST</th>");
 		buffer.append("<th width='200'>" + INFOKEY_PHONE + "</th>");
 		buffer.append("<th width='200'>" + INFOKEY_EMAIL + "</th>");
-		buffer.append("<th width='200'>" + INFOKEY_SPEED + "</th>");
+		buffer.append("<th width='200'>" + INFOKEY_LOADTIME + "</th>");
 		buffer.append("<th>" + INFOKEY_SITENAME + "</th>");
 		buffer.append("<th>" + INFOKEY_REGISTRATIONNUM + "</th>");
-		// buffer.append("<th>" + INFOKEY_ADDRESS + "</th>");
 		buffer.append("</tr>");
-		Set<String> hostSet = dataMap.keySet();
-		for (String host : hostSet) {
-			Map<String, String> map = dataMap.get(host);
+		Set<String> hostUrlSet = dataMap.keySet();
+		for (String hostUrl : hostUrlSet) {
+			Map<String, String> map = dataMap.get(hostUrl);
 			Set<String> items = map.keySet();
 			if (items.size() == 0) {
 				continue;
 			}
 
+			String host = new URL(hostUrl).getHost();
+			String shorthost = host.replace("www.", "");
+
 			String contactUrl = map.get(INFOKEY_CONTACEPAGEURL);
+			String aboutUsUrl = map.get(INFOKEY_ABOUNTUSURL);
 			String siteName = getHtmlText(map, INFOKEY_SITENAME);
 			String phone = getHtmlText(map, INFOKEY_PHONE);
 			String email = getHtmlText(map, INFOKEY_EMAIL);
-			// String address = getHtmlText(map, INFOKEY_ADDRESS);
-			String speed = getHtmlText(map, INFOKEY_SPEED);
+			String loadTime = getHtmlText(map, INFOKEY_LOADTIME);
 			String registrationNum = getHtmlText(map, INFOKEY_REGISTRATIONNUM);
-
+			String trStyle = "";
 			if (siteName.indexOf("厦门") != -1 || (registrationNum != null && registrationNum.indexOf("闽") != -1)) {
-				buffer.append("<tr style='background:lightblue;'>");
-			} else {
-				buffer.append("<tr>");
+				trStyle += "background:lightblue;";
+			} else if (email.indexOf(shorthost) == -1) {
+				trStyle += "background:lightgreen;";
 			}
+			buffer.append("<tr style='" + trStyle + "'>");
 			buffer.append("<td>");
-			buffer.append("<a href=\"" + host + "\" target=\"blank\">" + host + "</a>");
+			buffer.append("<a href=\"" + hostUrl + "\" target=\"blank\">" + hostUrl + "</a>");
 			if (StringUtils.isNotBlank(contactUrl)) {
 				buffer.append("<br/><a href=\"" + contactUrl + "\" target=\"blank\">联系我们</a>");
+			}
+			if (StringUtils.isNotBlank(aboutUsUrl)) {
+				buffer.append("<br/><a href=\"" + aboutUsUrl + "\" target=\"blank\">关于我们</a>");
 			}
 			buffer.append("</td>");
 			buffer.append("<td>" + phone.replaceAll(";", "<br/>") + "</td>");
 			buffer.append("<td>" + email.replaceAll(";", "<br/>") + "</td>");
 
 			String style = "";
-			String speedDesc = getSpeedDesc(Long.parseLong(speed), lowerSpeed, midSpeed, goodSpeed);
+			String speedDesc = getSpeedDesc(Long.parseLong(loadTime), moreTime, midTime, lessTime);
 			if ("慢".equals(speedDesc)) {
 				style = " style=\"background:yellow;\"";
 			} else if ("差".equals(speedDesc)) {
 				style = " style=\"background:red;\"";
 			}
-			buffer.append("<td" + style + ">" + speedDesc + "(" + speed + "s)</td>");
+			buffer.append("<td" + style + ">" + speedDesc + "(" + loadTime + "s)</td>");
 
 			if (siteName.length() > 50) {
 				siteName = siteName.substring(0, 30);
 			}
 			buffer.append("<td>" + siteName + "</td>");
 			buffer.append("<td>" + registrationNum + "</td>");
-			// buffer.append("<td>" + address + "</td>");
 			buffer.append("</tr>");
 		}
 		buffer.append("</table>");
@@ -256,15 +268,15 @@ public class SiteInfoCollector {
 		logger.info("over");
 	}
 
-	private static String getSpeedDesc(long speed, long lowerSpeed, long midSpeed, long goodSpeed) {
-		if (speed > midSpeed) {
-			if (speed > lowerSpeed) {
+	private static String getSpeedDesc(long time, long moreTime, long midTime, long lessTime) {
+		if (time > midTime) {
+			if (time > moreTime) {
 				return "差";
 			} else {
 				return "慢";
 			}
 		} else {
-			if (speed > goodSpeed) {
+			if (time > lessTime) {
 				return "一般";
 			} else {
 				return "快";
@@ -304,22 +316,30 @@ public class SiteInfoCollector {
 		long end = System.currentTimeMillis();
 
 		long speed = (end - start) / 1000;
-		map.put(INFOKEY_SPEED, speed + "");
-		if (speed > LOWEST_SPEED) {
-			LOWEST_SPEED = speed;
+		map.put(INFOKEY_LOADTIME, speed + "");
+		if (speed > maxLoadTime) {
+			maxLoadTime = speed;
 		}
-		String siteName = getFirstMatchItems(content, REGEX_HTMLTITLE, 1);
-		String registrationNum = getFirstMatchItems(content, REGEX_REGISTRATION_NUMBER, 0);
+		if (speed < minLoadTime) {
+			minLoadTime = speed;
+		}
+		String siteName = getFirstMatchItemsByInfokey(content, INFOKEY_TITLE);
+		String registrationNum = getFirstMatchItemsByInfokey(content, INFOKEY_REGISTRATIONNUM);
+		String aboutUsUrl = getFirstMatchItemsByInfokey(content, INFOKEY_ABOUNTUSURL);
+
 		String contactPageUrl = getContactPageUrl(host, content);
 
 		if (StringUtils.isNotBlank(contactPageUrl)) {
 			content = getUrlContent(httpClient, contactPageUrl);
 			map.put(INFOKEY_CONTACEPAGEURL, contactPageUrl);
 			if (StringUtils.isBlank(siteName)) {
-				siteName = getFirstMatchItems(content, REGEX_HTMLTITLE, 1);
+				siteName = getFirstMatchItemsByInfokey(content, INFOKEY_TITLE);
 			}
 			if (StringUtils.isBlank(registrationNum)) {
-				registrationNum = getFirstMatchItems(content, REGEX_REGISTRATION_NUMBER, 0);
+				registrationNum = getFirstMatchItemsByInfokey(content, INFOKEY_REGISTRATIONNUM);
+			}
+			if (StringUtils.isBlank(aboutUsUrl)) {
+				aboutUsUrl = getFirstMatchItemsByInfokey(content, INFOKEY_ABOUNTUSURL);
 			}
 		}
 
@@ -330,28 +350,31 @@ public class SiteInfoCollector {
 		if (StringUtils.isNotBlank(registrationNum)) {
 			map.put(INFOKEY_REGISTRATIONNUM, registrationNum);
 		}
-
-		Set<String> keySet = collectConfigMap.keySet();
-		for (String key : keySet) {
-			List<String> list = collectConfigMap.get(key);
-			String regex = list.get(0);
-			int groupNum = Integer.parseInt(list.get(1));
-			String matchItems = getMatchItems(content, regex, groupNum);
-			logger.info(key + ":" + matchItems);
-			if (StringUtils.isNotBlank(matchItems)) {
-				map.put(key, matchItems);
-			}
+		if (StringUtils.isNotBlank(aboutUsUrl)) {
+			map.put(INFOKEY_ABOUNTUSURL, aboutUsUrl);
 		}
+
+		String phones = getMatchItemsByInfokey(content, INFOKEY_PHONE);
+		if (StringUtils.isNotBlank(phones)) {
+			map.put(INFOKEY_PHONE, phones);
+		}
+		String emails = getMatchItemsByInfokey(content, INFOKEY_EMAIL);
+		if (StringUtils.isNotBlank(emails)) {
+			map.put(INFOKEY_EMAIL, emails);
+		}
+
+		logger.info(map);
 	}
 
 	private static String getContactPageUrl(String host, String content) {
-		String regex = "<a[^<>]+href=\"([^<>\"]+)\"[^<>]*>\\s*((联系我们)|(联系方式)|(contact us))\\s*</a>";
-		String contactPageUrl = getFirstMatchItems(content, regex, 1);
+		String contactPageUrl = getFirstMatchItemsByInfokey(content, INFOKEY_CONTACEPAGEURL);
 
 		if (StringUtils.isBlank(contactPageUrl)) {
-			regex = "window\\.location\\.href=([^;=\\s]+)";
+			String regex = "window\\.location\\.href=([^;=\\s]+)";
 			contactPageUrl = getFirstMatchItems(content, regex, 1);
-			contactPageUrl = contactPageUrl.replace("\"", "").replace("\'", "");
+			if (StringUtils.isNotBlank(contactPageUrl)) {
+				contactPageUrl = contactPageUrl.replace("\"", "").replace("\'", "");
+			}
 		}
 
 		if (StringUtils.isNotBlank(contactPageUrl)) {
@@ -384,15 +407,18 @@ public class SiteInfoCollector {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			InputStream is = entity.getContent();
 			int size = 0;
-			while ((size = is.read(bytes)) > 0) {
+			while ((size = is.read(bytes)) != -1) {
 				bos.write(bytes, 0, size);
 			}
-
-			String content = new String(bos.toByteArray(), "utf-8").toLowerCase(); // lower case
+			is.close();
+			byte[] htmlByts = bos.toByteArray();
+			FileUtils.writeByteArrayToFile(new File("d:/temp.html"), htmlByts);
+			String content = new String(htmlByts, "utf-8").toLowerCase(); // lower case
 			try {
 				String encode = getFirstMatchItems(content, "<meta\\s+http\\-equiv=\"content\\-type\"\\s+content=\"text/html;\\s+charset=([^<>\" ]+)\"\\s*>", 1);
 				if (StringUtils.isNotBlank(encode) && !"utf-8".equalsIgnoreCase(encode) && !"utf8".equalsIgnoreCase(encode)) {
-					content = new String(bos.toByteArray(), encode).toLowerCase();
+					content = new String(htmlByts, encode).toLowerCase();
+					content = new String(content.getBytes("UTF-8"), "UTF-8"); // must convert to UTF-8 otherwise regext pattern match will fail
 				}
 			} catch (Exception e) {
 				logger.error(e.getMessage());
@@ -400,6 +426,22 @@ public class SiteInfoCollector {
 			return content;
 		} finally {
 			EntityUtils.consume(entity);
+		}
+	}
+
+	private static String getFirstMatchItemsByInfokey(String content, String infoKey) {
+		try {
+			return getFirstMatchItems(content, getRegex(infoKey), getRegexGroupNum(infoKey));
+		} catch (Exception e) {
+			return "";
+		}
+	}
+
+	private static String getMatchItemsByInfokey(String content, String infoKey) {
+		try {
+			return getMatchItems(content, getRegex(infoKey), getRegexGroupNum(infoKey));
+		} catch (Exception e) {
+			return "";
 		}
 	}
 
@@ -448,11 +490,7 @@ public class SiteInfoCollector {
 	}
 
 	private static DefaultHttpClient createHttpClient() {
-		DefaultHttpClient client = new HaaHttpClient();
-		HttpParams params = client.getParams();
-		HttpConnectionParams.setConnectionTimeout(params, 10 * 1000);
-		HttpConnectionParams.setSoTimeout(params, 30 * 1000);
-		return client;
+		return new HaaHttpClient();
 	}
 
 }
