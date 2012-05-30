@@ -6,7 +6,6 @@ package org.haaprojects.site.collector.data;
 
 import java.util.HashMap;
 
-
 /**
  * @author Geln Yang
  * @version 1.0
@@ -20,6 +19,7 @@ public class CollectData extends HashMap<String, SiteInfo> {
 			SiteInfo info = get(host);
 			if (info == null) {
 				info = new SiteInfo();
+				info.setHostUrl(host);
 				put(host, info);
 			}
 			return info;

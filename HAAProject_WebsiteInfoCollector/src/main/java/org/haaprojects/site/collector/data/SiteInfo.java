@@ -14,4 +14,14 @@ public class SiteInfo extends HashMap<String, String> {
 
 	private static final long serialVersionUID = 1L;
 
+	private String hostUrl;
+
+	public String getHostUrl() {
+		return hostUrl;
+	}
+
+	public void setHostUrl(String hostUrl) {
+		this.hostUrl = hostUrl;
+	}
+
 }

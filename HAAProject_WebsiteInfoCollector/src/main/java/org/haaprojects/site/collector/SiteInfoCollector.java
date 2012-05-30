@@ -226,6 +226,9 @@ public class SiteInfoCollector {
 		String contactPageUrl = getFirstMatchItemsByInfokey(content, Const.INFOKEY_CONTACEPAGEURL);
 
 		if (StringUtils.isBlank(contactPageUrl)) {
+			contactPageUrl = RegexUtil.getFirstMatchItems(content, "<a[^<>]+href=\"((http://)?(([a-z0-9\\-]+\\.)+[a-z]{1,5}(:\\d{2,6})?)?(/[a-z0-9_\\-]+)*[/]?contact([_]?us)?\\.[a-z]{3,5})\"[^<>]*>\\s*[^<>\\s]+\\s*</a>", 1);
+		}
+		if (StringUtils.isBlank(contactPageUrl)) {
 			String regex = "window\\.location\\.href=([^;=\\s]+)";
 			contactPageUrl = RegexUtil.getFirstMatchItems(content, regex, 1);
 			if (StringUtils.isNotBlank(contactPageUrl)) {
