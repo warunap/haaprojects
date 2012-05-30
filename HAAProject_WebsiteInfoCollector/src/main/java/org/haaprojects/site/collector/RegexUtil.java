@@ -32,7 +32,6 @@ public class RegexUtil {
 		Pattern pattern = Pattern.compile(phoneRegex, Pattern.MULTILINE);
 		Matcher matcher = pattern.matcher(content);
 		Set<String> items = new HashSet<String>();
-		int matchCount = 0;
 		while (matcher.find()) {
 			String item = "";
 			if (groupNum < 1) {
@@ -45,10 +44,6 @@ public class RegexUtil {
 				}
 			}
 			items.add(item);
-			matchCount++;
-			if (matchCount > MAX_MATCH_SIZE) {
-				break;
-			}
 		}
 		if (items.size() > 0) {
 			StringBuffer buffer = new StringBuffer();
