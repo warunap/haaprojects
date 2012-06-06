@@ -3,8 +3,12 @@ package org.haaprojects.site.collector;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -31,6 +35,8 @@ public class SiteInfoCollector {
 
 	static String running_thread_lock = "LOCK";
 	static int running_thread_count = 0;
+	static int totalHostSize = 0;
+	static int processedHostSize = 0;
 
 	interface HostContainer {
 		public String getNextHost();
@@ -39,22 +45,27 @@ public class SiteInfoCollector {
 	public static void main(String[] args) throws Exception {
 		final CollectData dataMap = new CollectData();
 		String filePath = args[0];
+		logger.info("Site source file:" + filePath);
+
 		final File file = new File(filePath);
 		final List<String> lines = FileUtils.readLines(file, "UTF-8");
-		final HostContainer hostContainer = new HostContainer() {
-			int readIndex = 0;
+		Set<String> siteSet = Collections.synchronizedSet(new HashSet<String>());
+		for (String siteinfo : lines) {
+			siteinfo = siteinfo.toLowerCase();
+			String host = getHost(siteinfo);
+			if (StringUtils.isNotBlank(host)) {
+				siteSet.add(host);
+			}
+		}
 
+		totalHostSize = siteSet.size();
+
+		final Iterator<String> siteIterator = siteSet.iterator();
+		final HostContainer hostContainer = new HostContainer() {
 			public synchronized String getNextHost() {
-				String siteinfo = null;
-				while (readIndex < lines.size()) {
-					siteinfo = lines.get(readIndex++);
-					if (siteinfo != null) {
-						siteinfo = siteinfo.toLowerCase();
-						String host = getHost(siteinfo);
-						if (host != null) {
-							return host;
-						}
-					}
+				while (siteIterator.hasNext()) {
+					processedHostSize++;
+					return siteIterator.next();
 				}
 				return null;
 			}
@@ -103,12 +114,11 @@ public class SiteInfoCollector {
 				while (true) {
 
 					try {
-						logger.info("wait collect finish ...");
-						Thread.sleep(3 * 1000);
+						Thread.sleep(10 * 1000);
 					} catch (InterruptedException e) {
 					}
+					logger.info("-----> threadNum:" + running_thread_count + ",HostSize:" + totalHostSize + ",ProcessedHostSize:" + processedHostSize);
 					synchronized (running_thread_lock) {
-						logger.info("-----> running thread num:" + running_thread_count);
 						if (running_thread_count == 0) {
 							try {
 								writeResult(file, dataMap);
@@ -120,7 +130,7 @@ public class SiteInfoCollector {
 					}
 				}
 
-				logger.info(">>> over");
+				logger.info("==============>>> over");
 			}
 
 		}.start();
@@ -226,7 +236,8 @@ public class SiteInfoCollector {
 		String contactPageUrl = getFirstMatchItemsByInfokey(content, Const.INFOKEY_CONTACEPAGEURL);
 
 		if (StringUtils.isBlank(contactPageUrl)) {
-			contactPageUrl = RegexUtil.getFirstMatchItems(content, "<a[^<>]+href=\"((http://)?(([a-z0-9\\-]+\\.)+[a-z]{1,5}(:\\d{2,6})?)?(/[a-z0-9_\\-]+)*[/]?contact([_]?us)?\\.[a-z]{3,5})\"[^<>]*>\\s*[^<>\\s]+\\s*</a>", 1);
+			contactPageUrl = RegexUtil.getFirstMatchItems(content,
+					"<a[^<>]+href=\"((http://)?(([a-z0-9\\-]+\\.)+[a-z]{1,5}(:\\d{2,6})?)?(/[a-z0-9_\\-]+)*[/]?contact([_]?us)?\\.[a-z]{3,5})\"[^<>]*>\\s*[^<>\\s]+\\s*</a>", 1);
 		}
 		if (StringUtils.isBlank(contactPageUrl)) {
 			String regex = "window\\.location\\.href=([^;=\\s]+)";
