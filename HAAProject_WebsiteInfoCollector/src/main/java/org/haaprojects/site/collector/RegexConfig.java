@@ -19,7 +19,7 @@ public class RegexConfig {
 	private static final String KEY_REGEXGROUPNUM = "groupnum";
 	static {
 		addconfig(Const.INFOKEY_TITLE, "<title>([^<>]+)</title>", 1);
-		addconfig(Const.INFOKEY_REGISTRATIONNUM, ".ICP(备|证)[:：]?\\d+号", 0);
+		addconfig(Const.INFOKEY_REGISTRATIONNUM, "\\WICP\\W[:：]?\\d+\\W", 0);
 		addconfig(Const.INFOKEY_ADDRESS, "(地址|address|addr|add)[：: ]?([^<>\\s]+)", 2);
 		addconfig(Const.INFOKEY_QQ, "qq[：:][ ]?(\\d{6,})", 1);
 		addconfig(Const.INFOKEY_PHONE, "((\\d{3,4}-)(\\d{6,11})(-\\d{2,8})?(\\(\\d{2,8}\\))?)|(13\\d{9})", 0);

@@ -26,8 +26,6 @@ public class RegexUtil {
 		return null;
 	}
 
-	static int MAX_MATCH_SIZE = 3;
-
 	public static String getMatchItems(String content, String phoneRegex, int groupNum) {
 		Pattern pattern = Pattern.compile(phoneRegex, Pattern.MULTILINE);
 		Matcher matcher = pattern.matcher(content);
