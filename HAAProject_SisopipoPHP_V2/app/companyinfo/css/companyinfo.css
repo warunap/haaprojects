@@ -1,0 +1,36 @@
+body{font-size:14px; padding-left:5px;padding-right:5px;}
+div{text-align:left;vertical-align:top;}
+a{text-decoration:none;color:blue;}
+.linkmenu{padding:2px;border-bottom:1px solid #ccc;margin-bottom:5px;text-align:center;}
+.center{text-align:center;}
+.center div,form,table{width:auto;}
+#copyright{text-align:center;padding:2px;border-bottom:1px solid lightblue;}
+
+table.greenlist
+{
+background-color:#ffffff;
+border:1px solid #c3c3c3;
+border-collapse:collapse;
+width:auto;
+}
+
+table.greenlist th
+{
+background-color:#e5eecc;
+border:1px solid #c3c3c3;
+padding:3px;
+vertical-align:middle;
+text-align:center;
+font-weight:blod;
+}
+
+table.greenlist td 
+{
+border:1px solid #c3c3c3;
+padding:3px;
+vertical-align:top;
+}
+td.key{text-align:right;vertical-align:middle;font-weight:bold;}
+.noborder{border:0px;}
+input.data{height:30px; font-size:20px; border:1px solid #d6d6d6;}
+input.data:hover{border-color:#d6d600;}
