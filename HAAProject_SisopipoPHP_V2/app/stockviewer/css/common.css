@@ -1,0 +1,30 @@
+body{font-size:14px;}
+div{text-align:left;vertical-align:top;}
+a{text-decoration:none;}
+hr{border:0.5px solid #000;}
+input[type=button]{cursor: pointer;}
+input[type=text]{padding:1px;}
+input[type=text]:focus{background:#f2f2f2;}
+input[type=text]:hover{background:#f2f2f2;}
+.area{border-bottom:1px solid #ccc; margin-bottom:5px; padding-bottom:5px;}
+.copyright{margin-top:5px;border-top:1px solid #ccc;text-align:right;}
+.datatable{border:1px solid #000; margin:2px 5px 5px 2px; min-width: 400px; font-size:14px;}
+.datatable td{ padding:4px;}
+.datatable .name{color:#aaa;font-weight:bold;width:100px;text-align:right;}
+.datatable .sale{color:red;font-weight:bold; text-align:center;}
+.datatable .buy{color:green;font-weight:bold; text-align:center;}
+.datatable .num{color:blue;font-weight:bold; text-align:center;}
+.func_subj{font-size:16px;font-weight:bold;}
+.func{cursor: pointer;}
+.datacontainer{width:400px;  position:absolute;padding: 5px;}
+.imgcontainer{width:600px; margin-left:410px; position:absolute;}
+.stock_data{display: inline;}
+.title{background:#000;color:#fff;padding:5px 5px 6px 5px;}
+.operation_panel{padding:5px; border-bottom:1px solid #CCC;}
+
+.left{width:200px;float:left; border:1px solid #f2f2f2; min-height:300px; }
+.right{clear:none; margin-left: 200px;}
+#page_msg_box{position:absolute;top:0px; left:400px; background:yellow;color:#000; padding:4px;}
+#reload_set{position:relative;  float: right; text-align:right; width:300px;}
+#reloadSecond{text-align:center;}
+.error{border:1px solid red; background:yellow;}

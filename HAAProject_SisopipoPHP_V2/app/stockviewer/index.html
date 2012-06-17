@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html lang="zh">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="Pragma" content="cache">
+		<meta name="description" content="Sisopipo 分享信息、分享智慧">
+		<meta name="keywords" content="sisopipo siso pipo 导航 分享 信息 智慧">
+		<meta name="language" content="zh">
+		<link rel="stylesheet" type="text/css" href="css/reset.css" />
+		<link rel="stylesheet" type="text/css" href="css/common.css" />
+		<title>SisoPipo 股票信息查看器</title>
+	</head>
+	<body>
+		<div id="container">
+			<div class="title">
+				<div id="reload_set">
+					刷新时间:<input name="reloadSecond" id="reloadSecond" type="text" size="4"/>秒
+			</div>
+				<font class="subject">股票信息查看器</font>
+			</div>
+			<div class="operation_panel">
+				股票代码<input name="stock_name" type="text"/>
+				<input id="btnview" type="button" class="func"  value="添加"/>
+				<input id="btncompany" type="button" class="func"  value="公司信息"/>
+			</div>
+			<div>
+			<div id="stock_list" class="left"><div class="func_subj">我的股票</div><ul></ul></div>
+			<div class="right">
+			<div id="stock_container"></div>
+			<div id="stock_ext"></div>
+			</div>
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/jquery_jtable.js"></script>
+<script type="text/javascript" src="js/jquery_console.js"></script>
+<script type="text/javascript" src="js/jquery.column.min.js"></script>
+<script type="text/javascript" src="js/stockinfo.js"></script>
+<script type="text/javascript" src="js/stock_sinadata.js"></script>
+<script type="text/javascript" src="js/stockviewer.js"></script>
