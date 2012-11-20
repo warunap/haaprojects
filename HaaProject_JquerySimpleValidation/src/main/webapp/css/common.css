@@ -1,0 +1,50 @@
+@charset "utf-8";
+
+body,div,ul,ol,h1,h2,h3,h4,h5,h6,form,ul,li,p,input,select,legend,textarea,dl,dd,dt,fieldset,table,th,td
+	{
+	margin: 0;
+	padding: 0;
+	font-family: Tahoma, Geneva, sans-serif;
+}
+
+body {
+	font-size: 87.5%;
+	color: #111;
+	-webkit-text-size-adjust: none;
+	line-height: 1.6em;
+	padding: 14px 0;
+}
+
+ul,li {
+	list-style: none;
+}
+
+a {
+	color: #666;
+	text-decoration: none;
+	blr: expression(this.onFocus =             this.blur () );
+	outline: none;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: #069;
+}
+
+a:focus {
+	-moz-outline-style: none;
+}
+
+img {
+	border: none;
+}
+
+table {
+	border-collapse: collapse;
+	line-height: 2em;
+}
+
+input {
+	outline: medium none;
+}
+.center{text-align:center;}
