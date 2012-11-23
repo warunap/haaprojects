@@ -76,7 +76,7 @@ API 设计：
 技术实现：
 =============================
 1. jQuery: jQuery提供强大的dom操作功能，极大方便功能实现；
-2. 使用modernizr判断浏览器对HTML5的支持情况；
+2. 使用modernizr判断浏览器对HTML5的支持情况；(应只会用到input type属性支持情况，所以将参考modernizer的做法，将判断逻辑包含在框架中，而不再引用modernizer)
 
 
 参考：
@@ -88,4 +88,24 @@ API 设计：
 	until you have to support browsers that lag behind. 
 	Modernizr makes it easy for you to write conditional JavaScript and CSS to handle each situation, 
 	whether a browser supports a feature or not. It’s perfect for doing progressive enhancement easily.
+	
+	http://diveintohtml5.info/detect.html#input-types
+	
+	Checking for HTML5 input types uses detection technique #4. First, you create a dummy <input> element in memory. The default input type for all <input> elements is "text". This will prove to be vitally important.
+
+	var i = document.createElement("input");
+	Next, set the type attribute on the dummy <input> element to the input type you want to detect.
+	
+	  i.setAttribute("type", "color");
+	If your browser supports that particular input type, the type property will retain the value you set. If your browser doesn’t support that particular input type, it will ignore the value you set and the type property will still be "text".
+	
+	  return i.type !== "text";
+	Instead of writing 13 separate functions yourself, you can use Modernizr to detect support for all the new input types defined in HTML5. Modernizr reuses a single <input> element to efficiently detect support for all 13 input types. Then it builds a hash called Modernizr.inputtypes, that contains 13 keys (the HTML5 type attributes) and 13 Boolean values (true if supported, false if not).
+	
+	 check for native date picker
+	if (!Modernizr.inputtypes.date) {
+	  // no native support for <input type="date"> :(
+	  // maybe build one yourself with Dojo or jQueryUI
+	}
+	
 
