@@ -32,7 +32,7 @@ Jquery已经存在一个validation框架，功能比较强大，但使用起来�
 		1) input,通过pattern属性声明数据格式的正则表达式;
 			说明：
 			>>如果browser支持HTML5 pattern属性，则不进行框架验证；
-			>>如果有pattern属性则忽略datatype属性；
+			>>如果有pattern属性则忽略type属性；
 			
 		2) input,通过type声明格式类型，如果浏览器支持此type類型(或為HTML5新增類型)，则忽略此框架验证；
 			说明:如果一个type类型是browser不支持的或不认识的，则会默认当作text类型。
