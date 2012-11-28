@@ -21,11 +21,11 @@ Jquery已经存在一个validation框架，功能比较强大，但使用起来�
 	
 	2. 长度验证：
 	-----------
-		1) input，声明minlength和maxlength属性
-			说明：maxlength是browser自身支持属性，无需框架验证。
-	
-		2) input，声明minUTF8ByteLength(或minDBCSByteLength)和maxUTF8ByteLength(或maxDBCSByteLength)属性,声明了这两个属性则忽略minlength属性；
-			说明：minUTF8ByteLength等属性是验证对应编码的byte字节数。
+		1) input,textarea，声明maxlength属性
+			说明：input.maxlength是browser自身支持属性，无需框架验证。)
+			
+		2) input,textarea，声明maxUTF8ByteLength(或maxDBCSByteLength)属性,声明了这两个属性则忽略minlength属性；
+			说明：maxUTF8ByteLength等属性是验证对应编码的byte字节数。
 	
 	3. 格式验证：
 	-----------
@@ -59,7 +59,7 @@ Jquery已经存在一个validation框架，功能比较强大，但使用起来�
 API 设计：
 =============================
 1. $(form).bindSimpleValidator(): 将form表单绑定验证框架
-	1) 为所有输入框(class=“notvalid”除外)添加验证监测事件；
+	1) 为所有输入框(class=“novalid”除外)添加验证监测事件；
 	2) 表单提交验证监测；
 
 2. $(form).unbindSimpleValidator(): 将form表单取消绑定验证框架

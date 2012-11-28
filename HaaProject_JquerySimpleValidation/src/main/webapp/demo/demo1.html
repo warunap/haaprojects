@@ -19,28 +19,51 @@
 		<br>
 		<form action="submit.html" method="post" id="demoform">
 			<div>
-				number: <input name="number" datatype="number" required="required" />
+				text:
+				<input type="text" name="tt" pattern="[\d]+" maxlength="20" />
 			</div>
 			<div>
-				email: <input type="email" name="email" placeholder="Your email here!" />
+				textarea:
+				<textarea name="textarea" rows="3" cols="10" required="true" maxlength="20"></textarea>
 			</div>
 			<div>
-				date: <input type="date" name="date" />
+				maxUTF8ByteLength:
+				<textarea name="maxUTF8ByteLength" rows="3" cols="10" maxUTF8ByteLength="20" lengtherrormessage="byte length can't be greater than 20"></textarea>
 			</div>
 			<div>
-				datetime: <input type="datetime" name="datetime" />
+				number:
+				<input type="number" name="number" typeerrormessage="should be a number!" required="required" />
 			</div>
 			<div>
-				range: <input type="range" name="range" min="10" max="50" />
+				email:
+				<input type="email" name="email" placeholder="Your email here!" />
 			</div>
 			<div>
-				check1: <input type="checkbox" name="check1" required="required" />
+				date:
+				<input type="date" name="date" typeerrormessage="please input a date[yyyy/MM/dd]" />
 			</div>
 			<div>
-				radio: <input type="radio" name="radio1" required="required" value="true" /> TRUE <input type="radio" name="radio1" required="required" value="false" /> FALSE
+				datetime:
+				<input type="datetime" name="datetime" />
 			</div>
 			<div>
-				select: <select name="select1" class="required" requiredmessage="Not select!">
+				range:
+				<input type="range" name="range" min="10" max="50" rangeerrormessage="must between 10 and 50" />
+			</div>
+			<div>
+				check1:
+				<input type="checkbox" name="check1" required="required" />
+			</div>
+			<div>
+				radio:
+				<input type="radio" name="radio1" required="required" value="true" />
+				TRUE
+				<input type="radio" name="radio1" required="required" value="false" />
+				FALSE
+			</div>
+			<div>
+				select:
+				<select name="select1" class="required" requiredmessage="Not select!">
 					<option value="-1" class="nullvalue">--please select--</option>
 					<option value="1">option1</option>
 					<option value="2">option2</option>
