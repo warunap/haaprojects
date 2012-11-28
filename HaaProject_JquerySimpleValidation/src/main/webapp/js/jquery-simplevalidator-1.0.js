@@ -197,6 +197,52 @@
 			}
 		}
 		return true;
+	},
+	/* relation validator */
+	function(item) {
+		if (!item.is("input")) {
+			return true;
+		}
+		var valid = true;
+		var equalTo = item.attr("equalTo");
+		if (!isUndefined(equalTo)) {
+			var target = $('' + equalTo);
+			if (target.length > 0) {
+				try {
+					if (item.val() != target.val()) {
+						valid = false;
+					}
+				} catch (e) {
+					alert(e);
+					valid = false;
+				}
+				if (!valid) {
+					var msg = item.attr("equalerrormessage");
+					addValidError(item, msg ? msg : "not equal to " + target.attr("name"));
+					return false;
+				}
+			}
+		}
+		var greatThan = item.attr("greatThan");
+		if (!isUndefined(greatThan)) {
+			var target = $('' + greatThan);
+			if (target.length > 0) {
+				try {
+					if (parseFloat(item.val()) < parseFloat(target.val())) {
+						valid = false;
+					}
+				} catch (e) {
+					alert(e);
+					valid = false;
+				}
+				if (!valid) {
+					var msg = item.attr("greatthanerrormessage");
+					addValidError(item, msg ? msg : "must great than " + target.val());
+					return false;
+				}
+			}
+		}
+		return true;
 	} ];
 	/*-------------------------------------------------
 	validateInput
@@ -333,6 +379,12 @@
 			} else if (obj.is("form")) {
 				return validateForm(obj);
 			}
+		},
+		addValidError : function(msg) {
+			addValidError($(this), msg);
+		},
+		removeValidError : function() {
+			removeValidError($(this));
 		}
 	});
 })(jQuery);
