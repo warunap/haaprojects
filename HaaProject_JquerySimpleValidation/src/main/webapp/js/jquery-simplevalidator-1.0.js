@@ -5,16 +5,24 @@
 		ATTR_BIND : "sv_binded"
 	}, regexMap = {
 		"email" : "^(([_\\-][a-z0-9]+)|([a-z0-9]+))([\\._\\-][a-z0-9]+)*[a-z0-9]*@[a-z0-9\\-]+(\\.[a-z0-9\\-]+)*(\\.[a-z]{2,4})$",
-		"date" : "^\\d{4}/\\d{2}/\\d{2}$",
+		"date" : "^((19|20)\\d\\d)/(0?[1-9]|1[012])/(0?[1-9]|[12][0-9]|3[01])$",
 		"number" : "^\\d+$",
-		"passwd" : "^.*[a-zA-Z]+.*$",
-		"date" : "^\\d{4}/\\d{1,2}/\\d{1,2}$"
+		"passwd" : "^.*[A-Z]+.*$",
+	}, validFuncMap = {
+		"date" : function(date) {
+			var arr = date.split("/");
+			var month = parseInt(arr[1]);
+			var nextMothDay = new Date(month == 12 ? parseInt(arr[0]) + 1 : arr[0], month == 12 ? 0 : month, 1);
+			return new Date(nextMothDay.getTime() - 24 * 60 * 60 * 1000).getDate() >= parseInt(arr[2]);
+		}
 	}, i18n = {
 		please_select : "please select!",
 		required : "required!",
 		fromat_error : "format error!"
 	}, getText = function(key) {
 		return i18n[key];
+	}, isFunc = function(obj) {
+		return typeof obj === "function";
 	}, isUndefined = function(obj) {
 		return typeof obj === "undefined";
 	}, nativetypes = {}, nativeattrs = {}, isNativeType = function(type) {
@@ -48,7 +56,7 @@
 				count++;
 		}
 		return count;
-	}
+	},
 	/*-------------------------------------------------
 	getValidMessageBoxId
 	 */
@@ -162,18 +170,26 @@
 	},
 	/* type validator */
 	function(item) {
-		if (!item.is("input") || isNativeType(item.attr("type"))) {
+		if (item.val() == "" || !item.is("input") || isNativeType(item.attr("type"))) {
 			return true;
 		}
 		var val = item.val();
 		var type = item.attr("type").toLowerCase();
 		var regex = regexMap[type];
-		if (regex != null && regex != "" && val != "") {
+		if (regex != null && regex != "") {
 			if (!new RegExp(regex, "g").test(val)) {
 				addValidError(item, item.attr("typeerrormessage"));
 				return false;
 			}
 		}
+		var validFunc = validFuncMap[type];
+		if (validFunc != null && isFunc(validFunc)) {
+			if (!validFunc.call(this, val)) {
+				addValidError(item, item.attr("typeerrormessage"));
+				return false;
+			}
+		}
+
 		return true;
 	},
 	/* range validator */
@@ -354,6 +370,13 @@
 		});
 	}
 
+	/* function used to extend SimpleValidator */
+	window['SimpleValidator'] = {
+		addType : function(type, regex, validFunc) {
+			regexMap[type] = regex;
+			validFuncMap[type] = validFunc;
+		}
+	};
 	/* extend jquery */
 	$.fn.extend({
 		bindSimpleValidator : function(validator) {
