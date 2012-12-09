@@ -16,9 +16,14 @@ package org.haaproject.security;
 import java.security.KeyPair;
 
 /**
- * <pre><b><font color="blue">SignatureTest</font></b></pre>
+ * <pre>
+ * <b><font color="blue">SignatureTest</font></b>
+ * </pre>
  * 
- * <pre><b>&nbsp;-- description--</b></pre>
+ * <pre>
+ * <b>&nbsp;-- description--</b>
+ * </pre>
+ * 
  * <pre></pre>
  * 
  * JDK Version：1.6
@@ -28,24 +33,29 @@ import java.security.KeyPair;
 public class SignatureTest {
 
 	public static void main(String[] args) throws Exception {
-		String text = "security test";
+		// testEncrypt("security test");
+		testEncrypt("你好");
+
+	}
+
+	private static void testEncrypt(String text) throws Exception {
 		System.out.println("text:" + text);
 
-		KeyPair keyPair = SignatureTool.generateKeyPair();
-		String privateKey = SignatureTool.getEncodedPrivateKey(keyPair);
-		String publicKey = SignatureTool.getEncodedPublicKey(keyPair);
+		KeyPair keyPair = SecurityTool.generateKeyPair();
+		String privateKey = SecurityTool.getEncodedPrivateKey(keyPair);
+		String publicKey = SecurityTool.getEncodedPublicKey(keyPair);
 		System.out.println("privateKey:" + privateKey);
 		System.out.println("publicKey:" + publicKey);
 
-		String sign = SignatureTool.sign(privateKey, text);
+		String sign = SecurityTool.sign(privateKey, text);
 		System.out.println("sign:" + sign);
 
-		boolean verifyResult = SignatureTool.verify(publicKey, sign, text);
+		boolean verifyResult = SecurityTool.verify(publicKey, sign, text);
 		System.out.println("verifyResult:" + verifyResult);
 
-		String encrypt = SignatureTool.publicEncrypt(publicKey, text);
+		String encrypt = SecurityTool.publicEncrypt(publicKey, text);
 		System.out.println("encrypt:" + encrypt);
-		String decrypt = SignatureTool.privateDecrypt(privateKey, encrypt);
+		String decrypt = SecurityTool.privateDecrypt(privateKey, encrypt);
 		System.out.println("decrypt:" + decrypt);
 	}
 }
