@@ -14,20 +14,25 @@
 package org.haaproject.security;
 
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Signature;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -40,14 +45,23 @@ import org.apache.commons.codec.binary.Base64;
  * 加密介绍：<br>
  * 1. 加密密钥：分“单独密钥”（secret key）和密钥对，密钥对分为“公开密钥”（public key）和私有密钥(private key).<br>
  * 所谓对称密钥算法是指如果一个加密算法的加密密钥和解密密钥相同，或者虽然不相同，但是可由其中的任意一个很容易的推导出另一个，即密钥是双方共享的。 <br>
- * 非对称密钥算法是指一个加密算法的加密密钥和解密密钥是不一样的，或者说不能由其中一个密钥推导出另一个密钥。这两个密钥其中一个称为公钥，用于加密，是公开的，另一个称为私钥，用于解密，是保密的。其中由公钥计算私钥是计算上不可行的。<br>
+ * 非对称密钥算法是指一个加密算法的加密密钥和解密密钥是不一样的，或者说不能由其中一个密钥推导出另一个密钥。这两个密钥其中一个称为公钥，用于加密，是公开的，
+ * 另一个称为私钥，用于解密，是保密的。其中由公钥计算私钥是计算上不可行的。<br>
  * 这两种密码算法的不同之处主要有如下几个方面：<br>
- * &nbsp;1)加解密时采用的密钥的差异：从上述对对称密钥算法和非对称密钥算法的描述中可看出，对称密钥加解密使用的同一个密钥，或者能从加密密钥很容易推出解密密钥；而非对称密钥算法加解密使用的不同密钥，其中一个很难推出另一个密钥。<br>
- * &nbsp;2)算法上区别：①对称密钥算法采用的分组加密技术，即将待处理的明文按照固定长度分组，并对分组利用密钥进行数次的迭代编码，最终得到密文。解密的处理同样，在固定长度密钥控制下，以一个分组为单位进行数次迭代解码，得到明文。而非对称密钥算法采用一种特殊的数学函数，单向陷门函数（one way trapdoor
- * function），即从一个方向求值是容易的，而其逆向计算却很困难，或者说是计算不可行的。加密时对明文利用公钥进行加密变换，得到密文。解密时对密文利用私钥进行解密变换，得到明文。②对称密钥算法具有加密处理简单，加解密速度快，密钥较短，发展历史悠久等特点，非对称密钥算法具有加解密速度慢的特点，密钥尺寸大，发展历史较短等特点。<br>
- * &nbsp;3)密钥管理安全性的区别：对称密钥算法由于其算法是公开的，其保密性取决于对密钥的保密。由于加解密双方采用的密钥是相同的，因此密钥的分发、更换困难。而非对称密钥算法由于密钥已事先分配，无需在通信过程中传输密钥，安全性大大提高，也解决了密钥管理问题。<br>
- * &nbsp;4)安全性：对称密钥算法由于其算法是公开的，其安全性依赖于分组的长度和密钥的长度，常的攻击方法包括：穷举密钥搜索法，字典攻击、查表攻击，差分密码分析，线性密码分析，其中最有效的当属差分密码分析，它通过分析明文对密文对的差值的影响来恢复某些密钥比特。非对称密钥算法安全性建立在所采用单向函数的难解性上，如椭圆曲线密码算法，许多密码专家认为它是指数级的难度，从已知求解算法看，160
- * bit的椭圆曲线密码算法安全性相当于1024bit RSA算法。 <br>
+ * &nbsp;1)加解密时采用的密钥的差异：从上述对对称密钥算法和非对称密钥算法的描述中可看出，对称密钥加解密使用的同一个密钥，
+ * 或者能从加密密钥很容易推出解密密钥；而非对称密钥算法加解密使用的不同密钥，其中一个很难推出另一个密钥。<br>
+ * &nbsp;2)算法上区别：①对称密钥算法采用的分组加密技术，即将待处理的明文按照固定长度分组，并对分组利用密钥进行数次的迭代编码，最终得到密文。
+ * 解密的处理同样，在固定长度密钥控制下，以一个分组为单位进行数次迭代解码，得到明文。而非对称密钥算法采用一种特殊的数学函数，单向陷门函数（one way
+ * trapdoor function），即从一个方向求值是容易的，而其逆向计算却很困难，或者说是计算不可行的。加密时对明文利用公钥进行加密变换，得到密文。
+ * 解密时对密文利用私钥进行解密变换
+ * ，得到明文。②对称密钥算法具有加密处理简单，加解密速度快，密钥较短，发展历史悠久等特点，非对称密钥算法具有加解密速度慢的特点
+ * ，密钥尺寸大，发展历史较短等特点。<br>
+ * &nbsp;3)密钥管理安全性的区别：对称密钥算法由于其算法是公开的，其保密性取决于对密钥的保密。由于加解密双方采用的密钥是相同的，因此密钥的分发、
+ * 更换困难。而非对称密钥算法由于密钥已事先分配，无需在通信过程中传输密钥，安全性大大提高，也解决了密钥管理问题。<br>
+ * &nbsp;4)安全性：对称密钥算法由于其算法是公开的，其安全性依赖于分组的长度和密钥的长度，常的攻击方法包括：穷举密钥搜索法，字典攻击、查表攻击，
+ * 差分密码分析
+ * ，线性密码分析，其中最有效的当属差分密码分析，它通过分析明文对密文对的差值的影响来恢复某些密钥比特。非对称密钥算法安全性建立在所采用单向函数的难解性上
+ * ，如椭圆曲线密码算法，许多密码专家认为它是指数级的难度，从已知求解算法看，160 bit的椭圆曲线密码算法安全性相当于1024bit RSA算法。 <br>
  * <br>
  * 2. 密钥对的使用：<br>
  * &nbsp;1）数据加密传输：发送者使用public key加密传送，接收者private key解密；<br>
@@ -80,14 +94,15 @@ public class SecurityTool {
 	 * 对称密钥算法 <br>
 	 * http://en.wikipedia.org/wiki/Symmetric-key_algorithm
 	 */
-	private static final String DEFAULT_SYMMETRIC_CIPHER = "DESede";
+	private static final String DEFAULT_SYMMETRIC_CIPHER = "DES";
 
 	/** 签名算法 */
 	private static final String SIGNATURE_SIPHER = "MD5withRSA";
 
 	/**
 	 * 密钥长度 About bouncy castle(BC) JCE provider:<br>
-	 * The value of key size parameter to initial KeyPairGenerator must be one of the following: 192,239,256,224,384,521<br>
+	 * The value of key size parameter to initial KeyPairGenerator must be one
+	 * of the following: 192,239,256,224,384,521<br>
 	 * 
 	 * @see org.bouncycastle.jce.provider.asymmetric.ec.KeyPairGenerator.EC
 	 */
@@ -141,6 +156,20 @@ public class SecurityTool {
 	}
 
 	/**
+	 * 获取消息摘要
+	 * 
+	 * @param algorithm
+	 *            算法
+	 * @param text
+	 *            消息摘要原始文本
+	 * @throws NoSuchAlgorithmException
+	 * @throws UnsupportedEncodingException
+	 */
+	public static String digest(String algorithm, String text) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+		return b2s(encode64(MessageDigest.getInstance(algorithm).digest(text.getBytes(DEFAULT_ENCODE))));
+	}
+
+	/**
 	 * 使用私钥对文本串进行签名，返回编码后的结果
 	 * 
 	 * @param privateKey
@@ -181,7 +210,7 @@ public class SecurityTool {
 	 *            文本内容
 	 */
 	public static String publicEncrypt(String publicKey, String text) throws Exception {
-		return symmetricEncrypt(publicKey, true, text);
+		return asymmetricEncrypt(publicKey, true, text);
 	}
 
 	/**
@@ -193,7 +222,7 @@ public class SecurityTool {
 	 *            文本内容
 	 */
 	public static String privateEncrypt(String privateKey, String text) throws Exception {
-		return symmetricEncrypt(privateKey, false, text);
+		return asymmetricEncrypt(privateKey, false, text);
 	}
 
 	/**
@@ -205,7 +234,7 @@ public class SecurityTool {
 	 *            文本内容
 	 */
 	public static String publicDecrypt(String publicKey, String text) throws Exception {
-		return symmetricDecrypt(publicKey, true, text);
+		return asymmetricDecrypt(publicKey, true, text);
 	}
 
 	/**
@@ -218,7 +247,7 @@ public class SecurityTool {
 	 *            文本内容
 	 */
 	public static String privateDecrypt(String privateKey, String text) throws Exception {
-		return symmetricDecrypt(privateKey, false, text);
+		return asymmetricDecrypt(privateKey, false, text);
 	}
 
 	/**
@@ -242,6 +271,30 @@ public class SecurityTool {
 	}
 
 	/**
+	 * 对称密钥加密
+	 * 
+	 * @param encodedKey
+	 *            编码后的密钥
+	 * @param text
+	 *            文本内容
+	 */
+	public static String symmetricEncrypt(String encodedKey, String text) throws Exception {
+		return encrypt(convert2symmetricKey(encodedKey), text);
+	}
+
+	/**
+	 * 对称密钥解密
+	 * 
+	 * @param encodedKey
+	 *            编码后的密钥
+	 * @param encryptString
+	 *            加密文本
+	 */
+	public static String symmetricDecrypt(String encodedKey, String encryptString) throws Exception {
+		return decrypt(convert2symmetricKey(encodedKey), encryptString);
+	}
+
+	/**
 	 * 非对称密钥加密
 	 * 
 	 * @param encodedKey
@@ -251,7 +304,7 @@ public class SecurityTool {
 	 * @param text
 	 *            文本内容
 	 */
-	public static String symmetricEncrypt(String encodedKey, boolean isPublicKey, String text) throws Exception {
+	private static String asymmetricEncrypt(String encodedKey, boolean isPublicKey, String text) throws Exception {
 		return encrypt(convert2AsymmetricKey(encodedKey, isPublicKey), text);
 	}
 
@@ -265,7 +318,7 @@ public class SecurityTool {
 	 * @param encryptString
 	 *            加密文本
 	 */
-	public static String symmetricDecrypt(String encodedKey, boolean isPublicKey, String encryptString) throws Exception {
+	private static String asymmetricDecrypt(String encodedKey, boolean isPublicKey, String encryptString) throws Exception {
 		return decrypt(convert2AsymmetricKey(encodedKey, isPublicKey), encryptString);
 	}
 
@@ -302,14 +355,17 @@ public class SecurityTool {
 	}
 
 	/**
-	 * 将编码key字符串转换为{@link Key}对象
+	 * 将非对称密钥编码key字符串转换为{@link Key}对象
 	 * 
 	 * @param encodedKey
-	 *            编码key字符串
+	 *            非对称密钥编码key字符串
 	 * @param isPublicKey
 	 *            是否公钥
+	 * @throws UnsupportedEncodingException
+	 * @throws InvalidKeySpecException
+	 * @throws NoSuchAlgorithmException
 	 */
-	private static Key convert2AsymmetricKey(String encodedKey, boolean isPublicKey) throws Exception {
+	private static Key convert2AsymmetricKey(String encodedKey, boolean isPublicKey) throws InvalidKeySpecException, UnsupportedEncodingException, NoSuchAlgorithmException {
 		KeyFactory keyFactory = KeyFactory.getInstance(DEFAULT_ASYMMETRIC_CIPHER);
 		if (isPublicKey) {
 			return keyFactory.generatePublic(new X509EncodedKeySpec(decode64(s2b(encodedKey))));
@@ -317,6 +373,20 @@ public class SecurityTool {
 			return keyFactory.generatePrivate(new PKCS8EncodedKeySpec(decode64(s2b(encodedKey))));
 
 		}
+	}
+
+	/**
+	 * 将对称密钥编码key字符串转换为{@link Key}对象
+	 * 
+	 * @param encodedKey
+	 *            对称密钥编码key字符串
+	 * @throws UnsupportedEncodingException
+	 * @throws NoSuchAlgorithmException
+	 * @throws InvalidKeySpecException
+	 * @throws InvalidKeyException
+	 */
+	private static Key convert2symmetricKey(String encodedKey) throws InvalidKeyException, InvalidKeySpecException, NoSuchAlgorithmException, UnsupportedEncodingException {
+		return SecretKeyFactory.getInstance(DEFAULT_SYMMETRIC_CIPHER).generateSecret(new DESKeySpec(encodedKey.getBytes(DEFAULT_ENCODE)));
 	}
 
 	private static byte[] encode64(byte[] s) {
