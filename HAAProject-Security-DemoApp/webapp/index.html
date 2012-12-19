@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HAAProject-Security-DemoApp</title>
+<script src="js/jquery-1.8.2.min.js"></script>
+<script src="js/cryptojs/md5.js"></script>
+<script src="js/cryptojs/tripledes.js"></script>
+<script>
+	function addlog(message){
+		var c = $("#console");
+		c.val(c.val()+"\r\n"+message);
+	}
+	function requestSalt(){
+		var salt="";
+		$.ajax({
+			url:"/demoapp/login",
+			data:{
+				"t":"salt"
+			},
+			async:false,
+			success:function(data){
+				salt = data;
+			},
+			error:function(jqXHR, textStatus, errorThrown){
+				alert(textStatus);
+			}
+		});
+		return salt;
+	}
+	function generateSecret(salt, username, password){
+		var md5arr = CryptoJS.MD5(password);
+		var digest = ""+md5arr[0]+md5arr[1]+md5arr[2]+md5arr[3];
+		if(digest.length<2){
+			digest=digest+digest;
+		}
+		var digestFirst = digest.substr(0, digest.length / 2);
+		var digestSecond = digest.substr(digestFirst.length);
+
+		var encyptSalt = CryptoJS.DES.encrypt(salt,digestFirst);
+		var signature = CryptoJS.MD5(encyptSalt + digestSecond);
+
+		return CryptoJS.DES.encrypt(encyptSalt + "," + signature,digestSecond);
+	}
+	function login(){
+		var username=$('#username').val();
+		var password=$('#password').val();
+		var salt = requestSalt();
+		if(salt==""){
+			addlog("salt is null" );
+			return;
+		}
+		addlog("salt:" + salt);
+
+		var secret = generateSecret(salt, username, password);
+		addlog("secret:" + secret);
+
+		$("#authkey").val(secret);
+		$("form").submit();
+	}
+</script>
+</head>
+<body>
+	<form action="login" method="post">
+		<input name="username" id="username" /> <input type="password" name="password" id="password" /> <input type="hidden" name="authkey" id="authkey" /> <input type="button" value="login"
+			onclick="login()" />
+	</form>
+	<input type="button" value="clear" onclick="document.getElementById('console').value='';" />
+	<textarea id="console" style="width: 100%; height: 500px;"></textarea>
+</body>
+</html>
