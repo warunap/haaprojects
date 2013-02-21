@@ -20,6 +20,7 @@
 <body>
 	This is my JSP page.
 	<br>
-	<a href="welcome">Welcome Page</a>
+	<a href="welcome.action">Welcome Page</a>
+	<a href="logout.action">Log Out</a>
 </body>
 </html>

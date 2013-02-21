@@ -10,7 +10,6 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jasig.cas.client.authentication.AttributePrincipal;
@@ -28,12 +27,11 @@ public class WelcomeServlet extends HttpServlet {
 	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		HttpServletRequestWrapper reqWrapper = new HttpServletRequestWrapper(req);
 		PrintWriter writer = resp.getWriter();
-		String remoteUser = reqWrapper.getRemoteUser();
+		String remoteUser = req.getRemoteUser();
 		writer.write("remoteUser:" + remoteUser + " , ");
 
-		AttributePrincipal principal = (AttributePrincipal) reqWrapper.getUserPrincipal();
+		AttributePrincipal principal = (AttributePrincipal) req.getUserPrincipal();
 		Map<?, ?> attrs = principal.getAttributes();
 		if (attrs == null) {
 			throw new ServletException("no by the CAS client attributes ");
@@ -49,4 +47,6 @@ public class WelcomeServlet extends HttpServlet {
 		writer.write("welcome:" + puid + " , ");
 		writer.write("map:" + attrs);
 	}
+
+
 }
