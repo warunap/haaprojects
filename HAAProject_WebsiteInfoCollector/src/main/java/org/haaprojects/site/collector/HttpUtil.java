@@ -26,15 +26,15 @@ public class HttpUtil {
 
 	private static final Log logger = LogFactory.getLog(HttpUtil.class);
 
-	public static String getUrlContent(DefaultHttpClient httpClient, String host) throws IOException {
-		HttpGet request = new HttpGet(host);
+	public static String getUrlContent(DefaultHttpClient httpClient, String url) throws IOException {
+		HttpGet request = new HttpGet(url);
 		request.addHeader("Accept-Charset", "utf-8;GBK;gb2312");
 		HttpResponse response = httpClient.execute(request);
 		HttpEntity entity = response.getEntity();
 		try {
 			int statusCode = response.getStatusLine().getStatusCode();
 			if (statusCode != HttpStatus.SC_OK) {
-				throw new IOException("get unexpected status code:" + statusCode + "," + host);
+				throw new IOException("get unexpected status code:" + response.getStatusLine() + "," + url);
 			}
 			byte[] bytes = new byte[1024];
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
