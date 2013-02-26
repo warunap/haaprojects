@@ -6,29 +6,22 @@
 package org.haaprojects.website.info.xmhouse;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.ProtocolException;
-import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.cookie.Cookie;
-import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.DefaultRedirectStrategy;
-import org.apache.http.impl.cookie.BasicClientCookie;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 /**
@@ -51,47 +44,48 @@ import org.apache.http.util.EntityUtils;
  */
 public class GetBuildingDetailList {
 
+	private static final String HOUSE_ID_HTML_PREFIX = "onclick=\"cellclick(this)\" id=\"";
+
+	private static final String HOUSE_INFO_HTML_PREFIX = "onmouseover=\"showtip('";
+
+	private static final String SPLITOR = "||";
+
 	private static final String NEWLINE = "\r\n";
 
-	private static String encoding = "UTF-8";
+	static String encoding = "UTF-8";
 
 	public static void main(String[] args) throws IOException {
 
+		InputStream is = new FileInputStream("d:/xmhouse_build_list.txt");
+
+		List<String> lines = IOUtils.readLines(is, encoding);
+		HashSet<String> projectIdSet = new HashSet<String>();
+		projectIdSet.addAll(lines);
+
+		String outputFilePath = "e:/housedata/";
+		String outputFilePrefix = "xmhouse_house_detail_list";
+		String outPutFileSuffix = ".txt";
+		File outputFile = new File(outputFilePath + outputFilePrefix + outPutFileSuffix);
+
+		if (outputFile.exists()) {
+			outputFile.renameTo(new File(outputFilePath + outputFilePrefix + "_" + System.currentTimeMillis() + outPutFileSuffix));
+			outputFile = new File(outputFilePath + outputFilePrefix + outPutFileSuffix);
+		}
+
+		FileOutputStream fos = new FileOutputStream(outputFile);
+
 		DefaultHttpClient httpClient = new DefaultHttpClient();
-		httpClient.setRedirectStrategy(new DefaultRedirectStrategy() {
 
-			public boolean isRedirected(HttpRequest request, HttpResponse response, HttpContext context) {
-				boolean isRedirect = false;
-				try {
-					isRedirect = super.isRedirected(request, response, context);
-				} catch (ProtocolException e) {
-					e.printStackTrace();
-				}
-				if (!isRedirect) {
-					int responseCode = response.getStatusLine().getStatusCode();
-					if (responseCode == 301 || responseCode == 302) {
-						return true;
-					}
-				}
-				return isRedirect;
+		for (String buildInfo : projectIdSet) {
+			StringBuffer buffer = new StringBuffer();
+			List<String> houseList = getBuildDetailList(httpClient, buildInfo);
+			for (String house : houseList) {
+				buffer.append(buildInfo + SPLITOR + house + NEWLINE);
+				System.out.println(house);
 			}
-		});
-
-//		CookieStore cookieStore = new BasicCookieStore();
-//		httpClient.setCookieStore(cookieStore);
-//
-//		Cookie cookie = new BasicClientCookie("DispLp102835", "10112,3822,123423");
-//		cookieStore.addCookie(cookie);
-//		HttpGet httpGet = new HttpGet("http://www.xmjydj.com/Lp?ProjectId=102835");
-//		HttpResponse response = httpClient.execute(httpGet);
-//		InputStream is = response.getEntity().getContent();
-//		List<String> lines = IOUtils.readLines(is);
-//		for (String string : lines) {
-//			System.out.println(string);
-//		}
-
-		getBuildDetailList(httpClient, "10112,3822,123423");
-
+			IOUtils.writeLines(houseList, NEWLINE, fos);
+		}
+		fos.close();
 		httpClient.getConnectionManager().shutdown();
 
 		System.out.println("over");
@@ -154,10 +148,88 @@ public class GetBuildingDetailList {
 			bos.close();
 			String content = new String(htmlByts).toLowerCase(); // lower case
 
-			System.out.println(content);
+			StringBuffer buffer = new StringBuffer(content);
+			int endIndex = 0;
+			int startIndex = buffer.indexOf(HOUSE_ID_HTML_PREFIX, 0);
+			while (startIndex > 0) {
+				startIndex += HOUSE_ID_HTML_PREFIX.length();
+				endIndex = buffer.indexOf("\"", startIndex);
+				if (endIndex <= startIndex) {
+					break;
+				}
+				String id = buffer.substring(startIndex, endIndex);
+
+				startIndex = buffer.indexOf(HOUSE_INFO_HTML_PREFIX, endIndex);
+				startIndex += HOUSE_INFO_HTML_PREFIX.length();
+				endIndex = buffer.indexOf("')\"", startIndex);
+				if (endIndex <= startIndex) {
+					break;
+				}
+				String info = buffer.substring(startIndex, endIndex);
+				info = info.replace("&lt;strong&gt;", "").replace("&lt;/strong&gt;", "").replace("&lt;br/&gt;", "||");
+
+				int price = getHousePrice(httpClient, id);
+
+				list.add(id + SPLITOR + info + SPLITOR + "价格:" + price);
+
+				// NEXT
+				startIndex = buffer.indexOf(HOUSE_ID_HTML_PREFIX, endIndex);
+
+			}
+
+			// System.out.println(content);
 		} finally {
 			EntityUtils.consume(entity);
 		}
 		return list;
+	}
+
+	/**
+	 * @param httpClient
+	 * @param id
+	 * @return
+	 * @throws IOException
+	 * @throws
+	 */
+	private static int getHousePrice(DefaultHttpClient httpClient, String id) throws IOException {
+		String url = "http://www.xmjydj.com/House/Fwztxx?HouseId=" + id + "&yyxx=%3Cbr/%3E面积&zs=1";
+
+		HttpGet httpGet = new HttpGet(url);
+
+		HttpResponse response = httpClient.execute(httpGet);
+		HttpEntity entity = response.getEntity();
+		try {
+			int statusCode = response.getStatusLine().getStatusCode();
+			if (statusCode != HttpStatus.SC_OK) {
+				// throw new IOException("get unexpected status code:" +
+				// response.getStatusLine() + "," + url);
+			}
+			byte[] bytes = new byte[1024];
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			InputStream is = entity.getContent();
+			int size = 0;
+			while ((size = is.read(bytes)) != -1) {
+				bos.write(bytes, 0, size);
+			}
+			is.close();
+			byte[] htmlByts = bos.toByteArray();
+			bos.close();
+			String content = new String(htmlByts).toLowerCase(); // lower case
+
+			String prefix = "拟售单价:";
+			int start = content.indexOf(prefix);
+			if (start > 0) {
+				start += prefix.length();
+				int end = content.indexOf("<", start);
+				if (end > start) {
+					return Integer.valueOf(content.substring(start, end));
+				}
+			}
+
+		} finally {
+			EntityUtils.consume(entity);
+		}
+		return 0;
+
 	}
 }
