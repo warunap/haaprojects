@@ -7,6 +7,7 @@ package org.haaprojects.website.info.xmhouse;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -15,7 +16,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -55,7 +55,7 @@ public class GetBuildingList {
 		HashSet<String> projectIdSet = new HashSet<String>();
 		projectIdSet.addAll(lines);
 
-		String outputFilePath = "d:/";
+		String outputFilePath = "e:/housedata/";
 		String outputFilePrefix = "xmhouse_build_list";
 		String outPutFileSuffix = ".txt";
 		File outputFile = new File(outputFilePath + outputFilePrefix + outPutFileSuffix);
@@ -64,7 +64,9 @@ public class GetBuildingList {
 			outputFile.renameTo(new File(outputFilePath + outputFilePrefix + "_" + System.currentTimeMillis() + outPutFileSuffix));
 			outputFile = new File(outputFilePath + outputFilePrefix + outPutFileSuffix);
 		}
-		
+
+		FileOutputStream fos = new FileOutputStream(outputFile);
+
 		DefaultHttpClient httpClient = new DefaultHttpClient();
 
 		for (String projectId : projectIdSet) {
@@ -74,9 +76,9 @@ public class GetBuildingList {
 				buffer.append(build + NEWLINE);
 				System.out.println(build);
 			}
-			FileUtils.writeStringToFile(outputFile, buffer.toString(), encoding);
+			IOUtils.writeLines(buildList, NEWLINE, fos);
 		}
-
+		fos.close();
 		httpClient.getConnectionManager().shutdown();
 
 		System.out.println("over");
