@@ -43,7 +43,7 @@ import org.apache.http.util.EntityUtils;
  * @author Geln Yang
  * 
  */
-public class GetBuildingDetailList {
+public class GetBuildingDetailListInReverseOrder {
 
 	private static final String HOUSE_ID_HTML_PREFIX = "onclick=\"cellclick(this)\" id=\"";
 
@@ -81,7 +81,8 @@ public class GetBuildingDetailList {
 
 		DefaultHttpClient httpClient = new DefaultHttpClient();
 
-		for (String buildInfo : buildInfoList) {
+		for (int i = buildInfoList.size()-1; i >0; i--) {
+			String buildInfo =  buildInfoList.get(i);
 			List<String> houseList = getBuildDetailList(httpClient, connection, dbHouseIdSet, buildInfo);
 			IOUtils.writeLines(houseList, NEWLINE, fos);
 		}
@@ -181,6 +182,9 @@ public class GetBuildingDetailList {
 					HouseDAO.saveHouseTextInfoLine(connection, detailInfoLine);
 					
 					list.add(detailInfoLine);
+				}else {
+					//END the parse
+					throw new RuntimeException("the left have been parsed!!!");
 				}
 
 				// NEXT
