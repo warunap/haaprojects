@@ -50,10 +50,12 @@ public class GetBuildingList {
 	private static String encoding = "UTF-8";
 
 	public static void main(String[] args) throws IOException {
-		InputStream is = CNStockListCollector.class.getResourceAsStream("/org/haaprojects/website/info/xmhouse/projectlist.txt");
-		List<String> lines = IOUtils.readLines(is, encoding);
+		DefaultHttpClient httpClient = new DefaultHttpClient();
+		//InputStream is = CNStockListCollector.class.getResourceAsStream("/org/haaprojects/website/info/xmhouse/projectlist.txt");
+		//List<String> lines = IOUtils.readLines(is, encoding);
 		HashSet<String> projectIdSet = new HashSet<String>();
-		projectIdSet.addAll(lines);
+		//projectIdSet.addAll(lines);
+		projectIdSet.addAll(GetProjectList.getProjectIdList(httpClient));
 
 		String outputFilePath = "e:/housedata/";
 		String outputFilePrefix = "xmhouse_build_list";
@@ -67,7 +69,6 @@ public class GetBuildingList {
 
 		FileOutputStream fos = new FileOutputStream(outputFile);
 
-		DefaultHttpClient httpClient = new DefaultHttpClient();
 
 		for (String projectId : projectIdSet) {
 			StringBuffer buffer = new StringBuffer();
