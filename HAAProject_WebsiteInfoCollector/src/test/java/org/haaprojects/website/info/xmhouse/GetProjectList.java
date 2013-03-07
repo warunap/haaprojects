@@ -44,7 +44,7 @@ public class GetProjectList {
 		System.out.println("over");
 	}
 
-	private static List<String> getProjectIdList(DefaultHttpClient httpClient) throws IOException {
+	public static List<String> getProjectIdList(DefaultHttpClient httpClient) throws IOException {
 		List<String> list = new ArrayList<String>();
 		int currentPageNo = 0;
 		int lastPageNo = 1;
