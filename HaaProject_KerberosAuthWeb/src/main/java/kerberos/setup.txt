@@ -1,0 +1,66 @@
+1. create a user account on AD server
+	username: ssoclient,  password: abcd1234
+
+2. export keytab
+	ktpass -out sso.keytab -princ HTTP/ssoclient@COMWAVE.COM.CN -mapuser ssoclient -pass abcd1234 -ptype KRB5_NT_PRINCIPAL
+
+3. modify krb5.conf
+	a. change COMWAVE.COM.CN to your domain name
+	b. change kdc ip
+
+4. modify login.conf
+	a. change keyTab file path
+	b. change realm value (COMWAVE.COM.CN)
+	c. change principal value (HTTP/ssoclient@COMWAVE.COM.CN)
+
+5. modify SSOConfig.properties
+	a. change login.conf file path
+	b. change krb5.conf file path
+	c. change realm value
+	d. change kdc value
+	e. change principal value
+	f. change pre-auth username for NTLM (CAN be another account name)
+	g. change pre-auth password
+
+6. add KerberosFilter in web.xml
+	<filter>
+		<filter-name>KerberosHttpFilter</filter-name>
+		<filter-class>com.comwave.twse.sso.KerberosHttpFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>KerberosHttpFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+7. configure client machine
+	a. edit /etc/hosts file, add an alias(ssoclient) mapped to the AP server
+		e.g.	192.168.5.185	ssoclient
+	b. add the AP url to the intranet web sites
+		e.g.	http://ssoclient/
+	c. intranet should support automatic login with current login username/password
+	c. IE should support Windows authentication integration
+	
+	
+================================
+Trouble Shooting
+
+1. if there doesn't ktpass tool ,download it from:http://www.microsoft.com/en-us/download/details.aspx?id=15326
+	Windows Server 2003 Support Tools include below helpful utilities:
+    Acldiag.exe
+    Adsiedit.msc
+    Bitsadmin.exe
+    Dcdiag.exe
+    Dfsutil.exe
+    Dnslint.exe
+    Dsacls.exe
+    Iadstools.dll
+    Ktpass.exe
+    Ldp.exe
+    Netdiag.exe
+    Netdom.exe
+    Ntfrsutl.exe
+    Portqry.exe
+    Repadmin.exe
+    Replmon.exe
+    Setspn.exe  
