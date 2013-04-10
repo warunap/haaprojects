@@ -37,25 +37,6 @@ public class OpenLDAPUtil {
 
 	private static final String OBJECT_CLASS_USER = "person";
 
-	public static void main(String[] args) throws Exception {
-		Properties properties = new Properties();
-		properties.load(OpenLDAPUtil.class.getResourceAsStream("/ldaptest.properties"));
-
-		String returnedAtts[] = { "sn", "cn", "name", "title", "givenName", "objectClass" };
-		String domain = properties.getProperty("ldap.test.user.domain");
-		String provider_url = properties.getProperty("ldap.test.user.provider");
-		String userDN = properties.getProperty("ldap.test.user.dn");
-		String password = properties.getProperty("ldap.test.user.password");
-		String searchBase = properties.getProperty("ldap.test.user.searchBase");
-		int start = userDN.toLowerCase().indexOf("cn=") + 3;
-		int end = userDN.indexOf(",", start);
-		String searchUserName = userDN.substring(start, end);
-
-		Map<String, String> result = searchUser(domain, provider_url, userDN, password, searchBase, returnedAtts, searchUserName);
-		System.out.println(result);
-		System.out.println("over");
-	}
-
 	/**
 	 * search orgUnits
 	 */
