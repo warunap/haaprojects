@@ -28,7 +28,9 @@ public class LogoutServlet extends HttpServlet {
 			String name = (String) attributeNames.nextElement();
 			req.getSession().removeAttribute(name);
 		}
-		writer.write("log out");
+
+		writer.write("Close the browser to finish log out!");
+		writer.write("<script>window.close();</script>");
 	}
 
 }
