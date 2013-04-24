@@ -97,24 +97,21 @@ public class KerberosAuthenticationFilter extends AuthenticationFilter {
 
 		logger.info("need to do super filter operation, url: " + url);
 		UniAddress address = getDomainController();
-		System.out.println(address);
-		System.out.println("=================================");
-		System.out.println("request header");
-		System.out.println("--------------");
+		logger.debug(address);
+		logger.debug("=================================");
+		logger.debug("-------------->request header");
 		@SuppressWarnings("unchecked")
 		Enumeration<String> headerNames = req.getHeaderNames();
 		for (; headerNames.hasMoreElements();) {
 			String name = headerNames.nextElement();
 			String val = req.getHeader(name);
-			System.out.println(name + "\t\t=\t" + val);
+			logger.debug(name + "\t\t=\t" + val);
 		}
 
-		System.out.println("####");
-		System.out.println("response header");
-		System.out.println("--------------");
+		logger.debug("-------------->response header");
 		LogWrapperHttpResponse resp = new LogWrapperHttpResponse((HttpServletResponse) response);
 		super.doFilter(request, resp, chain);
-		System.out.println("=================================");
+		logger.debug("=================================");
 
 	}
 
