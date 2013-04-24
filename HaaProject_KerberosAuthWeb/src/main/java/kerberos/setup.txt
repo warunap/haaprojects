@@ -25,7 +25,7 @@
 6. add KerberosFilter in web.xml
 	<filter>
 		<filter-name>KerberosHttpFilter</filter-name>
-		<filter-class>com.comwave.twse.sso.KerberosHttpFilter</filter-class>
+		<filter-class>org.haaproject.kerberos.filter.KerberosAuthenticationFilter</filter-class>
 	</filter>
 
 	<filter-mapping>
@@ -35,7 +35,7 @@
 
 7. configure client machine
 	a. edit /etc/hosts file, add an alias(ssoclient) mapped to the AP server
-		e.g.	192.168.5.185	ssoclient
+		e.g.	192.168.5.112	ssoclient
 	b. add the AP url to the intranet web sites
 		e.g.	http://ssoclient/
 	c. intranet should support automatic login with current login username/password
@@ -45,7 +45,7 @@
 ================================
 Trouble Shooting
 
-1. if there doesn't ktpass tool ,download it from:http://www.microsoft.com/en-us/download/details.aspx?id=15326
+1. if there isn't ktpass tool ,download it from:http://www.microsoft.com/en-us/download/details.aspx?id=15326
 	Windows Server 2003 Support Tools include below helpful utilities:
     Acldiag.exe
     Adsiedit.msc
