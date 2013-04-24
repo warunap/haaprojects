@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -24,6 +25,7 @@ import jcifs.UniAddress;
 import jcifs.http.AuthenticationFilter;
 import jcifs.netbios.NbtAddress;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.haaproject.kerberos.servlet.LogWrapperHttpResponse;
@@ -39,9 +41,6 @@ public class KerberosAuthenticationFilter extends AuthenticationFilter {
 	private String[] escapedUrls;
 
 	public void init(FilterConfig filterConfig) throws ServletException {
-		System.setProperty("javax.security.auth.useSubjectCredsOnly", "false");
-		System.setProperty("jcifs.http.enableNegotiate", "true");
-
 		InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("kerberos/SSOConfig.properties");
 		if (is == null)
 			logger.error("Can't find single sign one configuration file(SSOConfig.properties)!");
@@ -52,12 +51,15 @@ public class KerberosAuthenticationFilter extends AuthenticationFilter {
 				is.close();
 				System.getProperties().putAll(prop);
 
-				Config.setProperty("jcifs.smb.lmCompatibility", "0");
-				Config.setProperty("jcifs.smb.client.useExtendedSecurity", "false");
-
-				Config.setProperty("jcifs.http.domainController", prop.getProperty("java.security.krb5.kdc"));
-				Config.setProperty("jcifs.smb.client.username", prop.getProperty("jcifs.smb.client.username"));
-				Config.setProperty("jcifs.smb.client.password", prop.getProperty("jcifs.smb.client.password"));
+				Set<Object> keySet = prop.keySet();
+				for (Object key : keySet) {
+					String k = (String) key;
+					String val = prop.getProperty(k);
+					logger.debug(k + "\t=\t" + val);
+					if (k.startsWith("jcifs")) {
+						Config.setProperty(k, val);
+					}
+				}
 			} catch (IOException e) {
 				logger.error(e.getMessage(), e);
 			}
@@ -99,17 +101,21 @@ public class KerberosAuthenticationFilter extends AuthenticationFilter {
 		System.out.println(address);
 		System.out.println("=================================");
 		System.out.println("request header");
-		System.out.println("==============");
+		System.out.println("--------------");
 		@SuppressWarnings("unchecked")
 		Enumeration<String> headerNames = req.getHeaderNames();
 		for (; headerNames.hasMoreElements();) {
 			String name = headerNames.nextElement();
-			System.out.println(name + "\t\t=\t" + req.getHeader(name));
+			String val = req.getHeader(name);
+			if (name.equals("WWW-Authenticate") || name.equals("authorization")) {
+				val = new String(Base64.decodeBase64(val));
+			}
+			System.out.println(name + "\t\t=\t" + val);
 		}
 
-		System.out.println("==============");
+		System.out.println("####");
 		System.out.println("response header");
-		System.out.println("==============");
+		System.out.println("--------------");
 		LogWrapperHttpResponse resp = new LogWrapperHttpResponse((HttpServletResponse) response);
 		super.doFilter(request, resp, chain);
 		System.out.println("=================================");
