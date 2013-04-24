@@ -25,7 +25,6 @@ import jcifs.UniAddress;
 import jcifs.http.AuthenticationFilter;
 import jcifs.netbios.NbtAddress;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.haaproject.kerberos.servlet.LogWrapperHttpResponse;
@@ -107,9 +106,6 @@ public class KerberosAuthenticationFilter extends AuthenticationFilter {
 		for (; headerNames.hasMoreElements();) {
 			String name = headerNames.nextElement();
 			String val = req.getHeader(name);
-			if (name.equals("WWW-Authenticate") || name.equals("authorization")) {
-				val = new String(Base64.decodeBase64(val));
-			}
 			System.out.println(name + "\t\t=\t" + val);
 		}
 
