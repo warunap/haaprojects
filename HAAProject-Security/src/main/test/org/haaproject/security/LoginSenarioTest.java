@@ -27,6 +27,9 @@ public class LoginSenarioTest {
 	static Map<String, String> gameServerDBMap = new HashMap<String, String>();
 
 	public static void main(String[] args) throws Exception {
+		// System.out.println(SecurityTool.symmetricEncrypt("e84ad660c4721ae0",
+		// "test"));
+		// System.out.println(generateSecret("salt", "user", "pass"));
 		String userName = "eric";
 		String password = "pass";
 		String server = "gameServer1";
@@ -51,17 +54,21 @@ public class LoginSenarioTest {
 	 * ，确认用户的合法性。<br>
 	 * 
 	 */
-	private static void loginTest(String username, String password, String server) throws Exception {
+	private static void loginTest(String username, String password, String gameServer) throws Exception {
+
+		System.out.println(username + " try to login to the server " + gameServer);
 		String sessionid = "session_" + System.currentTimeMillis();
 		String salt = requestSalt(sessionid);
-		System.out.println("salt:" + salt);
+		System.out.println("Game Server(G) return salt:[" + salt + "]");
 
 		String secret = generateSecret(salt, username, password);
-		System.out.println("secret:" + secret);
+		System.out.println("Client(C) generate a secret:[" + secret + "]");
 
-		String validSecret = validLoginByAuthenticationServer(username, secret, server);
-		System.out.println("validSecret:" + validSecret);
+		System.out.println("Client(C) send secret and Game Server(G) name to Authentication Server(AS)...");
+		String validSecret = validLoginByAuthenticationServer(username, secret, gameServer);
+		System.out.println("Authentication server(AS) return valid secret to Client(C):[" + validSecret + "]");
 
+		System.out.println("Client(C) send valid secret to Game Server(G)...");
 		boolean loginResult = validLoginByGameServer(sessionid, validSecret);
 		System.out.println(loginResult ? "login success" : "login failed");
 	}
@@ -69,8 +76,9 @@ public class LoginSenarioTest {
 	/**
 	 */
 	private static String requestSalt(String sessionid) {
-		String salt = "" + System.currentTimeMillis();
+		String salt = "SALT" + System.currentTimeMillis();
 		gameServerDBMap.put(sessionid, salt);
+		System.out.println("record salt:" + sessionid + "," + salt);
 		return salt;
 	}
 
@@ -107,9 +115,11 @@ public class LoginSenarioTest {
 		}
 
 		String salt = SecurityTool.symmetricDecrypt(digestFirst, encyptSalt);
+		System.out.println("Authentication Server(AS) decrypt to get Game Server(G) salt:[" + salt + "]");
 		String newsalt = salt + "," + username;
-		String serverPassword = authenticationServerDBMap.get(server);
-		return generateSecret(newsalt, username, serverPassword);
+		System.out.println("Authentication Server(AS) salt:[" + newsalt + "], it will be encrypt by Game Server(G) key.");
+		String gameServerKey = authenticationServerDBMap.get(server);
+		return generateSecret(newsalt, username, gameServerKey);
 	}
 
 	/**
@@ -118,9 +128,9 @@ public class LoginSenarioTest {
 		String dbsalt = gameServerDBMap.get(sessionid);
 
 		String server = "gameServer1";//
-		String password = authenticationServerDBMap.get(server);
+		String gameServerKey = authenticationServerDBMap.get(server);
 
-		String digest = SecurityTool.digest(DIGEST_ALGORITHM, password);
+		String digest = SecurityTool.digest(DIGEST_ALGORITHM, gameServerKey);
 		String digestFirst = digest.substring(0, digest.length() / 2);
 		String digestSecond = digest.substring(digestFirst.length());
 
@@ -135,10 +145,11 @@ public class LoginSenarioTest {
 		}
 
 		String newsalt = SecurityTool.symmetricDecrypt(digestFirst, encyptSalt);
+		System.out.println("Game Server(G) decrypts to AS salt:[" + newsalt + "]");
 		String salt = StringUtils.substringBefore(newsalt, ",");
 		String username = StringUtils.substringAfter(newsalt, ",");
 		if (dbsalt.equals(salt)) {
-			System.out.println("add to server login record:" + username);
+			System.out.println("add to server login record:[" + username + "]");
 			return true;
 		}
 		return false;
