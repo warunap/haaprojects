@@ -378,6 +378,9 @@ public class SecurityTool {
 	/**
 	 * 将对称密钥编码key字符串转换为{@link Key}对象
 	 * 
+	 * @see DESKeySpec
+	 * Creates a DESKeySpec object using the first 8 bytes in key as the key material for the DES key. The bytes that constitute the DES key are those between key[0] and key[7] inclusive. 
+	 * 
 	 * @param encodedKey
 	 *            对称密钥编码key字符串
 	 * @throws UnsupportedEncodingException

@@ -29,20 +29,26 @@
 		return salt;
 	}
 	function generateSecret(salt, username, password){
-		var md5arr = CryptoJS.MD5(password);
-		var digest = ""+md5arr[0]+md5arr[1]+md5arr[2]+md5arr[3];
+		var digest = CryptoJS.MD5(password).toString(CryptoJS.enc.Base64);
 		if(digest.length<2){
 			digest=digest+digest;
 		}
 		var digestFirst = digest.substr(0, digest.length / 2);
 		var digestSecond = digest.substr(digestFirst.length);
 
-		var encyptSalt = CryptoJS.DES.encrypt(salt,digestFirst);
-		var signature = CryptoJS.MD5(encyptSalt + digestSecond);
+		var encyptSalt = CryptoJS.DES.encrypt(salt,digestFirst).ciphertext.toString(CryptoJS.enc.UTF8);
+		var signature = CryptoJS.MD5(encyptSalt + digestSecond).toString(CryptoJS.enc.Base64);
 
-		return CryptoJS.DES.encrypt(encyptSalt + "," + signature,digestSecond);
+		return CryptoJS.DES.encrypt(encyptSalt + "," + signature,digestSecond).ciphertext.toString(CryptoJS.enc.Base64);
 	}
 	function login(){
+		var hex = CryptoJS.enc.Hex.parse('e84ad660c4721ae0');
+		addlog(hex);
+		var e = CryptoJS.DES.encrypt("test", 'e84ad660c4721ae0');
+		addlog(e);
+		addlog(e.ciphertext.toString(CryptoJS.enc.Hex));
+		addlog(generateSecret("salt","user","pass"));
+		return;
 		var username=$('#username').val();
 		var password=$('#password').val();
 		var salt = requestSalt();
