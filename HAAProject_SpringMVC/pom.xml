@@ -186,6 +186,16 @@
 			<version>3.0.1</version>
 		</dependency>
 		<dependency>
+			<groupId>servletapi</groupId>
+			<artifactId>servletapi</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
 		    <!-- mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0 -Dpackaging=jar -Dfile=ojdbc6.jar -DgeneratePom=true -->
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc6</artifactId>
