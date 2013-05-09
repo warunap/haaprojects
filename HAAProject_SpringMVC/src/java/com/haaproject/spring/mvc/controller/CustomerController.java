@@ -58,6 +58,7 @@ public class CustomerController {
 			status.setComplete();
 			// form success
 			if (customer.isRedirect()) {
+				customer=null;
 				return "CustomerSuccessRedirect";
 			}
 			return "CustomerSuccess";
