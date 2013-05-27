@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>demo1.html</title>
+<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+<meta http-equiv="description" content="this is my page">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="../js/jquery-1.8.2.min.js"></script>
+<link rel="stylesheet" type="text/css" href="../css/common.css">
+<link rel="stylesheet" type="text/css"
+	href="../css/jquery_ValidationForm.css">
+<script type="text/javascript">
+<!--
+
+	function supports_input_placeholder() {
+	  var i = document.createElement('input');
+	  return 'placeholder' in i;
+	}
+	function supports_input_required() {
+	  var i = document.createElement('input');
+	  return 'required' in i;
+	}
+	
+	$(document).ready(function(){
+		alert($("#tttt").attr("type"));
+		alert("supports_input_placeholder:"+supports_input_placeholder());
+		alert("supports_input_required:"+supports_input_required());
+	});
+-->
+</script>
+</head>
+<body>
+	<div class="center">
+		<h3>Range Test</h3>
+		<br>
+		<form action="submit.html" method="post">
+			<div>
+				range: <input id="range" type="range" name="range" min="10"
+					max="100" />
+			</div>
+			<div>
+				number: <input id="number" type="number" name="number" min="10"
+					max="100" size="50" />
+			</div>
+			<div>
+				unknown: <input id="tttt" type="tttt" name="range" min="10"
+					max="100" size="50" />
+			</div>
+			<div>
+				<input type="submit" value="submit" />
+			</div>
+		</form>
+	</div>
+</body>
+</html>

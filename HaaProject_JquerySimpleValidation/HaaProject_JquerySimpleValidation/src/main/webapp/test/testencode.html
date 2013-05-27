@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>testencode.html</title>
+<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+<meta http-equiv="description" content="this is my page">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+<script type="text/javascript">
+<!--
+	/*
+	 * encodeURI replaces each instance of certain characters by one, two, three, or four escape sequences representing the UTF-8 encoding of the character. Each one in the escape sequences is represented in the format of ‘%NN’, where ‘N’ is one Hex number.
+	 */
+	function utf8ByteLength(str) {
+		if (!str)
+			return 0;
+		var escapedStr = encodeURI(str);
+		var match = escapedStr.match(/%/g);
+		return match ? (escapedStr.length - match.length*2) : 0;;
+	}
+
+	function stringToBytes(str) {
+		var ch, st, re = [];
+		for ( var i = 0; i < str.length; i++) {
+			ch = str.charCodeAt(i); // get char 
+			st = []; // set up "stack"
+			do {
+				st.unshift(ch & 0xFF); // push byte to stack
+				ch = ch >> 8; // shift value down by 1 byte
+			} while (ch);
+			// add stack contents to result
+			// done because chars have "wrong" endianness
+			re = re.concat(st);
+		}
+		// return an array of bytes
+		return re;
+	}
+
+	function showHex(arr) {
+		var re = [];
+		var i = 0;
+		for (; i < arr.length; i++) {
+			re.push(arr[i].toString(16).toUpperCase());
+		}
+		return re;
+	}
+
+	function unicodeByteLength(str) {
+		if (!str)
+			return 0;
+		var ch;
+		var count = 0;
+		for ( var i = 0; i < str.length; i++) {
+			ch = str.charCodeAt(i);
+			do {
+				count++;
+				ch = ch >> 8; // shift value down by 1 byte
+			} while (ch);
+		}
+		return count;
+	}
+
+	function dbcsByteLength(str) {
+		if (!str)
+			return 0;
+		var ch;
+		var count = 0;
+		for ( var i = 0; i < str.length; i++) {
+			count++;
+			if (str.charCodeAt(i) >> 8)
+				count++;
+		}
+		return count;
+	}
+
+	function showbytes() {
+		var val = document.getElementById("str").value;
+		document.getElementById("message").innerHTML = showHex(stringToBytes(val));
+		document.getElementById("encodeURI").innerHTML = encodeURI(val);
+		document.getElementById("unicodelength").innerHTML = unicodeByteLength(val);
+		document.getElementById("utf8length").innerHTML = utf8ByteLength(val);
+		document.getElementById("dbcslength").innerHTML = dbcsByteLength(val);
+	}
+</script>
+</head>
+<body>
+	String:
+	<input type="text" name="str" id="str">
+	<input type="button" value="Show" onclick="showbytes()">
+	<br>
+	message:
+	<font id="message"></font>
+	<br>
+	encodeURI:
+	<font id="encodeURI"></font>
+	<br>
+	unicodelength:
+	<font id="unicodelength"></font>
+	<br>
+	utf8length:
+	<font id="utf8length"></font>
+	<br>
+	dbcslength:
+	<font id="dbcslength"></font>
+	<br>
+</body>
+</html>

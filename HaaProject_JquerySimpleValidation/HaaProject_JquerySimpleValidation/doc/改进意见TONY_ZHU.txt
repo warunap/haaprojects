@@ -1,0 +1,18 @@
+Tony Zhu 2013-04-11：
+       1).应该提供相应的方法，而不是在每个input标签加上required等属性
+          $j("input").required().lengthLimited(5,10)
+       2).应该可以有选择提示方式
+       3).框架都是基于静态的比对，例如有时我们比较时要跟后台交互，这个框架达不到，例如$j("input").lengthLimited({url:"http://192.168.5.73/twse",message});
+
+还有就是希望能这样
+  #name {
+   required:“不能为空”，
+   range: {5,10}
+}
+
+或者这种格式
+required: {
+    #name,.ClassType
+}
+这样会更方便我们管理代码，而且我们也可以做到这样
+       
