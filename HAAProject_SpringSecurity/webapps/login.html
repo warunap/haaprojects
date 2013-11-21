@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Spring Security 3</title>
+<script type="text/javascript">
+	function check() {
+		String
+		username = document.forms[0].j_username.value;
+		String
+		pwd = document.forms[0].j_password.value;
+		//alert(username+pwd);
+		if (username == "" || pwd == "") {
+			alert("用户名和密码不能为空")
+			return false;
+		}
+		return true;
+	}
+
+	if (window.top.frames.length > 0) {
+		window.top.location.href = './login.jsp';
+	}
+</script>
+</head>
+
+<body onload="javascript:document.forms[0].j_username.focus();">
+	<br />
+	<center>
+		<form name="loginform" action="j_spring_security_check" method="POST"
+			onsubmit="return check();">
+			<table align="center" width="600" height="468"
+				style="background-image: url();">
+				<tr>
+					<td height="100"></td>
+					<td height="100"></td>
+				</tr>
+				<tr>
+					<td width="220"></td>
+					<td><font size="2"> <span style="color: black">
+								用户名</span> <input id="username" type='text' name="j_username"
+							value="eric" style="width: 100px"> <span
+							style="color: black">密码</span> <input id="pwd" type='password'
+							name='j_password' value="eric" style="width: 100px"> <input
+							name="submit" type="submit" value="登录" class="btn">
+					</font></td>
+				</tr>
+			</table>
+
+		</form>
+	</center>
+</body>
+</html>
