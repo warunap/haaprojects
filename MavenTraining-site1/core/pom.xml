@@ -5,6 +5,10 @@
 	<name>core</name>
 	<description>the core of site1</description>
 	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
 	</dependencies>
 	<parent>
 		<groupId>maven.training.site1</groupId>
